@@ -39,20 +39,21 @@
         <ui:NavigationView
             x:Name="RootNavigation"
             Grid.Row="1"
+            PaneDisplayMode="Top"
             FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
             MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}">
-            <ui:NavigationView.AutoSuggestBox>
-                <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search">
-                    <ui:AutoSuggestBox.Icon>
-                        <ui:IconSourceElement>
-                            <ui:SymbolIconSource Symbol="Search24" />
-                        </ui:IconSourceElement>
-                    </ui:AutoSuggestBox.Icon>
-                </ui:AutoSuggestBox>
-            </ui:NavigationView.AutoSuggestBox>
+            <!-- <ui:NavigationView.AutoSuggestBox> -->
+                <!-- <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search"> -->
+                <!--     <ui:AutoSuggestBox.Icon> -->
+                <!--         <ui:IconSourceElement> -->
+                <!--             <ui:SymbolIconSource Symbol="Search24" /> -->
+                <!--         </ui:IconSourceElement> -->
+                <!--     </ui:AutoSuggestBox.Icon> -->
+                <!-- </ui:AutoSuggestBox> -->
+            <!-- </ui:NavigationView.AutoSuggestBox> -->
             <ui:NavigationView.Header>
                 <ui:BreadcrumbBar
-                    Margin="42,32,0,0"
+                    Margin="0,20,0,0"
                     FontSize="28"
                     FontWeight="DemiBold" />
             </ui:NavigationView.Header>
@@ -68,7 +69,7 @@
             FocusOnLeftClick="True"
             Icon="pack://application:,,,/Assets/applicationIcon-256.png"
             MenuOnRightClick="True"
-            TooltipText="WPF UI - MVVM Demo">
+            TooltipText="温压传感器检测工具">
             <tray:NotifyIcon.Menu>
                 <ContextMenu ItemsSource="{Binding ViewModel.TrayMenuItems, Mode=OneWay}" />
             </tray:NotifyIcon.Menu>

@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.Services;
+using Type = ABI.System.Type;
 
 namespace Wpf.Ui.Demo.Mvvm;
 
@@ -49,6 +50,7 @@ public partial class App
                 // Main window with navigation
                 services.AddSingleton<INavigationWindow, Views.MainWindow>();
                 services.AddSingleton<ViewModels.MainWindowViewModel>();
+                services.AddSingleton<WindowsProviderService>();
 
                 // Views and ViewModels
                 services.AddSingleton<Views.Pages.DashboardPage>();
@@ -57,6 +59,8 @@ public partial class App
                 services.AddSingleton<ViewModels.DataViewModel>();
                 services.AddSingleton<Views.Pages.SettingsPage>();
                 services.AddSingleton<ViewModels.SettingsViewModel>();
+                services.AddSingleton<Views.Pages.DevicePortConnectPage>();
+                services.AddSingleton<ViewModels.DevicePortConnectViewModel>();
 
                 // Configuration
                 services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));

@@ -15,22 +15,261 @@
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
-
-    <Grid Margin="42" VerticalAlignment="Top">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <Border
+                Grid.Row="0"
+                Height="auto"
+                CornerRadius="8">
+                <Border CornerRadius="8">
+                    <ItemsControl ItemsSource="{Binding ViewModel.DeviceCards,Mode=TwoWay}" VerticalAlignment="Center"
+                                  HorizontalAlignment="Center">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <ui:CardAction
+                                        Grid.Row="0"
+                                        Margin="0,0,10,0"
+                                        Padding="5"
+                                        VerticalAlignment="Stretch"
+                                        Command="{Binding ViewModel.DeviceConnectCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:DashboardPage}, Mode=OneWay}"
+                                        CommandParameter="{Binding Key ,Mode=OneWay}"
+                                        IsChevronVisible="False">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
 
-        <ui:Button
-            Grid.Column="0"
-            Command="{Binding ViewModel.CounterIncrementCommand, Mode=OneWay}"
-            Content="Click me!"
-            Icon="{ui:SymbolIcon Fluent24}" />
-        <TextBlock
-            Grid.Column="1"
-            Margin="12,0,0,0"
-            VerticalAlignment="Center"
-            Text="{Binding ViewModel.Counter, Mode=OneWay}" />
+                                            <Image
+                                                Width="60"
+                                                Margin="24,0,0,0"
+                                                Source="{Binding ImageUrl,Mode=OneWay}" />
+
+                                            <StackPanel Margin="23,23,23,15" Grid.Row="0" Grid.Column="1"
+                                                        MinHeight="55" MinWidth="100">
+
+                                                <StackPanel
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+                                                    <ui:TextBlock
+                                                        Margin="-1"
+                                                        FontTypography="BodyStrong"
+                                                        Text="Port:"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                    <ui:TextBlock
+                                                        Margin="10,0,0,0"
+                                                        Appearance="Tertiary"
+                                                        Text="{Binding DeviceCardDetail.SerialPortModel.PortName,Mode=TwoWay}"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+                                                    <ui:TextBlock
+                                                        Margin="-1"
+                                                        FontTypography="BodyStrong"
+                                                        Text="CurrentPressure:"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                    <ui:TextBlock
+                                                        Margin="10,0,0,0"
+                                                        x:Name="CurrentPressureText"
+                                                        Appearance="Tertiary"
+                                                        Text="{Binding DeviceCardDetail.CurrentPressure,Mode=TwoWay}"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                    <StackPanel.Style>
+                                                        <Style TargetType="StackPanel">
+                                                            <Style.Triggers>
+                                                                <DataTrigger
+                                                                    Binding="{Binding Text,ElementName=CurrentPressureText}"
+                                                                    Value="">
+                                                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </StackPanel.Style>
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+                                                    <ui:TextBlock
+                                                        Margin="-1"
+                                                        FontTypography="BodyStrong"
+                                                        Text="CurrentTemperature:"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                    <ui:TextBlock
+                                                        Margin="10,0,0,0"
+                                                        x:Name="CurrentTemperatureText"
+                                                        Appearance="Tertiary"
+                                                        Text="{Binding DeviceCardDetail.CurrentTemperature,Mode=TwoWay}"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                    <StackPanel.Style>
+                                                        <Style TargetType="StackPanel">
+                                                            <Style.Triggers>
+                                                                <DataTrigger
+                                                                    Binding="{Binding Text,ElementName=CurrentTemperatureText}"
+                                                                    Value="">
+                                                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </StackPanel.Style>
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+                                                    <ui:TextBlock
+                                                        Margin="-1"
+                                                        FontTypography="BodyStrong"
+                                                        Text="SettingPressure:"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                    <ui:TextBlock
+                                                        Margin="10,0,0,0"
+                                                        x:Name="SettingPressureText"
+                                                        Appearance="Tertiary"
+                                                        Text="{Binding DeviceCardDetail.SettingPressure,Mode=TwoWay}"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                    <StackPanel.Style>
+                                                        <Style TargetType="StackPanel">
+                                                            <Style.Triggers>
+                                                                <DataTrigger
+                                                                    Binding="{Binding Text,ElementName=SettingPressureText}"
+                                                                    Value="">
+                                                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </StackPanel.Style>
+                                                </StackPanel>
+                                                <StackPanel
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+                                                    <ui:TextBlock
+                                                        Margin="-1"
+                                                        FontTypography="BodyStrong"
+                                                        Text="SettingTemperature:"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                    <ui:TextBlock
+                                                        Margin="10,0,0,0"
+                                                        x:Name="SettingTemperatureText"
+                                                        Appearance="Tertiary"
+                                                        Text="{Binding DeviceCardDetail.SettingTemperature,Mode=TwoWay}"
+                                                        TextWrapping="WrapWithOverflow" />
+                                                    <StackPanel.Style>
+                                                        <Style TargetType="StackPanel">
+                                                            <Style.Triggers>
+                                                                <DataTrigger
+                                                                    Binding="{Binding Text,ElementName=SettingTemperatureText}"
+                                                                    Value="">
+                                                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </StackPanel.Style>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
+                                                        VerticalAlignment="Center" HorizontalAlignment="Left"
+                                                        Margin="3,0,0,0">
+
+                                                <Ellipse Width="10" Height="10" Margin="0,0,2,0">
+                                                    <Ellipse.Style>
+                                                        <Style TargetType="Ellipse">
+                                                            <Setter Property="Fill" Value="Red" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding DeviceStatus}"
+                                                                             Value="True">
+                                                                    <Setter Property="Fill" Value="Green" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Ellipse.Style>
+                                                </Ellipse>
+                                                <ui:TextBlock Text="{Binding DeviceName,Mode=TwoWay}" />
+                                            </StackPanel>
+                                            <ui:TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right"
+                                                          Margin="0,0,5,0">
+                                                连接设备
+                                            </ui:TextBlock>
+                                        </Grid>
+                                    </ui:CardAction>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </Border>
+        </ScrollViewer>
+        <Grid Grid.Row="1" Margin="10,20,10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="20,0,21,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ui:DropDownButton MinWidth="100">
+                    DS工装
+                </ui:DropDownButton>
+                <ProgressBar Grid.Column="1" HorizontalAlignment="Left" Height="15" Margin="10,0,0,0"
+                             VerticalAlignment="Center" Width="200" />
+                <Grid Grid.Column="2">
+
+                    <Grid Margin="0,0,0,0" HorizontalAlignment="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ui:Button Grid.Column="0" MinWidth="100" MinHeight="25" Content="开始检测" Margin="20,0,20,0"></ui:Button>
+                        <ui:Button Grid.Column="1" MinWidth="100" MinHeight="25" Content="停止检测" Margin="20,0,20,0"></ui:Button>
+                        <ui:Button Grid.Column="2" MinWidth="100" MinHeight="25" Content="导出Excel" Margin="20,0,0,0"></ui:Button>
+                    </Grid>
+                </Grid>
+
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ui:TextBox x:Name="logRichTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                            MinWidth="300" Margin="20"
+                            IsReadOnly="True">
+                </ui:TextBox>
+                <ui:DataGrid Grid.Column="1" Margin="20"></ui:DataGrid>
+            </Grid>
+        </Grid>
     </Grid>
+
 </Page>
