@@ -12,6 +12,8 @@ public class SerialPortModel
     public int DataBit { get; set; }
     public int StopBit { get; set; }
     public string NetworkAddress { get; set; }
+    
+    public bool DeviceStatus { get; set; }
 }
 
 /// <summary>

@@ -4,6 +4,7 @@
 // All Rights Reserved.
 
 using System.Collections.ObjectModel;
+using System.Windows.Media.Imaging;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
@@ -12,9 +13,9 @@ using Wpf.Ui.Demo.Mvvm.Views.Pages;
 
 namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 
-/**
- *
- */
+/// <summary>
+/// 首页连接和展示
+/// </summary>
 public partial class DashboardViewModel : ObservableObject, INavigationAware
 {
     private readonly WindowsProviderService _windowsProviderService;
@@ -36,25 +37,36 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         DeviceCard deviceCard = deviceCardList.First(x => x.Key == deviceTypeEnum);
 
         Console.WriteLine(
-            $"INFO | {nameof(DashboardViewModel)} navigated, ({deviceCard.DeviceName}：{deviceCard.DeviceStatus})",
+            $"INFO | {nameof(DashboardViewModel)} navigated, ({deviceCard.DeviceName}：{deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus})",
             "Wpf.Ui.Gallery"
         );
 
-        if (deviceCard.DeviceStatus)
+        if (deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus)
         {
             return;
         }
 
-        //打开连接配置页面
-        var devicePortConnectViewModel = new DevicePortConnectViewModel(deviceCard.DeviceCardDetail.SerialPortModel);
-        var devicePortConnectPage = new DevicePortConnectPage(devicePortConnectViewModel);
+        // 打开连接配置页面
+        var devicePortConnectViewModel =
+            new DevicePortConnectViewModel(deviceCard.DeviceCardDetail.SerialPortModel);
+        var devicePortConnectPage =
+            new DevicePortConnectPage(devicePortConnectViewModel, RunConnection);
         devicePortConnectPage.Show();
-        deviceCard.DeviceStatus = true;
-        //清楚数据
+    }
+
+    /// <summary>
+    /// 运行连接数据
+    /// </summary>
+    private void RunConnection(DevicePortConnectViewModel devicePortConnectViewModel)
+    {
+        devicePortConnectViewModel.SerialPortModel.DeviceStatus = true;
+        var devices = DeviceCards.ToList();
+
+        // 更新数据
         DeviceCards.Clear();
-        foreach (DeviceCard deviceCardl in deviceCardList)
+        foreach (DeviceCard deviceCardf in devices)
         {
-            DeviceCards.Add(deviceCardl);
+            DeviceCards.Add(deviceCardf);
         }
     }
 
@@ -86,8 +98,6 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         {
             Key = DeviceTypeEnum.Pump,
             DeviceName = "真空泵",
-            DeviceStatus = false,
-            MapItems = new Dictionary<string, string> { { "端口", "COM2" } },
             DeviceCardDetail = new DeviceCardDetail()
             {
                 SerialPortModel = new SerialPortModel()
@@ -96,7 +106,8 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                     StopBit = 1,
                     BaudRate = 9600,
                     DataBit = 8,
-                    NetworkAddress = "01"
+                    NetworkAddress = "01",
+                    DeviceStatus = false,
                 },
             },
             ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Button.png"
@@ -105,9 +116,6 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         {
             Key = DeviceTypeEnum.Pressure,
             DeviceName = "压力源",
-            DeviceStatus = false,
-            MapItems =
-                new Dictionary<string, string> { { "当前压力", "100kap" }, { "设置压力", "100kap" }, { "端口", "COM2" } },
             DeviceCardDetail = new DeviceCardDetail()
             {
                 SerialPortModel = new SerialPortModel()
@@ -116,6 +124,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                     StopBit = 1,
                     BaudRate = 9600,
                     DataBit = 8,
+                    DeviceStatus = false,
                     NetworkAddress = "01"
                 },
                 CurrentPressure = "100kpa",
@@ -127,8 +136,6 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         {
             Key = DeviceTypeEnum.Temperature,
             DeviceName = "温箱",
-            DeviceStatus = false,
-            MapItems = new Dictionary<string, string> { { "当前温度", "100℃" }, { "设置温度", "100℃" }, { "端口", "COM3" } },
             DeviceCardDetail = new DeviceCardDetail()
             {
                 SerialPortModel = new SerialPortModel()
@@ -137,6 +144,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                     StopBit = 1,
                     BaudRate = 9600,
                     DataBit = 8,
+                    DeviceStatus = false,
                     NetworkAddress = "01"
                 },
             },
@@ -146,7 +154,6 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         {
             Key = DeviceTypeEnum.Work,
             DeviceName = "工装",
-            DeviceStatus = false,
             DeviceCardDetail = new DeviceCardDetail()
             {
                 SerialPortModel = new SerialPortModel()
@@ -155,11 +162,10 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                     StopBit = 1,
                     BaudRate = 9600,
                     DataBit = 8,
+                    DeviceStatus = false,
                     NetworkAddress = "01"
                 },
             },
-            MapItems =
-                new Dictionary<string, string> { { "当前温度", "100℃" }, { "当前压力", "100kap" }, { "端口", "COM3" } },
             ImageUrl = "pack://application:,,,/Assets/WinUiGallery/MenuBar.png"
         };
         DeviceCards.Add(pop);

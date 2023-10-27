@@ -3,6 +3,7 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
+using System.Windows.Media.Imaging;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 
 namespace Wpf.Ui.Demo.Mvvm.Models;
@@ -13,7 +14,6 @@ public class DeviceCard
 
     public string DeviceName { get; set; }
 
-    public bool DeviceStatus { get; set; }
 
     public Dictionary<string, string> MapItems { get; set; }
 

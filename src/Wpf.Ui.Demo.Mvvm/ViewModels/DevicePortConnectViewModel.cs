@@ -11,8 +11,6 @@ namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 
 public partial class DevicePortConnectViewModel : ObservableObject
 {
-    [ObservableProperty] private SerialPortModel _serialPortModel;
-
     public DevicePortConnectViewModel(SerialPortModel? serialPortModel = null)
     {
         _serialPortModel = serialPortModel ??
@@ -53,6 +51,11 @@ public partial class DevicePortConnectViewModel : ObservableObject
         DataBit = Array.IndexOf(DataBitList.ToArray(), SerialPortModel.DataBit);
         NetworkAddress = Array.IndexOf(NetworkAddressList.ToArray(), SerialPortModel.NetworkAddress);
     }
+
+    /// <summary>
+    /// 传入基础设置数据对象
+    /// </summary>
+    [ObservableProperty] private SerialPortModel _serialPortModel;
 
     /// <summary>
     /// 端口数据

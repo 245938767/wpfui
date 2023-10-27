@@ -110,8 +110,8 @@
                 </ComboBox>
             </StackPanel>
             <StackPanel Grid.Row="6" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                <ui:Button  Margin="30">Ok</ui:Button>
-                <ui:Button Margin="30">Cancel</ui:Button>
+                <ui:Button Click="OK_OnClick" Margin="30">Ok</ui:Button>
+                <ui:Button Click="Cancel_OnClick" Margin="30">Cancel</ui:Button>
             </StackPanel>
         </Grid>
 

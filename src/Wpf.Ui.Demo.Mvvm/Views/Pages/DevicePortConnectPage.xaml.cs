@@ -5,16 +5,21 @@
 
 using System.Windows.Input;
 using Boiido.IO.SerialPort;
+using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
 
 namespace Wpf.Ui.Demo.Mvvm.Views.Pages;
 
 public partial class DevicePortConnectPage
 {
+    public delegate void OkFunction(DevicePortConnectViewModel devicePortConnectViewModel);
+
+    private OkFunction _okFunction;
     public DevicePortConnectViewModel ViewModel { get; init; }
 
-    public DevicePortConnectPage(DevicePortConnectViewModel viewModel)
+    public DevicePortConnectPage(DevicePortConnectViewModel viewModel, OkFunction okFunction)
     {
+        _okFunction = okFunction;
         ViewModel = viewModel;
         DataContext = this;
 
@@ -22,8 +27,14 @@ public partial class DevicePortConnectPage
     }
 
 
-    private void WindowsClosing()
+    private void Cancel_OnClick(object sender, RoutedEventArgs e)
     {
+        Close();
+    }
+
+    private void OK_OnClick(object sender, RoutedEventArgs e)
+    {
+        _okFunction.Invoke(ViewModel);
         Close();
     }
 

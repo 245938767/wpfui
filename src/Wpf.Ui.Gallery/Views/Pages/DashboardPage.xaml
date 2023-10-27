@@ -105,7 +105,8 @@
                     <Image
                         Width="60"
                         Margin="24,0,0,0"
-                        Source="pack://application:,,,/Assets/WinUiGallery/Button.png" />
+                        Source="pack://application:,,,/Assets/WinUiGallery/Button.png" 
+                        />
 
                     <StackPanel
                         Grid.Column="1"
