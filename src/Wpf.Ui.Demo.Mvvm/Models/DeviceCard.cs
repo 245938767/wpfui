@@ -14,9 +14,6 @@ public class DeviceCard
 
     public string DeviceName { get; set; }
 
-
-    public Dictionary<string, string> MapItems { get; set; }
-
     public string ImageUrl { get; set; }
 
     public DeviceCardDetail DeviceCardDetail { get; set; }

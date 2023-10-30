@@ -1,10 +1,10 @@
-﻿// This Source Code Form is subject to the terms of the MIT License.
+// This Source Code Form is subject to the terms of the MIT License.
 // If a copy of the MIT was not distributed with this file, You can obtain one at https://opensource.org/licenses/MIT.
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
 using System.Collections.ObjectModel;
-using System.Windows.Media.Imaging;
+using System.IO.Ports;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
@@ -43,6 +43,9 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
 
         if (deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus)
         {
+            // TODO 弹窗选择是否取消连接
+            // TODO 检查主程序是否在运行（在运行不允许取消连接）
+            // TODO 关闭IDevice的连接状态
             return;
         }
 
@@ -50,16 +53,21 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         var devicePortConnectViewModel =
             new DevicePortConnectViewModel(deviceCard.DeviceCardDetail.SerialPortModel);
         var devicePortConnectPage =
-            new DevicePortConnectPage(devicePortConnectViewModel, RunConnection);
+            new DevicePortConnectPage(devicePortConnectViewModel, deviceCard, RunConnection);
         devicePortConnectPage.Show();
     }
 
     /// <summary>
     /// 运行连接数据
     /// </summary>
-    private void RunConnection(DevicePortConnectViewModel devicePortConnectViewModel)
+    private void RunConnection(DeviceCard deviceCard)
     {
-        devicePortConnectViewModel.SerialPortModel.DeviceStatus = true;
+        // TODO 开启对应的设备线程对象 open
+
+        // TODO 初始化并打开IDevice对应的设备
+
+        // TODO 根据设备实例化对应对象
+        deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus = true;
         var devices = DeviceCards.ToList();
 
         // 更新数据
@@ -68,6 +76,15 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         {
             DeviceCards.Add(deviceCardf);
         }
+    }
+
+    /// <summary>
+    /// 关闭连接
+    /// </summary>
+    /// <param name="deviceCard">关闭设备连接</param>
+    private void CloseConnection(DeviceCard deviceCard)
+    {
+        // TODO 关闭设备连接
     }
 
     [RelayCommand]
@@ -90,6 +107,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     {
     }
 
+
     private void InitializeViewModel()
     {
         //获得本地缓存
@@ -103,14 +121,14 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                 SerialPortModel = new SerialPortModel()
                 {
                     PortName = null,
-                    StopBit = 1,
+                    StopBit = StopBits.One,
                     BaudRate = 9600,
                     DataBit = 8,
                     NetworkAddress = "01",
                     DeviceStatus = false,
                 },
             },
-            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Button.png"
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Pump.png"
         };
         var pressure = new DeviceCard
         {
@@ -121,7 +139,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                 SerialPortModel = new SerialPortModel()
                 {
                     PortName = null,
-                    StopBit = 1,
+                    StopBit = StopBits.One,
                     BaudRate = 9600,
                     DataBit = 8,
                     DeviceStatus = false,
@@ -130,7 +148,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                 CurrentPressure = "100kpa",
                 CurrentTemperature = "20C"
             },
-            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Button.png"
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Pressure.png"
         };
         var temperature = new DeviceCard
         {
@@ -141,14 +159,14 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                 SerialPortModel = new SerialPortModel()
                 {
                     PortName = null,
-                    StopBit = 1,
+                    StopBit = StopBits.One,
                     BaudRate = 9600,
                     DataBit = 8,
                     DeviceStatus = false,
                     NetworkAddress = "01"
                 },
             },
-            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Flyout.png"
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Temperature.png"
         };
         var work = new DeviceCard
         {
@@ -159,14 +177,14 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                 SerialPortModel = new SerialPortModel()
                 {
                     PortName = null,
-                    StopBit = 1,
+                    StopBit = StopBits.One,
                     BaudRate = 9600,
                     DataBit = 8,
                     DeviceStatus = false,
                     NetworkAddress = "01"
                 },
             },
-            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/MenuBar.png"
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Working.png"
         };
         DeviceCards.Add(pop);
         DeviceCards.Add(pressure);

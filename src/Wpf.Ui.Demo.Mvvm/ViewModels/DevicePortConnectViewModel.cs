@@ -3,7 +3,8 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
-using Boiido.IO.SerialPort;
+using System.IO.Ports;
+using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 
@@ -14,9 +15,12 @@ public partial class DevicePortConnectViewModel : ObservableObject
     public DevicePortConnectViewModel(SerialPortModel? serialPortModel = null)
     {
         _serialPortModel = serialPortModel ??
-                           new SerialPortModel { BaudRate = 9600, DataBit = 8, NetworkAddress = "01", StopBit = 1 };
-        PortList = SerialPort.portArray;
-        StopBitList = new List<int>() { 1, 2, 3 };
+                           new SerialPortModel
+                           {
+                               BaudRate = 9600, DataBit = 8, NetworkAddress = "01", StopBit = StopBits.None
+                           };
+        PortList = SerialPort.GetPortNames();
+        StopBitList = EnumExtension.GetValues<StopBits>().ToList();
         BaudRateList = new List<int>()
         {
             110,
@@ -67,7 +71,7 @@ public partial class DevicePortConnectViewModel : ObservableObject
     /// <summary>
     /// 停止位
     /// </summary>
-    [ObservableProperty] private List<int> _stopBitList;
+    [ObservableProperty] private List<StopBits> _stopBitList;
 
     [ObservableProperty] private int _stopBit;
 

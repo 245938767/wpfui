@@ -3,8 +3,8 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
+using System.IO.Ports;
 using System.Windows.Input;
-using Boiido.IO.SerialPort;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
 
@@ -12,16 +12,18 @@ namespace Wpf.Ui.Demo.Mvvm.Views.Pages;
 
 public partial class DevicePortConnectPage
 {
-    public delegate void OkFunction(DevicePortConnectViewModel devicePortConnectViewModel);
+    public delegate void OkFunction(DeviceCard deviceCard);
 
     private OkFunction _okFunction;
+    private readonly DeviceCard DeviceCard;
     public DevicePortConnectViewModel ViewModel { get; init; }
 
-    public DevicePortConnectPage(DevicePortConnectViewModel viewModel, OkFunction okFunction)
+    public DevicePortConnectPage(DevicePortConnectViewModel viewModel, DeviceCard deviceCard, OkFunction okFunction)
     {
         _okFunction = okFunction;
         ViewModel = viewModel;
         DataContext = this;
+        DeviceCard = deviceCard;
 
         InitializeComponent();
     }
@@ -34,13 +36,13 @@ public partial class DevicePortConnectPage
 
     private void OK_OnClick(object sender, RoutedEventArgs e)
     {
-        _okFunction.Invoke(ViewModel);
+        _okFunction.Invoke(DeviceCard);
         Close();
     }
 
     private void DropDown(object sender, MouseButtonEventArgs e)
     {
-        ViewModel.PortList = SerialPort.portArray;
-        ViewModel.PortList = new string[] { "Com0", "Com2", "Com3", "com4" };
+        ViewModel.PortList = SerialPort.GetPortNames();
+        ViewModel.PortList = new[] { "Com0", "Com2", "Com3", "com4" };
     }
 }
