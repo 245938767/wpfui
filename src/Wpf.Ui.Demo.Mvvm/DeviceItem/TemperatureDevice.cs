@@ -5,6 +5,11 @@ namespace Wpf.Ui.Demo.Mvvm.DeviceItem;
 
 public class TemperatureDevice : IDevice
 {
+    /// <summary>
+    /// 线程监听对象
+    /// </summary>
+    private CancellationTokenSource _cancelTokenMsg;
+
     public TemperatureDevice(DeviceCard deviceCard) : base(deviceCard)
     {
     }
@@ -13,7 +18,7 @@ public class TemperatureDevice : IDevice
     {
         var list = BitConverter.ToString(CRCModelHelper.CheckCrc(receiveData) ?? Array.Empty<byte>()).Split('-')
             .ToList();
-        var temperature = Convert.ToInt32(list[0] + list[1], 16);
+        var temperature = Convert.ToInt32(list[0] + list[1], 16) / 10f;
         _deviceCard.DeviceCardDetail.CurrentTemperature = temperature;
     }
 
@@ -27,6 +32,7 @@ public class TemperatureDevice : IDevice
             return false;
         }
 
+        _cancelTokenMsg = new CancellationTokenSource();
         // 开启获得数据线程
         await Task.Factory.StartNew(
             async () =>

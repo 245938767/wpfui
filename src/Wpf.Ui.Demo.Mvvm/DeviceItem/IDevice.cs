@@ -17,11 +17,6 @@ public abstract class IDevice
     protected readonly object _serialPortLock = new();
 
     /// <summary>
-    /// 线程监听对象
-    /// </summary>
-    protected readonly CancellationTokenSource _cancelTokenMsg = new();
-
-    /// <summary>
     /// 设备信息Model
     /// </summary>
     protected readonly DeviceCard _deviceCard;

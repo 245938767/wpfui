@@ -14,8 +14,9 @@ public partial class DevicePortConnectPage
 {
     public delegate void OkFunction(DeviceCard deviceCard);
 
-    private OkFunction _okFunction;
-    private readonly DeviceCard DeviceCard;
+    private readonly OkFunction _okFunction;
+    private readonly DeviceCard _deviceCard;
+
     public DevicePortConnectViewModel ViewModel { get; init; }
 
     public DevicePortConnectPage(DevicePortConnectViewModel viewModel, DeviceCard deviceCard, OkFunction okFunction)
@@ -23,11 +24,9 @@ public partial class DevicePortConnectPage
         _okFunction = okFunction;
         ViewModel = viewModel;
         DataContext = this;
-        DeviceCard = deviceCard;
-
+        _deviceCard = deviceCard;
         InitializeComponent();
     }
-
 
     private void Cancel_OnClick(object sender, RoutedEventArgs e)
     {
@@ -36,7 +35,7 @@ public partial class DevicePortConnectPage
 
     private void OK_OnClick(object sender, RoutedEventArgs e)
     {
-        _okFunction.Invoke(DeviceCard);
+        _okFunction.Invoke(_deviceCard);
         Close();
     }
 

@@ -9,6 +9,11 @@ namespace Wpf.Ui.Demo.Mvvm.DeviceItem;
 /// </summary>
 public class PressureDevice : IDevice
 {
+    /// <summary>
+    /// 线程监听对象
+    /// </summary>
+    private CancellationTokenSource _cancelTokenMsg;
+
     public PressureDevice(DeviceCard deviceCard)
         : base(deviceCard)
     {
@@ -39,6 +44,7 @@ public class PressureDevice : IDevice
         // 启动时初始化
         await SetCurrentPressureLook();
         _serialPort.SendStringMsg("SENS1:PRES:RANG \"11.00bara\"\n", _serialPortLock); // 设置输出格式
+        _cancelTokenMsg = new CancellationTokenSource();
 
         // 开启获得数据线程
         await Task.Factory.StartNew(

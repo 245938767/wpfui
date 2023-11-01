@@ -9,7 +9,6 @@ using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
-using Wpf.Ui.Demo.Mvvm.Services;
 using Wpf.Ui.Demo.Mvvm.Views.Pages;
 
 namespace Wpf.Ui.Demo.Mvvm.ViewModels;
@@ -50,7 +49,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
             ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
                 new SimpleContentDialogCreateOptions()
                 {
-                    Title = "关闭黑色版提醒", Content = "是否关闭设备连接", PrimaryButtonText = "确定", CloseButtonText = "取消",
+                    Title = "关闭设备提醒", Content = "是否关闭设备连接", PrimaryButtonText = "确定", CloseButtonText = "取消",
                 }
             );
             switch (result)
@@ -84,11 +83,18 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     private async void RunConnection(DeviceCard deviceCard)
     {
         // TODO 根据设备实例化对应对象
-        IDevice instanceDeviceSerialPort = GlobalData.Instance.DeviceSerialPorts[deviceCard.Key];
-        if (instanceDeviceSerialPort == null)
+        if (!GlobalData.Instance.DeviceSerialPorts.ContainsKey(deviceCard.Key))
         {
+            await new Wpf.Ui.Controls.MessageBox
+            {
+                Title = "设备连接失败警告",
+                Content =
+                    "目前未对此设备支持敬请期待...",
+            }.ShowDialogAsync();
             return;
         }
+
+        IDevice instanceDeviceSerialPort = GlobalData.Instance.DeviceSerialPorts[deviceCard.Key];
 
         // 开启对应的设备线程对象 open
         var open = await instanceDeviceSerialPort.Open();
@@ -96,9 +102,9 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         {
             var uiMessageBox = new Wpf.Ui.Controls.MessageBox
             {
-                Title = "设备连接警告",
+                Title = "设备连接失败警告",
                 Content =
-                    $"请选择正确的端口，并且检查{deviceCard.DeviceCardDetail.SerialPortModel.PortName}端口不被占用",
+                    $"请选择正确的端口，并且检查{deviceCard.DeviceCardDetail.SerialPortModel.PortName}端口未被占用",
             };
 
             await uiMessageBox.ShowDialogAsync();
@@ -139,7 +145,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
 
         var devices = DeviceCards.ToList();
 
-        // 更新数据
+        // // 更新数据
         DeviceCards.Clear();
         foreach (DeviceCard deviceCardf in devices)
         {
@@ -147,9 +153,14 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         }
     }
 
+    /// <summary>
+    /// 开始检测按钮
+    /// </summary>
     [RelayCommand]
-    private void StartCheck()
+    private async void StartCheck()
     {
+        // TODO 获得流程选项
+        // TODO 根据流程实例化对应的决策
     }
 
     public void OnNavigatedTo()
