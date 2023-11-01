@@ -17,17 +17,20 @@ public partial class MainWindow : INavigationWindow
     public MainWindow(
         ViewModels.MainWindowViewModel viewModel,
         IPageService pageService,
-        INavigationService navigationService
+        INavigationService navigationService,
+        IContentDialogService contentDialogService
     )
     {
         ViewModel = viewModel;
         DataContext = this;
 
+        
         Appearance.SystemThemeWatcher.Watch(this);
 
         InitializeComponent();
         SetPageService(pageService);
 
+        contentDialogService.SetContentPresenter(RootContentDialog);
         navigationService.SetNavigationControl(RootNavigation);
     }
 

@@ -14,8 +14,8 @@ namespace Wpf.Ui.Demo.Mvvm.Models;
 public class DeviceCardDetail
 {
     public SerialPortModel SerialPortModel { get; set; }
-    public string? CurrentTemperature { get; set; }
-    public string? CurrentPressure { get; set; }
-    public string? SettingTemperature { get; set; }
-    public string? SettingPressure { get; set; }
+    public float? CurrentTemperature { get; set; }
+    public float? CurrentPressure { get; set; }
+    public float? SettingTemperature { get; set; }
+    public float? SettingPressure { get; set; }
 }

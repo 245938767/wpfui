@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.Services;
 using Type = ABI.System.Type;
@@ -37,6 +38,7 @@ public partial class App
 
                 // Page resolver service
                 services.AddSingleton<IPageService, PageService>();
+                services.AddSingleton<IContentDialogService, ContentDialogService>();
 
                 // Theme manipulation
                 services.AddSingleton<IThemeService, ThemeService>();

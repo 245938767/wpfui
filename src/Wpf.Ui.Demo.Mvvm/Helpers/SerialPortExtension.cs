@@ -14,7 +14,11 @@ public static class SerialPortExtension
     /// <param name="serialPortModel">绑定的数据</param>
     public static void UpdateSerialPortModel(this SerialPort serialPort, SerialPortModel serialPortModel)
     {
-        serialPort.PortName = serialPortModel.PortName;
+        if (serialPortModel.PortName != null)
+        {
+            serialPort.PortName = serialPortModel.PortName;
+        }
+
         serialPort.StopBits = serialPortModel.StopBit;
         serialPort.BaudRate = serialPortModel.BaudRate;
         serialPort.DataBits = serialPortModel.DataBit;
@@ -35,28 +39,61 @@ public static class SerialPortExtension
         };
     }
 
-    public static void SendStringMsg(this SerialPort serialPort, string msg)
+    public static void SendHexCRC(this SerialPort serialPort, string hexString, object? lockObject)
     {
-        serialPort.DiscardInBuffer();
-        serialPort.DiscardOutBuffer();
-        serialPort.Write(msg);
+        if (lockObject == null)
+        {
+            var checkCrc = hexString + CRCModelHelper.ToModbusCRC16(hexString);
+            var sendBuffer = CRCModelHelper.StringToHexByte(checkCrc);
+            serialPort.DiscardInBuffer();
+            serialPort.DiscardOutBuffer();
+            serialPort.Write(sendBuffer, 0, sendBuffer.Length);
+            return;
+        }
+
+        lock (lockObject)
+        {
+            var checkCrc = hexString + CRCModelHelper.ToModbusCRC16(hexString);
+            var sendBuffer = CRCModelHelper.StringToHexByte(checkCrc);
+            serialPort.DiscardInBuffer();
+            serialPort.DiscardOutBuffer();
+            serialPort.Write(sendBuffer, 0, sendBuffer.Length);
+        }
+    }
+
+    public static void SendStringMsg(this SerialPort serialPort, string msg, object? lockObject)
+    {
+        if (lockObject == null)
+        {
+            serialPort.DiscardInBuffer();
+            serialPort.DiscardOutBuffer();
+            serialPort.Write(msg);
+            return;
+        }
+
+        lock (lockObject)
+        {
+            serialPort.DiscardInBuffer();
+            serialPort.DiscardOutBuffer();
+            serialPort.Write(msg);
+        }
     }
 
     public static bool OpenPort(this SerialPort serialPort)
     {
-        if (!serialPort.IsOpen)
+        if (serialPort.IsOpen)
         {
-            try
-            {
-                serialPort.Open();
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
+            return false;
         }
 
-        return true;
+        try
+        {
+            serialPort.Open();
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 }

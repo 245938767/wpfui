@@ -37,19 +37,19 @@
         </Grid.RowDefinitions>
 
         <ui:NavigationView
-            x:Name="RootNavigation"
             Grid.Row="1"
+            x:Name="RootNavigation"
             PaneDisplayMode="Top"
             FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
             MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}">
             <!-- <ui:NavigationView.AutoSuggestBox> -->
-                <!-- <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search"> -->
-                <!--     <ui:AutoSuggestBox.Icon> -->
-                <!--         <ui:IconSourceElement> -->
-                <!--             <ui:SymbolIconSource Symbol="Search24" /> -->
-                <!--         </ui:IconSourceElement> -->
-                <!--     </ui:AutoSuggestBox.Icon> -->
-                <!-- </ui:AutoSuggestBox> -->
+            <!--     <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search"> -->
+            <!--         <ui:AutoSuggestBox.Icon> -->
+            <!--             <ui:IconSourceElement> -->
+            <!--                 <ui:SymbolIconSource Symbol="Search24" /> -->
+            <!--             </ui:IconSourceElement> -->
+            <!--         </ui:AutoSuggestBox.Icon> -->
+            <!--     </ui:AutoSuggestBox> -->
             <!-- </ui:NavigationView.AutoSuggestBox> -->
             <ui:NavigationView.Header>
                 <ui:BreadcrumbBar
@@ -58,6 +58,7 @@
                     FontWeight="DemiBold" />
             </ui:NavigationView.Header>
         </ui:NavigationView>
+        <ContentPresenter x:Name="RootContentDialog" Grid.Row="1" />
 
         <ui:TitleBar
             Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"

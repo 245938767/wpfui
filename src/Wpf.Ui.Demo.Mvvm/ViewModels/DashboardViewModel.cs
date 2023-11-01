@@ -6,6 +6,7 @@
 using System.Collections.ObjectModel;
 using System.IO.Ports;
 using Wpf.Ui.Controls;
+using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.Services;
@@ -18,20 +19,21 @@ namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 /// </summary>
 public partial class DashboardViewModel : ObservableObject, INavigationAware
 {
-    private readonly WindowsProviderService _windowsProviderService;
+    private readonly IContentDialogService _contentDialogService;
 
 
     private bool _isInitialized = false;
 
-    [ObservableProperty] private ObservableCollection<DeviceCard> _deviceCards = new ObservableCollection<DeviceCard>();
+    [ObservableProperty] private ObservableCollection<DeviceCard> _deviceCards = new();
 
-    public DashboardViewModel(WindowsProviderService windowsProviderService)
+    public DashboardViewModel(IContentDialogService contentDialogService)
     {
-        _windowsProviderService = windowsProviderService;
+        _contentDialogService = contentDialogService;
     }
 
+
     [RelayCommand]
-    private void DeviceConnect(DeviceTypeEnum deviceTypeEnum)
+    private async void DeviceConnect(DeviceTypeEnum deviceTypeEnum)
     {
         var deviceCardList = DeviceCards.ToList();
         DeviceCard deviceCard = deviceCardList.First(x => x.Key == deviceTypeEnum);
@@ -43,9 +45,28 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
 
         if (deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus)
         {
-            // TODO 弹窗选择是否取消连接
             // TODO 检查主程序是否在运行（在运行不允许取消连接）
-            // TODO 关闭IDevice的连接状态
+
+            ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
+                new SimpleContentDialogCreateOptions()
+                {
+                    Title = "关闭黑色版提醒", Content = "是否关闭设备连接", PrimaryButtonText = "确定", CloseButtonText = "取消",
+                }
+            );
+            switch (result)
+            {
+                case ContentDialogResult.Primary:
+                    // 关闭IDevice的连接状态
+                    CloseConnection(deviceCard);
+                    break;
+                case ContentDialogResult.None:
+                    break;
+                case ContentDialogResult.Secondary:
+                    break;
+                default:
+                    break;
+            }
+
             return;
         }
 
@@ -60,13 +81,30 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     /// <summary>
     /// 运行连接数据
     /// </summary>
-    private void RunConnection(DeviceCard deviceCard)
+    private async void RunConnection(DeviceCard deviceCard)
     {
-        // TODO 开启对应的设备线程对象 open
-
-        // TODO 初始化并打开IDevice对应的设备
-
         // TODO 根据设备实例化对应对象
+        IDevice instanceDeviceSerialPort = GlobalData.Instance.DeviceSerialPorts[deviceCard.Key];
+        if (instanceDeviceSerialPort == null)
+        {
+            return;
+        }
+
+        // 开启对应的设备线程对象 open
+        var open = await instanceDeviceSerialPort.Open();
+        if (open == false)
+        {
+            var uiMessageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = "设备连接警告",
+                Content =
+                    $"请选择正确的端口，并且检查{deviceCard.DeviceCardDetail.SerialPortModel.PortName}端口不被占用",
+            };
+
+            await uiMessageBox.ShowDialogAsync();
+            return;
+        }
+
         deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus = true;
         var devices = DeviceCards.ToList();
 
@@ -82,9 +120,31 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     /// 关闭连接
     /// </summary>
     /// <param name="deviceCard">关闭设备连接</param>
-    private void CloseConnection(DeviceCard deviceCard)
+    private async void CloseConnection(DeviceCard deviceCard)
     {
         // TODO 关闭设备连接
+
+        // TODO 根据设备实例化对应对象
+        IDevice instanceDeviceSerialPort = GlobalData.Instance.DeviceSerialPorts[deviceCard.Key];
+        if (instanceDeviceSerialPort == null)
+        {
+            return;
+        }
+
+        var closeConnect = await instanceDeviceSerialPort.CloseConnect();
+        if (closeConnect)
+        {
+            deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus = false;
+        }
+
+        var devices = DeviceCards.ToList();
+
+        // 更新数据
+        DeviceCards.Clear();
+        foreach (DeviceCard deviceCardf in devices)
+        {
+            DeviceCards.Add(deviceCardf);
+        }
     }
 
     [RelayCommand]
@@ -110,8 +170,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
 
     private void InitializeViewModel()
     {
-        //获得本地缓存
-        //执行初始数据
+        // TODO 获得本地缓存
         var pop = new DeviceCard
         {
             Key = DeviceTypeEnum.Pump,
@@ -145,8 +204,8 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                     DeviceStatus = false,
                     NetworkAddress = "01"
                 },
-                CurrentPressure = "100kpa",
-                CurrentTemperature = "20C"
+                CurrentPressure = 100f,
+                CurrentTemperature = 20f
             },
             ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Pressure.png"
         };
@@ -190,5 +249,12 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         DeviceCards.Add(pressure);
         DeviceCards.Add(temperature);
         DeviceCards.Add(work);
+
+        // 初始化设数据
+        Dictionary<DeviceTypeEnum, IDevice> instanceDeviceSerialPorts = GlobalData.Instance.DeviceSerialPorts;
+        instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pressure, new PressureDevice(pressure));
+        instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pump, new PumpDevice(pop));
+        instanceDeviceSerialPorts.Add(DeviceTypeEnum.Temperature, new TemperatureDevice(temperature));
+        // TODO 初始化流程信息
     }
 }
