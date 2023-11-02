@@ -5,6 +5,7 @@
 
 using System.Collections.ObjectModel;
 using System.IO.Ports;
+using CommunityToolkit.Mvvm.Messaging;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
@@ -16,7 +17,7 @@ namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 /// <summary>
 /// 首页连接和展示
 /// </summary>
-public partial class DashboardViewModel : ObservableObject, INavigationAware
+public partial class DashboardViewModel : ObservableObject, INavigationAware, IRecipient<DeviceCard>
 {
     private readonly IContentDialogService _contentDialogService;
 
@@ -30,6 +31,17 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         _contentDialogService = contentDialogService;
     }
 
+
+    public void Update(DeviceCard? deviceCard = null)
+    {
+        var dataList = DeviceCards.ToList();
+
+        DeviceCards.Clear();
+        foreach (DeviceCard card in dataList)
+        {
+            DeviceCards.Add(card);
+        }
+    }
 
     [RelayCommand]
     private async void DeviceConnect(DeviceTypeEnum deviceTypeEnum)
@@ -115,11 +127,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         var devices = DeviceCards.ToList();
 
         // 更新数据
-        DeviceCards.Clear();
-        foreach (DeviceCard deviceCardf in devices)
-        {
-            DeviceCards.Add(deviceCardf);
-        }
+        Update();
     }
 
     /// <summary>
@@ -143,14 +151,8 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
             deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus = false;
         }
 
-        var devices = DeviceCards.ToList();
-
-        // // 更新数据
-        DeviceCards.Clear();
-        foreach (DeviceCard deviceCardf in devices)
-        {
-            DeviceCards.Add(deviceCardf);
-        }
+        // 更新数据
+        Update();
     }
 
     /// <summary>
@@ -267,5 +269,11 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pump, new PumpDevice(pop));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Temperature, new TemperatureDevice(temperature));
         // TODO 初始化流程信息
+        
+    }
+
+    public void Receive(DeviceCard message)
+    {
+        Update(message);
     }
 }

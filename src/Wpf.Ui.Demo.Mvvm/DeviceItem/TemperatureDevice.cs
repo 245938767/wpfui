@@ -1,4 +1,5 @@
-﻿using Wpf.Ui.Demo.Mvvm.Helpers;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.DeviceItem;
@@ -20,6 +21,8 @@ public class TemperatureDevice : IDevice
             .ToList();
         var temperature = Convert.ToInt32(list[0] + list[1], 16) / 10f;
         _deviceCard.DeviceCardDetail.CurrentTemperature = temperature;
+
+        WeakReferenceMessenger.Default.Send(_deviceCard);
     }
 
     public override async Task<bool> Open()
@@ -75,8 +78,15 @@ public class TemperatureDevice : IDevice
     {
         _cancelTokenMsg.Cancel();
         await CloseTemperature();
-        _serialPort.Close();
-        return true;
+        try
+        {
+            _serialPort.ClosePort(_serialPortLock);
+            return true;
+        }
+        catch (InvalidOperationException e)
+        {
+            return true;
+        }
     }
 
 

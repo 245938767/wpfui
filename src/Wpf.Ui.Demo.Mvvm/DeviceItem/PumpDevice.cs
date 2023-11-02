@@ -34,7 +34,16 @@ public class PumpDevice : IDevice
     {
         _serialPort.RtsEnable = true;
         _serialPort.DtrEnable = true;
-        _serialPort.Close();
+
+        try
+        {
+            _serialPort.ClosePort(_serialPortLock);
+        }
+        catch (InvalidOperationException invalidOperationException)
+        {
+            return Task.FromResult(true);
+        }
+
         return Task.FromResult(true);
     }
 

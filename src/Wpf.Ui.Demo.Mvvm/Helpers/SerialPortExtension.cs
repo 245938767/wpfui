@@ -41,6 +41,11 @@ public static class SerialPortExtension
 
     public static void SendHexCRC(this SerialPort serialPort, string hexString, object? lockObject)
     {
+        if (!serialPort.IsOpen)
+        {
+            return;
+        }
+
         if (lockObject == null)
         {
             var checkCrc = hexString + CRCModelHelper.ToModbusCRC16(hexString);
@@ -63,6 +68,11 @@ public static class SerialPortExtension
 
     public static void SendStringMsg(this SerialPort serialPort, string msg, object? lockObject)
     {
+        if (!serialPort.IsOpen)
+        {
+            return;
+        }
+
         if (lockObject == null)
         {
             serialPort.DiscardInBuffer();
@@ -76,6 +86,21 @@ public static class SerialPortExtension
             serialPort.DiscardInBuffer();
             serialPort.DiscardOutBuffer();
             serialPort.Write(msg);
+        }
+    }
+
+    public static void ClosePort(this SerialPort serialPort, object? lockObject)
+    {
+        if (lockObject == null)
+        {
+            serialPort.Close();
+        }
+        else
+        {
+            lock (lockObject)
+            {
+                serialPort.Close();
+            }
         }
     }
 

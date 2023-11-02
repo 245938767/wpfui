@@ -1,6 +1,8 @@
 ﻿using System.Text;
+using CommunityToolkit.Mvvm.Messaging;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
+using Wpf.Ui.Demo.Mvvm.ViewModels;
 
 namespace Wpf.Ui.Demo.Mvvm.DeviceItem;
 
@@ -28,6 +30,7 @@ public class PressureDevice : IDevice
         var pressureEncoding = Encoding.ASCII.GetString(receiveData);
         var pressure = Single.Parse(pressureEncoding.Split(' ')[1]);
         _deviceCard.DeviceCardDetail.CurrentPressure = pressure;
+        WeakReferenceMessenger.Default.Send(_deviceCard);
     }
 
 
@@ -92,8 +95,16 @@ public class PressureDevice : IDevice
     {
         await CloseStatus();
         await Task.Delay(1000);
-        _serialPort.Close();
-        _cancelTokenMsg.Cancel();
+        try
+        {
+            _cancelTokenMsg.Cancel();
+            _serialPort.ClosePort(_serialPortLock);
+        }
+        catch (InvalidOperationException invalidOperationException)
+        {
+            return true;
+        }
+
         return !_serialPort.IsOpen;
     }
 
