@@ -1,4 +1,4 @@
-﻿// This Source Code Form is subject to the terms of the MIT License.
+// This Source Code Form is subject to the terms of the MIT License.
 // If a copy of the MIT was not distributed with this file, You can obtain one at https://opensource.org/licenses/MIT.
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
@@ -12,7 +12,7 @@ namespace Wpf.Ui.Demo.Mvvm.Views.Pages;
 
 public partial class DevicePortConnectPage
 {
-    public delegate void OkFunction(DeviceCard deviceCard);
+    public delegate Task<bool> OkFunction(DeviceCard deviceCard);
 
     private readonly OkFunction _okFunction;
     private readonly DeviceCard _deviceCard;
@@ -33,10 +33,13 @@ public partial class DevicePortConnectPage
         Close();
     }
 
-    private void OK_OnClick(object sender, RoutedEventArgs e)
+    private async void OK_OnClickAsync(object sender, RoutedEventArgs e)
     {
-        _okFunction.Invoke(_deviceCard);
-        Close();
+        var ok = await _okFunction.Invoke(_deviceCard);
+        if (ok)
+        {
+            Close();
+        }
     }
 
     private void DropDown(object sender, MouseButtonEventArgs e)

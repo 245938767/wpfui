@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 
@@ -20,14 +20,14 @@ public class TemperatureDevice : IDevice
         var list = BitConverter.ToString(CRCModelHelper.CheckCrc(receiveData) ?? Array.Empty<byte>()).Split('-')
             .ToList();
         var temperature = Convert.ToInt32(list[0] + list[1], 16) / 10f;
-        _deviceCard.DeviceCardDetail.CurrentTemperature = temperature;
+        _deviceCard.CurrentTemperature = temperature;
 
         WeakReferenceMessenger.Default.Send(_deviceCard);
     }
 
     public override async Task<bool> Open()
     {
-        _serialPort.UpdateSerialPortModel(_deviceCard.DeviceCardDetail.SerialPortModel);
+        _serialPort.UpdateSerialPortModel(_deviceCard.SerialPortModel);
 
         // 设置数据解析格式
         if (!_serialPort.OpenPort())
@@ -92,7 +92,7 @@ public class TemperatureDevice : IDevice
 
     protected override bool CheckAround(float value, float checkAround)
     {
-        var check = _deviceCard.DeviceCardDetail.CurrentTemperature - value;
+        var check = _deviceCard.CurrentTemperature - value;
         return check > -checkAround && check < checkAround;
     }
 

@@ -180,7 +180,7 @@
                 HorizontalOffset="-12"
                 IsOpen="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                 Placement="Bottom"
-                PlacementTarget="{Binding ElementName=Border}"
+                PlacementTarget="{Binding ElementName=MainBorder}"
                 PopupAnimation="None"
                 StaysOpen="False"
                 VerticalOffset="1">

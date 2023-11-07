@@ -3,18 +3,38 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
-using System.Windows.Media.Imaging;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 
 namespace Wpf.Ui.Demo.Mvvm.Models;
 
-public class DeviceCard
+public partial class DeviceCard : ObservableObject
 {
-    public DeviceTypeEnum Key { get; set; }
+    [ObservableProperty]
+    private DeviceTypeEnum _key;
+    [ObservableProperty]
+    private string _deviceName;
+    [ObservableProperty]
 
-    public string DeviceName { get; set; }
+    private string _imageUrl;
+    [ObservableProperty]
+    private SerialPortModel _serialPortModel;
+    [ObservableProperty]
 
-    public string ImageUrl { get; set; }
+    private float? _currentTemperature;
+    [ObservableProperty]
 
-    public DeviceCardDetail DeviceCardDetail { get; set; }
+    private float? _currentPressure;
+    [ObservableProperty]
+
+    private float? _settingTemperature;
+    [ObservableProperty]
+
+    private float? _settingPressure;
+
+    /// <summary>
+    /// 单价
+    /// </summary>
+    [ObservableProperty]
+
+    private string _unit;
 }

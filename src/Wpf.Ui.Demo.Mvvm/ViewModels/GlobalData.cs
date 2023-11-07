@@ -20,7 +20,7 @@ public partial class GlobalData : ObservableObject
     [ObservableProperty] private Dictionary<DeviceTypeEnum, IDevice> deviceSerialPorts = new();
 
     /// <summary>
-    /// 全部日志信息
+    /// 全局日志信息
     /// </summary>
     [ObservableProperty] private ObservableCollection<LogMessage> _logMessages = new();
 

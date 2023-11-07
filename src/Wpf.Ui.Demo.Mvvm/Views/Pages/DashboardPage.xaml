@@ -4,8 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Wpf.Ui.Demo.Mvvm.Views.Pages"
+        xmlns:helpers="clr-namespace:Wpf.Ui.Demo.Mvvm.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:controls="clr-namespace:Wpf.Ui.Demo.Mvvm.Controls"
     Title="DashboardPage"
     d:DataContext="{d:DesignInstance local:DashboardPage,
                                      IsDesignTimeCreatable=False}"
@@ -15,6 +17,9 @@
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
+    <Page.Resources>
+        <helpers:BooleanToDeviceStatusConverter x:Key="BooleanToDeviceStatusConverter" />
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -40,7 +45,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
+                          
                                     <ui:CardAction
                                         Grid.Row="0"
                                         Margin="0,0,10,0"
@@ -67,22 +72,22 @@
                                             <StackPanel Margin="23,23,23,15" Grid.Row="0" Grid.Column="1"
                                                         MinHeight="55" MinWidth="100">
 
-                                                <StackPanel
+                                            <StackPanel
                                                     Orientation="Horizontal"
                                                     VerticalAlignment="Center">
-                                                    <ui:TextBlock
+                                                <ui:TextBlock
                                                         Margin="-1"
                                                         FontTypography="BodyStrong"
                                                         Text="Port:"
                                                         TextWrapping="WrapWithOverflow" />
-                                                    <ui:TextBlock
+                                                <ui:TextBlock
                                                         Margin="10,0,0,0"
                                                         Appearance="Tertiary"
-                                                        Text="{Binding DeviceCardDetail.SerialPortModel.PortName,Mode=OneWay}"
+                                                        Text="{Binding SerialPortModel.PortName,Mode=OneWay}"
                                                         TextWrapping="WrapWithOverflow" />
-                                                </StackPanel>
-
-                                                <StackPanel
+                                  
+                                            </StackPanel>
+                                            <StackPanel
                                                     Orientation="Horizontal"
                                                     VerticalAlignment="Center">
                                                     <ui:TextBlock
@@ -92,9 +97,10 @@
                                                         TextWrapping="WrapWithOverflow" />
                                                     <ui:TextBlock
                                                         Margin="10,0,0,0"
-                                                        x:Name="CurrentPressureText"
+                                                                                                                x:Name="CurrentPressureText"
+
                                                         Appearance="Tertiary"
-                                                        Text="{Binding DeviceCardDetail.CurrentPressure,Mode=OneWay}"
+                                                        Text="{Binding CurrentPressure,Mode=OneWay}"
                                                         TextWrapping="WrapWithOverflow" />
                                                     <StackPanel.Style>
                                                         <Style TargetType="StackPanel">
@@ -120,7 +126,7 @@
                                                         Margin="10,0,0,0"
                                                         x:Name="CurrentTemperatureText"
                                                         Appearance="Tertiary"
-                                                        Text="{Binding DeviceCardDetail.CurrentTemperature,Mode=OneWay}"
+                                                        Text="{Binding CurrentTemperature,Mode=OneWay}"
                                                         TextWrapping="WrapWithOverflow" />
                                                     <StackPanel.Style>
                                                         <Style TargetType="StackPanel">
@@ -147,7 +153,7 @@
                                                         Margin="10,0,0,0"
                                                         x:Name="SettingPressureText"
                                                         Appearance="Tertiary"
-                                                        Text="{Binding DeviceCardDetail.SettingPressure,Mode=OneWay}"
+                                                        Text="{Binding SettingPressure,Mode=OneWay}"
                                                         TextWrapping="WrapWithOverflow" />
                                                     <StackPanel.Style>
                                                         <Style TargetType="StackPanel">
@@ -173,7 +179,7 @@
                                                         Margin="10,0,0,0"
                                                         x:Name="SettingTemperatureText"
                                                         Appearance="Tertiary"
-                                                        Text="{Binding DeviceCardDetail.SettingTemperature,Mode=OneWay}"
+                                                        Text="{Binding SettingTemperature,Mode=OneWay}"
                                                         TextWrapping="WrapWithOverflow" />
                                                     <StackPanel.Style>
                                                         <Style TargetType="StackPanel">
@@ -193,19 +199,8 @@
                                                         VerticalAlignment="Center" HorizontalAlignment="Left"
                                                         Margin="3,0,0,0">
 
-                                                <Ellipse Width="10" Height="10" Margin="0,0,2,0">
-                                                    <Ellipse.Style>
-                                                        <Style TargetType="Ellipse">
-                                                            <Setter Property="Fill" Value="Red" />
-                                                            <Style.Triggers>
-                                                                <DataTrigger
-                                                                    Binding="{Binding DeviceCardDetail.SerialPortModel.DeviceStatus}"
-                                                                    Value="True">
-                                                                    <Setter Property="Fill" Value="Green" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Ellipse.Style>
+                                            <Ellipse Width="10" Height="10" Margin="0,0,2,0" Fill="{Binding SerialPortModel.DeviceStatus,Converter={StaticResource BooleanToDeviceStatusConverter},Mode=OneWay}">
+                                                 
                                                 </Ellipse>
                                                 <ui:TextBlock Text="{Binding DeviceName,Mode=OneWay}" />
                                             </StackPanel>
@@ -217,7 +212,7 @@
                                                         <Setter Property="Text" Value="连接设备"></Setter>
                                                         <Style.Triggers>
                                                             <DataTrigger
-                                                                Binding="{Binding DeviceCardDetail.SerialPortModel.DeviceStatus}"
+                                                                Binding="{Binding SerialPortModel.DeviceStatus}"
                                                                 Value="True">
                                                                 <Setter Property="Text" Value="关闭连接" />
                                                             </DataTrigger>
@@ -228,7 +223,7 @@
                                             </ui:TextBlock>
                                         </Grid>
                                     </ui:CardAction>
-                                </Grid>
+                          
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

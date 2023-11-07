@@ -1,11 +1,17 @@
-﻿using Wpf.Ui.Demo.Mvvm.Helpers;
+// This Source Code Form is subject to the terms of the MIT License.
+// If a copy of the MIT was not distributed with this file, You can obtain one at https://opensource.org/licenses/MIT.
+// Copyright (C) Leszek Pomianowski and WPF UI Contributors.
+// All Rights Reserved.
+
+using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.DeviceItem;
 
 public class PumpDevice : IDevice
 {
-    public PumpDevice(DeviceCard deviceCard) : base(deviceCard)
+    public PumpDevice(DeviceCard deviceCard)
+        : base(deviceCard)
     {
     }
 
@@ -15,7 +21,7 @@ public class PumpDevice : IDevice
 
     public override Task<bool> Open()
     {
-        _serialPort.UpdateSerialPortModel(_deviceCard.DeviceCardDetail.SerialPortModel);
+        _serialPort.UpdateSerialPortModel(_deviceCard.SerialPortModel);
 
         // 设置数据解析格式
         _serialPort.OpenPort();

@@ -1,4 +1,9 @@
-﻿using System.Text;
+// This Source Code Form is subject to the terms of the MIT License.
+// If a copy of the MIT was not distributed with this file, You can obtain one at https://opensource.org/licenses/MIT.
+// Copyright (C) Leszek Pomianowski and WPF UI Contributors.
+// All Rights Reserved.
+
+using System.Text;
 using CommunityToolkit.Mvvm.Messaging;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
@@ -29,14 +34,14 @@ public class PressureDevice : IDevice
     {
         var pressureEncoding = Encoding.ASCII.GetString(receiveData);
         var pressure = Single.Parse(pressureEncoding.Split(' ')[1]);
-        _deviceCard.DeviceCardDetail.CurrentPressure = pressure;
+        _deviceCard.CurrentPressure = pressure;
         WeakReferenceMessenger.Default.Send(_deviceCard);
     }
 
 
     public override async Task<bool> Open()
     {
-        _serialPort.UpdateSerialPortModel(_deviceCard.DeviceCardDetail.SerialPortModel);
+        _serialPort.UpdateSerialPortModel(_deviceCard.SerialPortModel);
 
         // 设置数据解析格式
         if (!_serialPort.OpenPort())
@@ -117,7 +122,7 @@ public class PressureDevice : IDevice
 
     protected override bool CheckAround(float value, float checkAround)
     {
-        var check = _deviceCard.DeviceCardDetail.CurrentPressure - value;
+        var check = _deviceCard.CurrentPressure - value;
         return check > -checkAround && check < checkAround;
     }
 

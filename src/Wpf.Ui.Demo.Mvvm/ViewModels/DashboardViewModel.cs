@@ -5,7 +5,6 @@
 
 using System.Collections.ObjectModel;
 using System.IO.Ports;
-using CommunityToolkit.Mvvm.Messaging;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
@@ -17,10 +16,9 @@ namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 /// <summary>
 /// 首页连接和展示
 /// </summary>
-public partial class DashboardViewModel : ObservableObject, INavigationAware, IRecipient<DeviceCard>
+public partial class DashboardViewModel : ObservableObject, INavigationAware
 {
     private readonly IContentDialogService _contentDialogService;
-
 
     private bool _isInitialized = false;
 
@@ -31,33 +29,20 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
         _contentDialogService = contentDialogService;
     }
 
-
-    public void Update(DeviceCard? deviceCard = null)
-    {
-        var dataList = DeviceCards.ToList();
-
-        DeviceCards.Clear();
-        foreach (DeviceCard card in dataList)
-        {
-            DeviceCards.Add(card);
-        }
-    }
-
     [RelayCommand]
-    private async void DeviceConnect(DeviceTypeEnum deviceTypeEnum)
+    private async Task DeviceConnectAsync(DeviceTypeEnum deviceTypeEnum)
     {
         var deviceCardList = DeviceCards.ToList();
         DeviceCard deviceCard = deviceCardList.First(x => x.Key == deviceTypeEnum);
 
         Console.WriteLine(
-            $"INFO | {nameof(DashboardViewModel)} navigated, ({deviceCard.DeviceName}：{deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus})",
+            $"INFO | {nameof(DashboardViewModel)} navigated, ({deviceCard.DeviceName}：{deviceCard.SerialPortModel.DeviceStatus})",
             "Wpf.Ui.Gallery"
         );
 
-        if (deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus)
+        if (deviceCard.SerialPortModel.DeviceStatus)
         {
             // TODO 检查主程序是否在运行（在运行不允许取消连接）
-
             ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
                 new SimpleContentDialogCreateOptions()
                 {
@@ -68,7 +53,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
             {
                 case ContentDialogResult.Primary:
                     // 关闭IDevice的连接状态
-                    CloseConnection(deviceCard);
+                    await CloseConnection(deviceCard);
                     break;
                 case ContentDialogResult.None:
                     break;
@@ -83,7 +68,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
 
         // 打开连接配置页面
         var devicePortConnectViewModel =
-            new DevicePortConnectViewModel(deviceCard.DeviceCardDetail.SerialPortModel);
+            new DevicePortConnectViewModel(deviceCard.SerialPortModel);
         var devicePortConnectPage =
             new DevicePortConnectPage(devicePortConnectViewModel, deviceCard, RunConnection);
         devicePortConnectPage.Show();
@@ -92,18 +77,18 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
     /// <summary>
     /// 运行连接数据
     /// </summary>
-    private async void RunConnection(DeviceCard deviceCard)
+    private async Task<bool> RunConnection(DeviceCard deviceCard)
     {
         // TODO 根据设备实例化对应对象
         if (!GlobalData.Instance.DeviceSerialPorts.ContainsKey(deviceCard.Key))
         {
-            await new Wpf.Ui.Controls.MessageBox
+            _ = await new Ui.Controls.MessageBox
             {
                 Title = "设备连接失败警告",
                 Content =
                     "目前未对此设备支持敬请期待...",
             }.ShowDialogAsync();
-            return;
+            return false;
         }
 
         IDevice instanceDeviceSerialPort = GlobalData.Instance.DeviceSerialPorts[deviceCard.Key];
@@ -116,25 +101,23 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
             {
                 Title = "设备连接失败警告",
                 Content =
-                    $"请选择正确的端口，并且检查{deviceCard.DeviceCardDetail.SerialPortModel.PortName}端口未被占用",
+                    $"请选择正确的端口，并且检查{deviceCard.SerialPortModel.PortName}端口未被占用",
             };
 
-            await uiMessageBox.ShowDialogAsync();
-            return;
+            _ = await uiMessageBox.ShowDialogAsync();
+            return false;
         }
 
-        deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus = true;
-        var devices = DeviceCards.ToList();
-
-        // 更新数据
-        Update();
+        deviceCard.SerialPortModel.DeviceStatus = true;
+  
+        return true;
     }
 
     /// <summary>
     /// 关闭连接
     /// </summary>
     /// <param name="deviceCard">关闭设备连接</param>
-    private async void CloseConnection(DeviceCard deviceCard)
+    private async Task CloseConnection(DeviceCard deviceCard)
     {
         // TODO 关闭设备连接
 
@@ -148,11 +131,10 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
         var closeConnect = await instanceDeviceSerialPort.CloseConnect();
         if (closeConnect)
         {
-            deviceCard.DeviceCardDetail.SerialPortModel.DeviceStatus = false;
+            deviceCard.SerialPortModel.DeviceStatus = false;
         }
 
-        // 更新数据
-        Update();
+      
     }
 
     /// <summary>
@@ -188,8 +170,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
         {
             Key = DeviceTypeEnum.Pump,
             DeviceName = "真空泵",
-            DeviceCardDetail = new DeviceCardDetail()
-            {
+        
                 SerialPortModel = new SerialPortModel()
                 {
                     PortName = null,
@@ -199,15 +180,14 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
                     NetworkAddress = "01",
                     DeviceStatus = false,
                 },
-            },
+        
             ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Pump.png"
         };
         var pressure = new DeviceCard
         {
             Key = DeviceTypeEnum.Pressure,
             DeviceName = "压力源",
-            DeviceCardDetail = new DeviceCardDetail()
-            {
+       
                 SerialPortModel = new SerialPortModel()
                 {
                     PortName = null,
@@ -218,16 +198,15 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
                     NetworkAddress = "01"
                 },
                 CurrentPressure = 100f,
-                CurrentTemperature = 20f
-            },
+                CurrentTemperature = 20f,
+        
             ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Pressure.png"
         };
         var temperature = new DeviceCard
         {
             Key = DeviceTypeEnum.Temperature,
             DeviceName = "温箱",
-            DeviceCardDetail = new DeviceCardDetail()
-            {
+          
                 SerialPortModel = new SerialPortModel()
                 {
                     PortName = null,
@@ -237,15 +216,14 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
                     DeviceStatus = false,
                     NetworkAddress = "01"
                 },
-            },
+            
             ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Temperature.png"
         };
         var work = new DeviceCard
         {
             Key = DeviceTypeEnum.Work,
             DeviceName = "工装",
-            DeviceCardDetail = new DeviceCardDetail()
-            {
+       
                 SerialPortModel = new SerialPortModel()
                 {
                     PortName = null,
@@ -255,7 +233,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
                     DeviceStatus = false,
                     NetworkAddress = "01"
                 },
-            },
+          
             ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Working.png"
         };
         DeviceCards.Add(pop);
@@ -272,8 +250,5 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware, IR
         
     }
 
-    public void Receive(DeviceCard message)
-    {
-        Update(message);
-    }
+ 
 }

@@ -1,4 +1,4 @@
-﻿// This Source Code Form is subject to the terms of the MIT License.
+// This Source Code Form is subject to the terms of the MIT License.
 // If a copy of the MIT was not distributed with this file, You can obtain one at https://opensource.org/licenses/MIT.
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
@@ -29,12 +29,6 @@ public class DeviceCardControl : Control
         new PropertyMetadata(null)
     );
 
-    public static readonly DependencyProperty DeviceCardDetailProperty = DependencyProperty.Register(
-        nameof(DeviceCardDetail),
-        typeof(DeviceCardDetail),
-        typeof(DeviceCardControl),
-        new PropertyMetadata(null)
-    );
 
     public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
         nameof(Command),
@@ -62,11 +56,6 @@ public class DeviceCardControl : Control
         set => SetValue(ImageUrlProperty, value);
     }
 
-    public DeviceCardDetail? DeviceCardDetail
-    {
-        get => (DeviceCardDetail?)GetValue(DeviceCardDetailProperty);
-        set => SetValue(DeviceCardDetailProperty, value);
-    }
 
     public ICommand? Command
     {
