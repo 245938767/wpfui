@@ -52,7 +52,7 @@
                                         Padding="5"
                                         VerticalAlignment="Stretch"
                                         Command="{Binding ViewModel.DeviceConnectCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:DashboardPage}, Mode=OneWay}"
-                                        CommandParameter="{Binding Key ,Mode=OneWay}"
+                                        CommandParameter="{Binding}"
                                         IsChevronVisible="False">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -96,13 +96,14 @@
                                                         Text="CurrentPressure:"
                                                         TextWrapping="WrapWithOverflow" />
                                                     <ui:TextBlock
-                                                        Margin="10,0,0,0"
+                                                        Margin="10,0,5,0"
                                                                                                                 x:Name="CurrentPressureText"
 
                                                         Appearance="Tertiary"
                                                         Text="{Binding CurrentPressure,Mode=OneWay}"
                                                         TextWrapping="WrapWithOverflow" />
-                                                    <StackPanel.Style>
+                                                <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}"/>
+                                                <StackPanel.Style>
                                                         <Style TargetType="StackPanel">
                                                             <Style.Triggers>
                                                                 <DataTrigger
@@ -123,12 +124,14 @@
                                                         Text="CurrentTemperature:"
                                                         TextWrapping="WrapWithOverflow" />
                                                     <ui:TextBlock
-                                                        Margin="10,0,0,0"
+                                                        Margin="10,0,5,0"
                                                         x:Name="CurrentTemperatureText"
                                                         Appearance="Tertiary"
                                                         Text="{Binding CurrentTemperature,Mode=OneWay}"
                                                         TextWrapping="WrapWithOverflow" />
-                                                    <StackPanel.Style>
+                                                <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}"/>
+
+                                                <StackPanel.Style>
                                                         <Style TargetType="StackPanel">
                                                             <Style.Triggers>
                                                                 <DataTrigger
@@ -150,12 +153,14 @@
                                                         Text="SettingPressure:"
                                                         TextWrapping="WrapWithOverflow" />
                                                     <ui:TextBlock
-                                                        Margin="10,0,0,0"
+                                                        Margin="10,0,5,0"
                                                         x:Name="SettingPressureText"
                                                         Appearance="Tertiary"
                                                         Text="{Binding SettingPressure,Mode=OneWay}"
                                                         TextWrapping="WrapWithOverflow" />
-                                                    <StackPanel.Style>
+                                                <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}"/>
+
+                                                <StackPanel.Style>
                                                         <Style TargetType="StackPanel">
                                                             <Style.Triggers>
                                                                 <DataTrigger
@@ -176,12 +181,14 @@
                                                         Text="SettingTemperature:"
                                                         TextWrapping="WrapWithOverflow" />
                                                     <ui:TextBlock
-                                                        Margin="10,0,0,0"
+                                                        Margin="10,0,5,0"
                                                         x:Name="SettingTemperatureText"
                                                         Appearance="Tertiary"
                                                         Text="{Binding SettingTemperature,Mode=OneWay}"
                                                         TextWrapping="WrapWithOverflow" />
-                                                    <StackPanel.Style>
+                                                <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}"/>
+
+                                                <StackPanel.Style>
                                                         <Style TargetType="StackPanel">
                                                             <Style.Triggers>
                                                                 <DataTrigger
@@ -241,9 +248,13 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ui:DropDownButton MinWidth="100">
-                    DS工装
-                </ui:DropDownButton>
+                <ComboBox
+                    MinWidth="140"
+                    Margin="0,8,0,0"
+                    VerticalAlignment="Center"
+                    SelectedItem="{Binding ViewModel.ProcessFlow,Mode=TwoWay}"
+                    ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProcessFlowEnum}}}">
+                </ComboBox>
                 <ProgressBar Grid.Column="1" HorizontalAlignment="Left" Height="15" Margin="10,0,0,0"
                              VerticalAlignment="Center" Width="200" />
                 <Grid Grid.Column="2">

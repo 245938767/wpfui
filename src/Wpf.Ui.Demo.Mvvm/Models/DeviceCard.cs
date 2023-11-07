@@ -32,9 +32,18 @@ public partial class DeviceCard : ObservableObject
     private float? _settingPressure;
 
     /// <summary>
-    /// 单价
+    /// 温度单价
     /// </summary>
     [ObservableProperty]
+    private string? _unitT;
+    /// <summary>
+    /// 压力单价
+    /// </summary>
+    [ObservableProperty]
+    private string? _unitP;
 
-    private string _unit;
+    /// <summary>
+    /// Gets or sets 数据版本（设备更新字段时本地数据也需要更新）
+    /// </summary>
+    public float Version { get; set; }
 }

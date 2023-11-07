@@ -4,11 +4,11 @@
 // All Rights Reserved.
 
 using System.Collections.ObjectModel;
-using System.IO.Ports;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
+using Wpf.Ui.Demo.Mvvm.Services;
 using Wpf.Ui.Demo.Mvvm.Views.Pages;
 
 namespace Wpf.Ui.Demo.Mvvm.ViewModels;
@@ -19,22 +19,23 @@ namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 public partial class DashboardViewModel : ObservableObject, INavigationAware
 {
     private readonly IContentDialogService _contentDialogService;
-
+    private readonly DeviceService _deviceService;
     private bool _isInitialized = false;
 
     [ObservableProperty] private ObservableCollection<DeviceCard> _deviceCards = new();
+    [ObservableProperty]
+    private ProcessFlowEnum _processFlow = ProcessFlowEnum.DSTest;
 
-    public DashboardViewModel(IContentDialogService contentDialogService)
+
+    public DashboardViewModel(IContentDialogService contentDialogService,DeviceService deviceService)
     {
         _contentDialogService = contentDialogService;
+        _deviceService = deviceService;
     }
 
     [RelayCommand]
-    private async Task DeviceConnectAsync(DeviceTypeEnum deviceTypeEnum)
+    private async Task DeviceConnectAsync(DeviceCard deviceCard)
     {
-        var deviceCardList = DeviceCards.ToList();
-        DeviceCard deviceCard = deviceCardList.First(x => x.Key == deviceTypeEnum);
-
         Console.WriteLine(
             $"INFO | {nameof(DashboardViewModel)} navigated, ({deviceCard.DeviceName}：{deviceCard.SerialPortModel.DeviceStatus})",
             "Wpf.Ui.Gallery"
@@ -144,6 +145,16 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     private async void StartCheck()
     {
         // TODO 获得流程选项
+        // TODO 检查主程序是否在运行（在运行不允许取消连接）
+        ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
+            new SimpleContentDialogCreateOptions()
+            {
+                Title = "关闭设备提醒",
+                Content = $"是否开始测试: {ProcessFlow.ToString()}",
+                PrimaryButtonText = "确定",
+                CloseButtonText = "取消",
+            }
+        );
         // TODO 根据流程实例化对应的决策
     }
 
@@ -166,88 +177,15 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     private void InitializeViewModel()
     {
         // TODO 获得本地缓存
-        var pop = new DeviceCard
-        {
-            Key = DeviceTypeEnum.Pump,
-            DeviceName = "真空泵",
-        
-                SerialPortModel = new SerialPortModel()
-                {
-                    PortName = null,
-                    StopBit = StopBits.One,
-                    BaudRate = 9600,
-                    DataBit = 8,
-                    NetworkAddress = "01",
-                    DeviceStatus = false,
-                },
-        
-            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Pump.png"
-        };
-        var pressure = new DeviceCard
-        {
-            Key = DeviceTypeEnum.Pressure,
-            DeviceName = "压力源",
-       
-                SerialPortModel = new SerialPortModel()
-                {
-                    PortName = null,
-                    StopBit = StopBits.One,
-                    BaudRate = 9600,
-                    DataBit = 8,
-                    DeviceStatus = false,
-                    NetworkAddress = "01"
-                },
-                CurrentPressure = 100f,
-                CurrentTemperature = 20f,
-        
-            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Pressure.png"
-        };
-        var temperature = new DeviceCard
-        {
-            Key = DeviceTypeEnum.Temperature,
-            DeviceName = "温箱",
-          
-                SerialPortModel = new SerialPortModel()
-                {
-                    PortName = null,
-                    StopBit = StopBits.One,
-                    BaudRate = 9600,
-                    DataBit = 8,
-                    DeviceStatus = false,
-                    NetworkAddress = "01"
-                },
-            
-            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Temperature.png"
-        };
-        var work = new DeviceCard
-        {
-            Key = DeviceTypeEnum.Work,
-            DeviceName = "工装",
-       
-                SerialPortModel = new SerialPortModel()
-                {
-                    PortName = null,
-                    StopBit = StopBits.One,
-                    BaudRate = 9600,
-                    DataBit = 8,
-                    DeviceStatus = false,
-                    NetworkAddress = "01"
-                },
-          
-            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Working.png"
-        };
-        DeviceCards.Add(pop);
-        DeviceCards.Add(pressure);
-        DeviceCards.Add(temperature);
-        DeviceCards.Add(work);
+        ObservableCollection<DeviceCard> deviceCards = _deviceService.GetLocaltionData();
+        DeviceCards = deviceCards;
 
         // 初始化设数据
         Dictionary<DeviceTypeEnum, IDevice> instanceDeviceSerialPorts = GlobalData.Instance.DeviceSerialPorts;
-        instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pressure, new PressureDevice(pressure));
-        instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pump, new PumpDevice(pop));
-        instanceDeviceSerialPorts.Add(DeviceTypeEnum.Temperature, new TemperatureDevice(temperature));
-        // TODO 初始化流程信息
-        
+
+        instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pressure, new PressureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pressure)));
+        instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pump, new PumpDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pump)));
+        instanceDeviceSerialPorts.Add(DeviceTypeEnum.Temperature, new TemperatureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Temperature)));
     }
 
  
