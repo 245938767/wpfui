@@ -3,6 +3,7 @@ using System.IO.Ports;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
+using Wpf.Ui.Demo.Mvvm.Services.ProcessFlow;
 
 namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 
@@ -24,7 +25,8 @@ public partial class GlobalData : ObservableObject
     /// 设备数据存储
     /// </summary>
     [ObservableProperty] private Dictionary<DeviceTypeEnum, IDevice> _deviceSerialPorts = new();
-
+    
+    [ObservableProperty] private Dictionary<ProcessFlowEnum, IProcessFlow> _processFlow = new();
     /// <summary>
     /// 全局日志信息
     /// </summary>
