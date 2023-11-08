@@ -14,19 +14,19 @@ public abstract class IDevice
     /// <summary>
     /// 设备端口
     /// </summary>
-    protected readonly SerialPort _serialPort = new();
+    protected readonly SerialPort SerialPort = new();
 
     /// <summary>
     /// 端口发送请求锁
     /// </summary>
-    protected readonly object _serialPortLock = new();
+    protected readonly object SerialPortLock = new();
 
     /// <summary>
     /// 设备信息Model
     /// </summary>
-    protected readonly DeviceCard _deviceCard;
+    protected readonly DeviceCard DeviceCard;
 
-    protected abstract void ReceiveData(byte[]? receiveData);
+    protected abstract void ReceiveData(byte[] receiveData);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IDevice"/> class.
@@ -35,9 +35,8 @@ public abstract class IDevice
     /// <param name="deviceCard">设备对应的Model数据</param>
     protected IDevice(DeviceCard deviceCard)
     {
-        _deviceCard = deviceCard;
-        _serialPort.UpdateSerialPortModel(deviceCard.SerialPortModel);
-        _serialPort.SetDataReceiveData(ReceiveData);
+        DeviceCard = deviceCard;
+        SerialPort.UpdateSerialPortModel(deviceCard.SerialPortModel);
     }
 
     /// <summary>

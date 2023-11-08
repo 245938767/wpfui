@@ -9,6 +9,7 @@ using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.Services;
+using Wpf.Ui.Demo.Mvvm.Services.ProcessFlow;
 using Wpf.Ui.Demo.Mvvm.Views.Pages;
 
 namespace Wpf.Ui.Demo.Mvvm.ViewModels;
@@ -183,7 +184,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
 
     private void InitializeViewModel()
     {
-        // TODO 获得本地缓存
+        // 获得本地缓存
         ObservableCollection<DeviceCard> deviceCards = _deviceService.GetLocaltionData();
         DeviceCards = deviceCards;
 
@@ -193,8 +194,10 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pressure, new PressureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pressure)));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pump, new PumpDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pump)));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Temperature, new TemperatureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Temperature)));
-    // TODO 初始化 流程逻辑类
-        //GlobalData.Instance.
+        instanceDeviceSerialPorts.Add(DeviceTypeEnum.DSWork, new TemperatureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.DSWork)));
+
+        // TODO 初始化 流程逻辑类
+        GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.DSTest, new DSTestDetection());
     }
 
  

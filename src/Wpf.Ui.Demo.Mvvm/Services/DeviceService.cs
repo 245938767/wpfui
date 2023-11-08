@@ -18,7 +18,7 @@ public class DeviceService
     /// </summary>
     /// <returns></returns>
     public ObservableCollection<DeviceCard> GetLocaltionData() {
-        //如果是第一次获取返回基本数据并保存到本地
+        // 如果是第一次获取返回基本数据并保存到本地
         var deviceCards = new ObservableCollection<DeviceCard>();
         var pop = new DeviceCard
         {
@@ -53,8 +53,6 @@ public class DeviceService
                 DeviceStatus = false,
                 NetworkAddress = "01"
             },
-            CurrentPressure = 100f,
-            CurrentTemperature = 20f,
             UnitP = "Kpa",
             UnitT = "℃",
 
@@ -83,8 +81,8 @@ public class DeviceService
         };
         var work = new DeviceCard
         {
-            Key = DeviceTypeEnum.Work,
-            DeviceName = "工装",
+            Key = DeviceTypeEnum.DSWork,
+            DeviceName = "DS工装",
 
             SerialPortModel = new SerialPortModel()
             {
@@ -106,12 +104,13 @@ public class DeviceService
         deviceCards.Add(work);
         return deviceCards;
     }
+
     /// <summary>
     /// 更新本地数据
     /// </summary>
     /// <param name="deviceCard">修改后的数据</param>
     public void UpdateLocaltionData(DeviceCard deviceCard) {
-        //本地数据默认设备状态为关闭，并且数值为空
+        // 本地数据默认设备状态为关闭，并且数值为空
         return;
     }
 }

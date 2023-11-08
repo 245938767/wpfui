@@ -100,7 +100,7 @@
                                                                                                                 x:Name="CurrentPressureText"
 
                                                         Appearance="Tertiary"
-                                                        Text="{Binding CurrentPressure,Mode=OneWay}"
+                                                        Text="{Binding CurrentPressure,Mode=OneWay, StringFormat={}{0:F4}}"
                                                         TextWrapping="WrapWithOverflow" />
                                                 <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}"/>
                                                 <StackPanel.Style>
@@ -127,7 +127,7 @@
                                                         Margin="10,0,5,0"
                                                         x:Name="CurrentTemperatureText"
                                                         Appearance="Tertiary"
-                                                        Text="{Binding CurrentTemperature,Mode=OneWay}"
+                                                        Text="{Binding CurrentTemperature,Mode=OneWay, StringFormat={}{0:F4}}"
                                                         TextWrapping="WrapWithOverflow" />
                                                 <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}"/>
 
@@ -156,7 +156,7 @@
                                                         Margin="10,0,5,0"
                                                         x:Name="SettingPressureText"
                                                         Appearance="Tertiary"
-                                                        Text="{Binding SettingPressure,Mode=OneWay}"
+                                                        Text="{Binding SettingPressure,Mode=OneWay, StringFormat={}{0:F4}}"
                                                         TextWrapping="WrapWithOverflow" />
                                                 <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}"/>
 
@@ -184,7 +184,7 @@
                                                         Margin="10,0,5,0"
                                                         x:Name="SettingTemperatureText"
                                                         Appearance="Tertiary"
-                                                        Text="{Binding SettingTemperature,Mode=OneWay}"
+                                                        Text="{Binding SettingTemperature,Mode=OneWay, StringFormat={}{0:F4}}"
                                                         TextWrapping="WrapWithOverflow" />
                                                 <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}"/>
 

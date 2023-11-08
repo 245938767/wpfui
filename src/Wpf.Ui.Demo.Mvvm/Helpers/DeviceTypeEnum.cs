@@ -28,7 +28,7 @@ public enum DeviceTypeEnum
     Temperature,
 
     /**
-     * 工装
+     * DS工装
      */
-    Work
+    DSWork
 }

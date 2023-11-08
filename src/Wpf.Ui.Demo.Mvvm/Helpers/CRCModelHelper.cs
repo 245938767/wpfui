@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 
 public class CRCModelHelper
 {
@@ -233,4 +233,60 @@ public class CRCModelHelper
     }
 
     #endregion
+
+    #region 工装数据转换
+
+    /// <summary>
+    /// 转换Byte数组为Float
+    /// </summary>
+    /// <param name="bytes">转换的数据</param>
+    /// <returns></returns>
+    public static List<float> TranlationByteForFloat(byte[] bytes)
+    {
+        var outInfo = BitConverter.ToString(CheckCrc(bytes) ?? Array.Empty<byte>());
+        return TranlationHexToFloatDataList(outInfo.Length > 0 ? outInfo.Split('-').ToList() : null, bytes.Length);
+    }
+
+    /// <summary>
+    /// 把16进制的数据转换为Float
+    /// </summary>
+    /// <param name="datas">需要转换的数据</param>
+    /// <param name="receiveCount">接收的原始数据位包括校验位</param>
+    private static List<float> TranlationHexToFloatDataList(List<string>? datas, int receiveCount)
+    {
+        if (datas == null)
+        {
+            return new List<float>();
+        }
+
+        var listFloat = new List<float>();
+        var count = 0;
+        for (var i = 0; i < (receiveCount - 5) / 4; i++)
+        {
+            var hexStringList = new List<string>();
+            var c1 = datas[count++];
+            var c2 = datas[count++];
+            var c3 = datas[count++];
+            var c4 = datas[count++];
+
+            // 数据交换
+            hexStringList.Add(c3);
+            hexStringList.Add(c4);
+            hexStringList.Add(c1);
+            hexStringList.Add(c2);
+            listFloat.Add(ConvertFloat(String.Join(String.Empty, hexStringList), true));
+        }
+        return listFloat;
+    }
+
+    private static float ConvertFloat(string data, bool isReverse = true)
+    {
+        var dataByte = StringToHexByte(data);
+
+        // 当前为左高右低，装换为左低右高
+        var f = BitConverter.ToSingle(isReverse ? dataByte.Reverse().ToArray() : dataByte, 0);
+
+        return f;
+    }
+#endregion
 }

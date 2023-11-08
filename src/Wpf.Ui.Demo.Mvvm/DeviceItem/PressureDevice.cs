@@ -24,6 +24,8 @@ public class PressureDevice : IDevice
     public PressureDevice(DeviceCard deviceCard)
         : base(deviceCard)
     {
+        SerialPort.SetDataReceiveData(ReceiveData);
+
     }
 
     /// <summary>
@@ -32,24 +34,28 @@ public class PressureDevice : IDevice
     /// <param name="receiveData">端口返回的数据</param>
     protected override void ReceiveData(byte[] receiveData)
     {
-        var pressureEncoding = Encoding.ASCII.GetString(receiveData);
-        var pressure = Single.Parse(pressureEncoding.Split(' ')[1]);
-        _deviceCard.CurrentPressure = pressure;
+        try
+        {
+            var pressureEncoding = Encoding.ASCII.GetString(receiveData);
+            var pressure = Single.Parse(pressureEncoding.Split(' ')[1]);
+            DeviceCard.CurrentPressure = pressure;
+        }
+        catch (Exception)
+        {
+        }
     }
 
     public override async Task<bool> Open()
     {
-        _serialPort.UpdateSerialPortModel(_deviceCard.SerialPortModel);
-
-        // 设置数据解析格式
-        if (!_serialPort.OpenPort())
+        SerialPort.UpdateSerialPortModel(DeviceCard.SerialPortModel);
+        if (!SerialPort.OpenPort())
         {
             return false;
         }
 
         // 启动时初始化
         await SetCurrentPressureLook();
-        _serialPort.SendStringMsg("SENS1:PRES:RANG \"11.00bara\"\n", _serialPortLock); // 设置输出格式
+        SerialPort.SendStringMsg("SENS1:PRES:RANG \"11.00bara\"\n", SerialPortLock); // 设置输出格式
         _cancelTokenMsg = new CancellationTokenSource();
 
         // 开启获得数据线程
@@ -58,7 +64,7 @@ public class PressureDevice : IDevice
             {
                 while (!_cancelTokenMsg.IsCancellationRequested)
                 {
-                    _serialPort.SendStringMsg("SENS1:PRES?\n", _serialPortLock);
+                    SerialPort.SendStringMsg("SENS1:PRES?\n", SerialPortLock);
                     await Task.Delay(1000);
                 }
             },
@@ -97,30 +103,30 @@ public class PressureDevice : IDevice
     public override async Task<bool> CloseConnect()
     {
         await CloseStatus();
-        await Task.Delay(1000);
+        await Task.Delay(100);
         try
         {
-            _cancelTokenMsg.Cancel();
-            _serialPort.ClosePort(_serialPortLock);
+            _cancelTokenMsg!.Cancel();
+            SerialPort.ClosePort(SerialPortLock);
         }
-        catch (InvalidOperationException invalidOperationException)
+        catch (InvalidOperationException)
         {
             return true;
         }
 
-        return !_serialPort.IsOpen;
+        return !SerialPort.IsOpen;
     }
 
     private async Task CurrentPressure(float pressure)
     {
-        _serialPort.SendStringMsg("OUTP:STAT ON\n", _serialPortLock);
-        _serialPort.SendStringMsg($"SOUR:PRES {pressure}\n", _serialPortLock);
+        SerialPort.SendStringMsg("OUTP:STAT ON\n", SerialPortLock);
+        SerialPort.SendStringMsg($"SOUR:PRES {pressure}\n", SerialPortLock);
         await Task.Delay(1000);
     }
 
     protected override bool CheckAround(float value, float checkAround)
     {
-        var check = _deviceCard.CurrentPressure - value;
+        var check = DeviceCard.CurrentPressure - value;
         return check > -checkAround && check < checkAround;
     }
 
@@ -129,10 +135,10 @@ public class PressureDevice : IDevice
     /// </summary>
     private async Task CloseStatus()
     {
-        _serialPort.SendStringMsg("OUTP:STAT ON\n", _serialPortLock);
-        _serialPort.SendStringMsg("CAL:PRES:ZERO:VALV 0\n", _serialPortLock);
+        SerialPort.SendStringMsg("OUTP:STAT ON\n", SerialPortLock);
+        SerialPort.SendStringMsg("CAL:PRES:ZERO:VALV 0\n", SerialPortLock);
         await Task.Delay(500);
-        _serialPort.SendStringMsg("CAL:PRES:ZERO:VALV 1\n", _serialPortLock);
+        SerialPort.SendStringMsg("CAL:PRES:ZERO:VALV 1\n", SerialPortLock);
         await SetCurrentPressureLook();
     }
 
@@ -142,6 +148,6 @@ public class PressureDevice : IDevice
     private async Task SetCurrentPressureLook()
     {
         await Task.Delay(500);
-        _serialPort.SendStringMsg("OUTP:STAT OFF\n", _serialPortLock);
+        SerialPort.SendStringMsg("OUTP:STAT OFF\n", SerialPortLock);
     }
 }

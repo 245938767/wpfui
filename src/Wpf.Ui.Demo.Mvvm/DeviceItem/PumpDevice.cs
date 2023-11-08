@@ -19,16 +19,17 @@ public class PumpDevice : IDevice
     {
     }
 
-    public override Task<bool> Open()
+    public async override Task<bool> Open()
     {
-        _serialPort.UpdateSerialPortModel(_deviceCard.SerialPortModel);
+        SerialPort.UpdateSerialPortModel(DeviceCard.SerialPortModel);
+        if (!SerialPort.OpenPort())
+        {
+            return false;
+        }
 
-        // 设置数据解析格式
-        _serialPort.OpenPort();
-
-        _serialPort.RtsEnable = true;
-        _serialPort.DtrEnable = true;
-        return Task.FromResult(true);
+        SerialPort.RtsEnable = true;
+        SerialPort.DtrEnable = true;
+        return true;
     }
 
     public override Task<bool> SetCurrentStatus(float value, float around, double timeOutSecond)
@@ -36,21 +37,20 @@ public class PumpDevice : IDevice
         throw new NotSupportedException();
     }
 
-    public override Task<bool> CloseConnect()
+    public async override Task<bool> CloseConnect()
     {
-        _serialPort.RtsEnable = true;
-        _serialPort.DtrEnable = true;
-
+        SerialPort.RtsEnable = true;
+        SerialPort.DtrEnable = true;
         try
         {
-            _serialPort.ClosePort(_serialPortLock);
+            SerialPort.ClosePort(SerialPortLock);
         }
-        catch (InvalidOperationException invalidOperationException)
+        catch (InvalidOperationException)
         {
-            return Task.FromResult(true);
+            return true;
         }
 
-        return Task.FromResult(true);
+        return true;
     }
 
     protected override bool CheckAround(float value, float checkAround)
