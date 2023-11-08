@@ -22,7 +22,6 @@ public class TemperatureDevice : IDevice
         var temperature = Convert.ToInt32(list[0] + list[1], 16) / 10f;
         _deviceCard.CurrentTemperature = temperature;
 
-        WeakReferenceMessenger.Default.Send(_deviceCard);
     }
 
     public override async Task<bool> Open()
@@ -37,7 +36,7 @@ public class TemperatureDevice : IDevice
 
         _cancelTokenMsg = new CancellationTokenSource();
         // 开启获得数据线程
-        await Task.Factory.StartNew(
+        _ = await Task.Factory.StartNew(
             async () =>
             {
                 while (!_cancelTokenMsg.IsCancellationRequested)

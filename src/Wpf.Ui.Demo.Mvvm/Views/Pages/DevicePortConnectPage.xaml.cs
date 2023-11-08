@@ -45,6 +45,6 @@ public partial class DevicePortConnectPage
     private void DropDown(object sender, MouseButtonEventArgs e)
     {
         ViewModel.PortList = SerialPort.GetPortNames();
-        ViewModel.PortList = new[] { "Com0", "Com2", "Com3", "com4" };
+      //  ViewModel.PortList = new[] { "Com0", "Com2", "Com3", "com4" };
     }
 }

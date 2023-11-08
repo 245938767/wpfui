@@ -26,7 +26,6 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     [ObservableProperty]
     private ProcessFlowEnum _processFlow = ProcessFlowEnum.DSTest;
 
-
     public DashboardViewModel(IContentDialogService contentDialogService,DeviceService deviceService)
     {
         _contentDialogService = contentDialogService;
@@ -149,13 +148,21 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
             new SimpleContentDialogCreateOptions()
             {
-                Title = "关闭设备提醒",
+                Title = "开始检测提醒",
                 Content = $"是否开始测试: {ProcessFlow.ToString()}",
                 PrimaryButtonText = "确定",
                 CloseButtonText = "取消",
             }
         );
+        if (result == ContentDialogResult.Primary)
+        {
+            GlobalData.Instance.IsOpenCheck = true;
+        }
+        else {
+            GlobalData.Instance.IsOpenCheck = false;
+        }
         // TODO 根据流程实例化对应的决策
+
     }
 
     public void OnNavigatedTo()
@@ -186,6 +193,8 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pressure, new PressureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pressure)));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pump, new PumpDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pump)));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Temperature, new TemperatureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Temperature)));
+    // TODO 初始化 流程逻辑类
+        //GlobalData.Instance.
     }
 
  

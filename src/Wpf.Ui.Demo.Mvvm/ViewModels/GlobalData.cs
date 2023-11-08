@@ -15,6 +15,12 @@ public partial class GlobalData : ObservableObject
     public static GlobalData Instance { get; private set; } = new();
 
     /// <summary>
+    /// 是否开启了检测
+    /// </summary>
+    [ObservableProperty]
+    private bool _isOpenCheck;
+
+    /// <summary>
     /// 设备数据存储
     /// </summary>
     [ObservableProperty] private Dictionary<DeviceTypeEnum, IDevice> _deviceSerialPorts = new();

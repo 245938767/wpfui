@@ -19,7 +19,7 @@ public class PressureDevice : IDevice
     /// <summary>
     /// 线程监听对象
     /// </summary>
-    private CancellationTokenSource _cancelTokenMsg;
+    private CancellationTokenSource? _cancelTokenMsg;
 
     public PressureDevice(DeviceCard deviceCard)
         : base(deviceCard)
@@ -30,14 +30,12 @@ public class PressureDevice : IDevice
     /// 处理获得的数据
     /// </summary>
     /// <param name="receiveData">端口返回的数据</param>
-    protected override void ReceiveData(byte[]? receiveData)
+    protected override void ReceiveData(byte[] receiveData)
     {
         var pressureEncoding = Encoding.ASCII.GetString(receiveData);
         var pressure = Single.Parse(pressureEncoding.Split(' ')[1]);
         _deviceCard.CurrentPressure = pressure;
-        WeakReferenceMessenger.Default.Send(_deviceCard);
     }
-
 
     public override async Task<bool> Open()
     {
@@ -55,7 +53,7 @@ public class PressureDevice : IDevice
         _cancelTokenMsg = new CancellationTokenSource();
 
         // 开启获得数据线程
-        await Task.Factory.StartNew(
+        _ = await Task.Factory.StartNew(
             async () =>
             {
                 while (!_cancelTokenMsg.IsCancellationRequested)

@@ -4,6 +4,7 @@
 // All Rights Reserved.
 
 using Wpf.Ui.Controls;
+using Wpf.Ui.Demo.Mvvm.ViewModels;
 
 namespace Wpf.Ui.Demo.Mvvm.Views;
 
@@ -13,6 +14,7 @@ namespace Wpf.Ui.Demo.Mvvm.Views;
 public partial class MainWindow : INavigationWindow
 {
     public ViewModels.MainWindowViewModel ViewModel { get; }
+    private readonly IContentDialogService _contentDialogService;
 
     public MainWindow(
         ViewModels.MainWindowViewModel viewModel,
@@ -23,6 +25,7 @@ public partial class MainWindow : INavigationWindow
     {
         ViewModel = viewModel;
         DataContext = this;
+        _contentDialogService = contentDialogService;
 
         
         Appearance.SystemThemeWatcher.Watch(this);
@@ -51,8 +54,23 @@ public partial class MainWindow : INavigationWindow
     /// <summary>
     /// Raises the closed event.
     /// </summary>
-    protected override void OnClosed(EventArgs e)
+    protected override async void OnClosed(EventArgs e)
     {
+        var isOpenCheck = GlobalData.Instance.IsOpenCheck;
+        if (isOpenCheck) {
+            ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
+              new SimpleContentDialogCreateOptions()
+              {
+                  Title = "正在运行提醒",
+                  Content = $"测试正在运行是否关闭？",
+                  PrimaryButtonText = "确定",
+                  CloseButtonText = "取消",
+              }
+          );
+            if (result == ContentDialogResult.Secondary) {
+                return;
+            }
+        }
         base.OnClosed(e);
 
         // Make sure that closing this window will begin the process of closing the application.
