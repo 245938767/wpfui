@@ -59,5 +59,5 @@ public abstract class IDevice
     /// <param name="value">阈值</param>
     /// <param name="checkAround">鉴定范围</param>
     /// <returns>是否在鉴定范围内</returns>
-    protected abstract bool CheckAround(float value, float checkAround);
+    public abstract bool CheckAround(float value, float checkAround);
 }

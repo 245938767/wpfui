@@ -53,7 +53,7 @@ public class PumpDevice : IDevice
         return true;
     }
 
-    protected override bool CheckAround(float value, float checkAround)
+    public override bool CheckAround(float value, float checkAround)
     {
         throw new NotSupportedException();
     }

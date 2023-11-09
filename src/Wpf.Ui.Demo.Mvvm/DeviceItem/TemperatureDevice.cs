@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.Messaging;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 
@@ -93,7 +92,7 @@ public class TemperatureDevice : IDevice
     }
 
 
-    protected override bool CheckAround(float value, float checkAround)
+    public override bool CheckAround(float value, float checkAround)
     {
         var check = DeviceCard.CurrentTemperature - value;
         return check > -checkAround && check < checkAround;

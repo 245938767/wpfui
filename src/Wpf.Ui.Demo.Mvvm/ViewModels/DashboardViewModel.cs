@@ -23,7 +23,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     private readonly DeviceService _deviceService;
     private bool _isInitialized = false;
 
-    [ObservableProperty] private ObservableCollection<DeviceCard> _deviceCards = new();
+    [ObservableProperty] private List<DeviceCard> _deviceCards = new();
     [ObservableProperty]
     private ProcessFlowEnum _processFlow = ProcessFlowEnum.DSTest;
 
@@ -142,10 +142,23 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     /// 开始检测按钮
     /// </summary>
     [RelayCommand]
-    private async void StartCheck()
+    private async Task StartCheck()
     {
-        // TODO 获得流程选项
-        // TODO 检查主程序是否在运行（在运行不允许取消连接）
+        IProcessFlow processFlow = GlobalData.Instance.ProcessFlow[ProcessFlow];
+
+        // 检查主程序是否在运行（在运行不允许再次连接）
+        if (processFlow.CheckExecution())
+        {
+            var uiMessageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = "执行测试错误",
+                Content =
+                 $"测试正在执行",
+            };
+            _ = await uiMessageBox.ShowDialogAsync();
+            return;
+        }
+
         ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
             new SimpleContentDialogCreateOptions()
             {
@@ -157,13 +170,15 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         );
         if (result == ContentDialogResult.Primary)
         {
+            // TODO 根据流程实例化对应的决策
             GlobalData.Instance.IsOpenCheck = true;
+            await processFlow.ExecutionProcess();
         }
-        else {
+        else
+        {
             GlobalData.Instance.IsOpenCheck = false;
+            return;
         }
-        // TODO 根据流程实例化对应的决策
-
     }
 
     public void OnNavigatedTo()
@@ -185,7 +200,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     private void InitializeViewModel()
     {
         // 获得本地设备缓存
-        ObservableCollection<DeviceCard> deviceCards = _deviceService.GetLocaltionData();
+        List<DeviceCard> deviceCards = _deviceService.GetLocaltionData();
         DeviceCards = deviceCards;
 
         // 初始化设数据

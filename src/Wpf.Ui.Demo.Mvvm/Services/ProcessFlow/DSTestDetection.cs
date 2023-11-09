@@ -4,26 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
+using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
 
 namespace Wpf.Ui.Demo.Mvvm.Services.ProcessFlow;
 
 class DSTestDetection : IProcessFlow
 {
-    private CancellationTokenSource _cancellation;
+    private CancellationTokenSource? _cancellation;
     private readonly PumpDevice? pumpDevice;
     private readonly PressureDevice? pressureDevice;
     private readonly TemperatureDevice? temperatureDevice;
     private readonly DSWorkwareDevice? dSWorkwareDevice;
 
 
-    public DSTestDetection() {
-        var deviceSerialPorts = GlobalData.Instance.DeviceSerialPorts;
-       dSWorkwareDevice= (DSWorkwareDevice?)deviceSerialPorts[Helpers.DeviceTypeEnum.DSWork];
+    public DSTestDetection()
+    {
+        Dictionary<DeviceTypeEnum, IDevice> deviceSerialPorts = GlobalData.Instance.DeviceSerialPorts;
+        dSWorkwareDevice = (DSWorkwareDevice?)deviceSerialPorts[Helpers.DeviceTypeEnum.DSWork];
         temperatureDevice = (TemperatureDevice?)deviceSerialPorts[Helpers.DeviceTypeEnum.Temperature];
         pressureDevice = (PressureDevice?)deviceSerialPorts[Helpers.DeviceTypeEnum.Pressure];
         pumpDevice = (PumpDevice?)deviceSerialPorts[Helpers.DeviceTypeEnum.Pump];
     }
+
     public override bool BreakExecution()
     {
         _cancellation?.Cancel();
@@ -44,17 +47,43 @@ class DSTestDetection : IProcessFlow
     {
         throw new NotImplementedException();
     }
-    
-    public override Task<bool> ExecutionDetection()
-    { 
-        // TODO 设备检测
 
-        // TODO 漏气检测
+    public override async Task<bool> ExecutionDetection()
+    {
+        // 设备检测
+        if (pressureDevice == null)
+        {
+            await ShowDeviceConnnectionError("压力源");
+            return false;
+        }
 
-        throw new NotImplementedException();
+        if (pumpDevice == null)
+        {
+            await ShowDeviceConnnectionError("真空泵");
+            return false;
+        }
+
+        if (temperatureDevice == null)
+        {
+            await ShowDeviceConnnectionError("温箱");
+            return false;
+        }
+
+        if (dSWorkwareDevice == null)
+        {
+            await ShowDeviceConnnectionError("DS工装");
+            return false;
+        }
+
+        // TODO 获得配置数据
+        _ = await pressureDevice.SetCurrentStatus(150, 0.01f, 60);
+        pressureDevice.SetCurrentPressureLook();
+        await Task.Delay(30000);
+        var check = pressureDevice.CheckAround(150, 0.01f);
+        return check;
     }
 
-    public async override Task ExecutionProcess()
+    public override async Task ExecutionProcess()
     {
         if (!await ExecutionDetection())
         {
@@ -62,6 +91,8 @@ class DSTestDetection : IProcessFlow
         }
 
         _cancellation = new CancellationTokenSource();
-        throw new NotImplementedException();
+        
+        // 获得测试标准数据和阈值
+        
     }
 }

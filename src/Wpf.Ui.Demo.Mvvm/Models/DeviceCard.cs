@@ -3,9 +3,11 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
+using Microsoft.EntityFrameworkCore;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 
 namespace Wpf.Ui.Demo.Mvvm.Models;
+[PrimaryKey(nameof(DeviceName))]
 
 public partial class DeviceCard : ObservableObject
 {

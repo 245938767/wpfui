@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -13,6 +13,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DbContexts\新文件夹1\**" />
+    <Compile Remove="DbContexts\新文件夹2\**" />
+    <Compile Remove="DbContexts\新文件夹\**" />
+    <EmbeddedResource Remove="DbContexts\新文件夹1\**" />
+    <EmbeddedResource Remove="DbContexts\新文件夹2\**" />
+    <EmbeddedResource Remove="DbContexts\新文件夹\**" />
+    <None Remove="DbContexts\新文件夹1\**" />
+    <None Remove="DbContexts\新文件夹2\**" />
+    <None Remove="DbContexts\新文件夹\**" />
+    <Page Remove="DbContexts\新文件夹1\**" />
+    <Page Remove="DbContexts\新文件夹2\**" />
+    <Page Remove="DbContexts\新文件夹\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\wpfui.png" />
   </ItemGroup>
 
@@ -22,6 +37,11 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.WinUI" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
   </ItemGroup>

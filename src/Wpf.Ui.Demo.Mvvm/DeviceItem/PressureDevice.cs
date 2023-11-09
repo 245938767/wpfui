@@ -54,7 +54,7 @@ public class PressureDevice : IDevice
         }
 
         // 启动时初始化
-        await SetCurrentPressureLook();
+        SetCurrentPressureLook();
         SerialPort.SendStringMsg("SENS1:PRES:RANG \"11.00bara\"\n", SerialPortLock); // 设置输出格式
         _cancelTokenMsg = new CancellationTokenSource();
 
@@ -123,8 +123,14 @@ public class PressureDevice : IDevice
         SerialPort.SendStringMsg($"SOUR:PRES {pressure}\n", SerialPortLock);
         await Task.Delay(1000);
     }
-
-    protected override bool CheckAround(float value, float checkAround)
+    
+    /// <summary>
+    /// 进入观测模式
+    /// </summary>
+    public void SetCurrentPressureLook() {
+        SerialPort.SendStringMsg("OUTP:STAT OFF\n", SerialPortLock);
+    }
+    public override bool CheckAround(float value, float checkAround)
     {
         var check = DeviceCard.CurrentPressure - value;
         return check > -checkAround && check < checkAround;
@@ -139,15 +145,7 @@ public class PressureDevice : IDevice
         SerialPort.SendStringMsg("CAL:PRES:ZERO:VALV 0\n", SerialPortLock);
         await Task.Delay(500);
         SerialPort.SendStringMsg("CAL:PRES:ZERO:VALV 1\n", SerialPortLock);
-        await SetCurrentPressureLook();
+        SetCurrentPressureLook();
     }
 
-    /// <summary>
-    /// 设置当前压力源进入观测模式
-    /// </summary>
-    private async Task SetCurrentPressureLook()
-    {
-        await Task.Delay(500);
-        SerialPort.SendStringMsg("OUTP:STAT OFF\n", SerialPortLock);
-    }
 }

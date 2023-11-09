@@ -9,7 +9,7 @@ using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.Services.ProcessFlow;
 
-public abstract class IProcessFlow:IDisposable
+public abstract class IProcessFlow : IDisposable
 {
     /// <summary>
     /// 执行检测
@@ -34,5 +34,21 @@ public abstract class IProcessFlow:IDisposable
     /// </summary>
     /// <returns></returns>
     public abstract bool BreakExecution();
+
     public abstract void Dispose();
+
+    /// <summary>
+    /// 显示设备初始化失败的错误信息
+    /// </summary>
+    /// <param name="deviceName"> 设备名称</param>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
+    protected async Task ShowDeviceConnnectionError(string deviceName)
+    {
+        await new Wpf.Ui.Controls.MessageBox
+        {
+            Title = "设备初始化失败",
+            Content =
+                $"请检测”{deviceName}“设备是否已经连接",
+        }.ShowDialogAsync();
+    }
 }

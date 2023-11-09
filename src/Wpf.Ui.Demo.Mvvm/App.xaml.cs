@@ -5,10 +5,12 @@
 
 using System.IO;
 using System.Windows.Threading;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Wpf.Ui.Controls;
+using Wpf.Ui.Demo.Mvvm.DbContexts;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.Services;
 using Type = ABI.System.Type;
@@ -33,7 +35,15 @@ public partial class App
         .ConfigureServices(
             (context, services) =>
             {
-                // App Host
+                // App Hos// init DB ORM
+                services.AddDbContext<EntityDbContext>((_, o) => DataServiceCollectionExtensions.GetSql(o));
+                services.AddSingleton<Func<EntityDbContext>>(s =>
+                {
+                    var options = DataServiceCollectionExtensions.GetSql(new DbContextOptionsBuilder<EntityDbContext>()).Options;
+                    return () => new EntityDbContext(options, s.GetServices<DbModule>());
+                });
+                // add Module
+                services.AddDbModules(); 
                 services.AddHostedService<ApplicationHostService>();
 
                 // Page resolver service

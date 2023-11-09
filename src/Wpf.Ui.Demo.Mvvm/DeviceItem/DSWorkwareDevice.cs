@@ -12,13 +12,18 @@ using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.DeviceItem;
+
 public class DSWorkwareDevice : IDevice
 {
     private CancellationTokenSource? _cancelTokenMsg;
+    // 数据集合
+    // 测试标准数据
 
     public DSWorkwareDevice(DeviceCard deviceCard)
         : base(deviceCard)
     {
+        SerialPort.SetDataReceiveData(ReceiveData);
+        //TODO  从Service中获得数据
     }
 
     public async override Task<bool> CloseConnect()
@@ -49,30 +54,29 @@ public class DSWorkwareDevice : IDevice
         try
         {
             // 工装特性:要先发送两次后才会返回数据
-            SerialPort.SendHexCRC("11 03 00 90 00 70",SerialPortLock);
+            SerialPort.SendHexCRC("11 03 00 90 00 70", SerialPortLock);
             SerialPort.SendHexCRC("11 03 00 90 00 70", SerialPortLock);
 
             _ = await Task.Factory.StartNew(
                 async () =>
-            {
-                while (!_cancelTokenMsg.IsCancellationRequested)
                 {
-                    // 如果发送失败直接退出循环
-                    try
+                    while (!_cancelTokenMsg.IsCancellationRequested)
                     {
-                        SerialPort.SendHexCRC("11 03 00 90 00 70", SerialPortLock);
+                        // 如果发送失败直接退出循环
+                        try
+                        {
+                            SerialPort.SendHexCRC("11 03 00 90 00 70", SerialPortLock);
 
-                        // 每1秒获得数据
-                        await Task.Delay(1000);
+                            // 每1秒获得数据
+                            await Task.Delay(1000);
+                        }
+                        catch
+                        {
+                        }
                     }
-                    catch
-                    {
-                    }
-                }
-            },
+                },
                 _cancelTokenMsg.Token);
             return true;
-
         }
         catch (Exception)
         {
@@ -87,13 +91,14 @@ public class DSWorkwareDevice : IDevice
         {
             return await await Task.Factory.StartNew(
                 async () =>
-            {
-                while (!CheckAround(value, around) && !cancellationTokenSource.IsCancellationRequested)
                 {
-                    await Task.Delay(5000);
-                }
-                return true;
-            },
+                    while (!CheckAround(value, around) && !cancellationTokenSource.IsCancellationRequested)
+                    {
+                        await Task.Delay(5000);
+                    }
+
+                    return true;
+                },
                 cancellationTokenSource.Token);
         }
         catch (TaskCanceledException)
@@ -102,7 +107,7 @@ public class DSWorkwareDevice : IDevice
         }
     }
 
-    protected override bool CheckAround(float value, float checkAround)
+    public override bool CheckAround(float value, float checkAround)
     {
         var check = value - DeviceCard.CurrentTemperature;
         if (check > -checkAround && check < checkAround)
