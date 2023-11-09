@@ -9,7 +9,7 @@ using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.Services.ProcessFlow;
 
-public abstract class IProcessFlow
+public abstract class IProcessFlow:IDisposable
 {
     /// <summary>
     /// 执行检测
@@ -34,5 +34,5 @@ public abstract class IProcessFlow
     /// </summary>
     /// <returns></returns>
     public abstract bool BreakExecution();
-
+    public abstract void Dispose();
 }

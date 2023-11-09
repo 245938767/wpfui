@@ -39,7 +39,7 @@
         <ui:NavigationView
             Grid.Row="1"
             x:Name="RootNavigation"
-            PaneDisplayMode="Top"
+            PaneDisplayMode="LeftFluent"
             FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
             MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}">
             <!-- <ui:NavigationView.AutoSuggestBox> -->

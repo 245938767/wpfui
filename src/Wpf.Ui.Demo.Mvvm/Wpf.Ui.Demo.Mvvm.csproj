@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\wpfui.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="applicationIcon.ico" />
   </ItemGroup>
 
@@ -38,6 +42,7 @@
     <Resource Include="Assets\WinUiGallery\Pressure.png" />
     <Resource Include="Assets\WinUiGallery\Pump.png" />
     <Resource Include="Assets\WinUiGallery\Temperature.png" />
+    <Resource Include="Assets\wpfui.png" />
   </ItemGroup>
 
   <ItemGroup>
