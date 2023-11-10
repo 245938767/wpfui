@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -16,10 +17,10 @@ namespace Wpf.Ui.Demo.Mvvm.Services;
 public class DeviceService
 {
     private readonly EntityDbContext _dbContext;
-    private readonly string deviceCardKey = "deviceCards";
 
     public DeviceService(EntityDbContext dbContext) { 
-        _dbContext = dbContext; 
+        _dbContext = dbContext;
+        _dbContext.Database.EnsureCreated();
     }
 
     /// <summary>
@@ -27,7 +28,7 @@ public class DeviceService
     /// </summary>
     /// <returns></returns>
     public List<DeviceCard> GetLocaltionData() {
-        var deviceCards = _dbContext.DeviceCards.ToList<DeviceCard>();
+        var deviceCards = _dbContext.DeviceCards.Include(o=>o.SerialPortModel).ToList<DeviceCard>();
         return deviceCards;
     }
 
@@ -37,8 +38,7 @@ public class DeviceService
     /// <param name="deviceCard">修改后的数据</param>
     public void UpdateLocaltionData(DeviceCard deviceCard) {
         // 本地数据默认设备状态为关闭，并且数值为空
-        var deviceCardData = _dbContext.DeviceCards.FirstOrDefault(o=>o.Key==deviceCard.Key);
-        _dbContext.Update(deviceCardData);
+        _dbContext.Update(deviceCard);
         _dbContext.SaveChanges();
         return;
     }

@@ -21,7 +21,7 @@ public static class DataServiceCollectionExtensions
          */
     public static DbContextOptionsBuilder GetSql(DbContextOptionsBuilder dbContextOptionsBuilder)
     {
-         dbContextOptionsBuilder.UseSqlite("Data source = VTUDatabase.db;");
+         dbContextOptionsBuilder.UseSqlite("Data source = VTUDatabase.db;foreign keys=true");
 
         return dbContextOptionsBuilder;
     }
@@ -31,7 +31,6 @@ public static class DataServiceCollectionExtensions
      */
     public static void AddDbModules(this IServiceCollection services)
     {
-        services.AddDbModule<DeviceModule>();
 
     }
 }

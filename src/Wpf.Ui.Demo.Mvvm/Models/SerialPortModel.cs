@@ -8,10 +8,10 @@ using System.ComponentModel.DataAnnotations;
 using System.IO.Ports;
 
 namespace Wpf.Ui.Demo.Mvvm.Models;
-[Owned]
+
 public partial class SerialPortModel : ObservableObject
 {
-
+    public int Id { get; set; }
     [ObservableProperty]
     private string? _portName;
     [ObservableProperty]
@@ -24,4 +24,5 @@ public partial class SerialPortModel : ObservableObject
     private string? _networkAddress;
     [ObservableProperty]
     private bool _deviceStatus;
+    public DeviceCard? DeviceCards { get; set; }
 }

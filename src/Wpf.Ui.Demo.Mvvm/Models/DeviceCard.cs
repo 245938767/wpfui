@@ -7,10 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 
 namespace Wpf.Ui.Demo.Mvvm.Models;
-[PrimaryKey(nameof(DeviceName))]
 
 public partial class DeviceCard : ObservableObject
 {
+    public int Id { get; set; }
+     public int ForeignKey { get; set; }
+
     [ObservableProperty]
     private DeviceTypeEnum _key;
     [ObservableProperty]
@@ -19,7 +21,7 @@ public partial class DeviceCard : ObservableObject
 
     private string _imageUrl;
     [ObservableProperty]
-    private SerialPortModel _serialPortModel;
+    private SerialPortModel? _serialPortModel;
     [ObservableProperty]
 
     private float? _currentTemperature;
@@ -48,4 +50,18 @@ public partial class DeviceCard : ObservableObject
     /// Gets or sets 数据版本（设备更新字段时本地数据也需要更新）
     /// </summary>
     public float Version { get; set; }
+
+    /// <summary>
+    /// 清理有状态数据
+    /// </summary>
+    public void ClearHasStatusData() {
+        CurrentPressure = null;
+        CurrentTemperature = null;
+        SettingPressure = null;
+        SettingTemperature = null;
+        if (SerialPortModel != null)
+        {
+            SerialPortModel.DeviceStatus = false;
+        }
+    }
 }

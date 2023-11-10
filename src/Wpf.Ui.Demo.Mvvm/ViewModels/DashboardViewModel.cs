@@ -110,7 +110,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         }
 
         deviceCard.SerialPortModel.DeviceStatus = true;
-  
+        _deviceService.UpdateLocaltionData(deviceCard);
         return true;
     }
 
@@ -134,8 +134,9 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         {
             deviceCard.SerialPortModel.DeviceStatus = false;
         }
+        _deviceService.UpdateLocaltionData(deviceCard);
 
-      
+
     }
 
     /// <summary>

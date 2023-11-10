@@ -7,30 +7,37 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO.Ports;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.DbContexts;
 
 public partial class EntityDbContext : DbContext
 {
-    private readonly IEnumerable<DbModule> _modules;
 
-    public EntityDbContext(DbContextOptions options, IEnumerable<DbModule> modules) : base(options)
+    public EntityDbContext(DbContextOptions options) : base(options)
     {
-        _modules = modules;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        foreach (var each in _modules)
-        {
-            each.OnModelCreating(builder);
-        }
 
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<SerialPortModel> SerialPortBuilder= builder.Entity<SerialPortModel>();
+        _ = SerialPortBuilder.HasData(initSerialPort());
+        SerialPortBuilder.Ignore(o => o.DeviceStatus);
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<DeviceCard> DeviceCardBuilder = builder.Entity<DeviceCard>();
+        DeviceCardBuilder.Ignore(o => o.CurrentPressure);
+        DeviceCardBuilder.Ignore(o => o.CurrentTemperature);
+        DeviceCardBuilder.Ignore(o => o.SettingPressure);
+        DeviceCardBuilder.Ignore(o => o.SettingTemperature);
+        DeviceCardBuilder.HasOne(o => o.SerialPortModel).WithOne(o => o.DeviceCards).HasForeignKey<DeviceCard>(o=>o.ForeignKey);
+        _ = DeviceCardBuilder.HasData(init());
         ConfigureConventions(builder);
     }
 
@@ -73,5 +80,119 @@ public partial class EntityDbContext : DbContext
     }
 
     public DbSet<DeviceCard> DeviceCards { get; set; }
+    public DbSet<SerialPortModel> SerialPortModels { get; set; }
 
+    private static List<DeviceCard> init()
+    {
+        var deviceCards = new List<DeviceCard>();
+        var pop = new DeviceCard
+        {
+            Id = 1,
+            Key = DeviceTypeEnum.Pump,
+            DeviceName = "真空泵",
+            ForeignKey = 1,
+
+            UnitP = "Kpa",
+            UnitT = "℃",
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Pump.png",
+            Version = 1.0f,
+        };
+        var pressure = new DeviceCard
+        {
+            Id = 2,
+            Key = DeviceTypeEnum.Pressure,
+            DeviceName = "压力源",
+            ForeignKey = 2,
+
+            UnitP = "Kpa",
+            UnitT = "℃",
+
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Pressure.png",
+            Version = 1.0f,
+        };
+        var temperature = new DeviceCard
+        {
+            Id = 3,
+            Key = DeviceTypeEnum.Temperature,
+            DeviceName = "温箱",
+            ForeignKey = 3,
+
+            UnitP = "Kpa",
+            UnitT = "℃",
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Temperature.png",
+            Version = 1.0f,
+
+        };
+        var work = new DeviceCard
+        {
+            Id = 4,
+            Key = DeviceTypeEnum.DSWork,
+            DeviceName = "DS工装",
+            ForeignKey = 4,
+
+            UnitP = "Kpa",
+            UnitT = "℃",
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Working.png",
+            Version = 1.0f,
+        };
+        deviceCards.Add(pop);
+        deviceCards.Add(pressure);
+        deviceCards.Add(temperature);
+        deviceCards.Add(work);
+        return deviceCards;
+    }
+    private static List<SerialPortModel> initSerialPort()
+    {
+        var deviceCards = new List<SerialPortModel>();
+        var pop = new SerialPortModel()
+        {
+            Id = 1,
+            PortName = null,
+            StopBit = StopBits.One,
+            BaudRate = 9600,
+            DataBit = 8,
+            NetworkAddress = "01",
+            DeviceStatus = false,
+
+        };
+        var pressure = new SerialPortModel()
+        {
+            Id = 2,
+            PortName = null,
+            StopBit = StopBits.One,
+            BaudRate = 9600,
+            DataBit = 8,
+            DeviceStatus = false,
+            NetworkAddress = "01"
+
+        };
+        var temperature = new SerialPortModel()
+        {
+            Id = 3,
+            PortName = null,
+            StopBit = StopBits.One,
+            BaudRate = 9600,
+            DataBit = 8,
+            DeviceStatus = false,
+            NetworkAddress = "01"
+
+
+        };
+        var work = new SerialPortModel()
+        {
+            Id = 4,
+            PortName = null,
+            StopBit = StopBits.One,
+            BaudRate = 9600,
+            DataBit = 8,
+            DeviceStatus = false,
+            NetworkAddress = "01"
+
+        };
+        deviceCards.Add(pop);
+        deviceCards.Add(pressure);
+        deviceCards.Add(temperature);
+        deviceCards.Add(work);
+        return deviceCards;
+    }
 }

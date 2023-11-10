@@ -40,7 +40,7 @@ public partial class App
                 services.AddSingleton<Func<EntityDbContext>>(s =>
                 {
                     var options = DataServiceCollectionExtensions.GetSql(new DbContextOptionsBuilder<EntityDbContext>()).Options;
-                    return () => new EntityDbContext(options, s.GetServices<DbModule>());
+                    return () => new EntityDbContext(options);
                 });
                 // add Module
                 services.AddDbModules(); 
