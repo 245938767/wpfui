@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.IO.Ports;
+using System.Windows.Threading;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
@@ -9,8 +10,10 @@ namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 
 public partial class GlobalData : ObservableObject
 {
+    private readonly Dispatcher dispatcher;
     private GlobalData()
     {
+        dispatcher = Application.Current.Dispatcher;
     }
 
     public static GlobalData Instance { get; private set; } = new();
@@ -23,7 +26,12 @@ public partial class GlobalData : ObservableObject
     /// <summary>
     /// 首页表格数据
     /// </summary>
-    [ObservableProperty] private ObservableCollection<Object> _homePageItemData = new ObservableCollection<object>();
+    [ObservableProperty] private ObservableCollection<object> _homePageItemData = new ObservableCollection<object>();
+    public void AddHomePageItemData(object o) {
+        dispatcher.Invoke(() => {
+            HomePageItemData.Add(o);
+        });
+    }
 
     /// <summary>
     /// 设备数据存储

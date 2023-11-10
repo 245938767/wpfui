@@ -16,6 +16,7 @@
             <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
             <helpers:ThemeToIndexConverter x:Key="ThemeToIndexConverter" />
             <helpers:PaneDisplayModeToIndexConverter x:Key="PaneDisplayModeToIndexConverter" />
+            <helpers:RowNumberConverter x:Key="RowNumberConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>

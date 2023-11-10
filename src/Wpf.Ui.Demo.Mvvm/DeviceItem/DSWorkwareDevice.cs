@@ -138,32 +138,39 @@ public class DSWorkwareDevice : IDevice
         // 8个温度点
         var temperatureList = list.Skip(48);
         DeviceCard.CurrentTemperature =  temperatureList.Where(x => x > 0).Average();
-        DeviceCard.CurrentPressure = list.Take(48).Where(x => x > 0).Average();
+        GlobalData instance = GlobalData.Instance;
 
         // 生成对象数据
-        var homePageItemData = GlobalData.Instance.HomePageItemData;
+        var homePageItemData = instance.HomePageItemData;
         var count = 0;
-
+        var datafloat = new List<float>();
         if (homePageItemData.Count > 0)
         {
-            for (var i = 0; i < data.Count; i++)
+            for (var i = 0; i < data.Count / 2; i++)
             {
                 var v = (DSWorkwareGridModel)homePageItemData[i];
-                v.Pressure = data[count++];
-                v.Temperature = data[count++];
+                v.Pressure = float.Parse(data[count++].ToString("#.000"));
+                v.Temperature = float.Parse(data[count++].ToString("#.00"));
+                datafloat.Add((float)v.Pressure!);
             }
-        }else 
+        }
+        else 
         {
-            for (var i = 0; i < data.Count; i++)
+            for (var i = 0; i < data.Count/2; i++)
             {
                 var dSWorkwareGridModel = new DSWorkwareGridModel();
-                dSWorkwareGridModel.Pressure = data[count++];
-                dSWorkwareGridModel.Temperature = data[count++];
-                homePageItemData.Add(dSWorkwareGridModel);
+                dSWorkwareGridModel.SerialNumber = i + 1;
+                dSWorkwareGridModel.Pressure = float.Parse( data[count++].ToString("#.000"));
+                dSWorkwareGridModel.Temperature = float.Parse(data[count++].ToString("#.00"));
+                instance.AddHomePageItemData(dSWorkwareGridModel);
+                datafloat.Add((float)dSWorkwareGridModel.Pressure!);
             }
         }
 
-       
+        DeviceCard.CurrentPressure = datafloat.Average();
+
+
+
 
     }
 }

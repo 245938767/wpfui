@@ -294,8 +294,10 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <ProgressBar />
-                    <ui:DataGrid d:DataContext="{d:DesignInstance Type=models:GlobalData}" Grid.Row="1"
-                                 ItemsSource="{Binding  GlobalData.Instance.HomePageItemData}">
+                    <ui:DataGrid x:Name="MyDataGrid" Grid.Row="1"
+
+                                 ItemsSource="{Binding Source={x:Static models:GlobalData.Instance}, Path=HomePageItemData,Mode=TwoWay}">
+      
                     </ui:DataGrid>
                 </Grid>
 

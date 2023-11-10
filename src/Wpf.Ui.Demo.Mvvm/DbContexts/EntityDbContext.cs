@@ -183,7 +183,7 @@ public partial class EntityDbContext : DbContext
             Id = 4,
             PortName = null,
             StopBit = StopBits.One,
-            BaudRate = 9600,
+            BaudRate = 115200,
             DataBit = 8,
             DeviceStatus = false,
             NetworkAddress = "11"

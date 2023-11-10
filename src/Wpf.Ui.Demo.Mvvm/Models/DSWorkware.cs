@@ -43,7 +43,8 @@ public partial class DSWorkwareArea
 /// </summary>
 public partial class DSWorkwareGridModel : ObservableObject
 {
-
+    [ObservableProperty]
+    private int _serialNumber;
     /// <summary>
     /// 设备ID
     /// </summary>

@@ -1,4 +1,4 @@
-﻿using System.IO.Ports;
+using System.IO.Ports;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.Helpers;
@@ -32,7 +32,7 @@ public static class SerialPortExtension
             var count = port.BytesToRead;
             var buff = new byte[count];
             port.Read(buff, 0, count);
-            if (count == 0)
+            if (count != 0)
             {
                 receiveData.Invoke(buff);
             }
