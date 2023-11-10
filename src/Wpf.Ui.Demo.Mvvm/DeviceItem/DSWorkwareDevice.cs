@@ -23,7 +23,7 @@ public class DSWorkwareDevice : IDevice
         : base(deviceCard)
     {
         SerialPort.SetDataReceiveData(ReceiveData);
-        //TODO  从Service中获得数据
+        // TODO  从Service中获得数据
     }
 
     public async override Task<bool> CloseConnect()
@@ -54,8 +54,8 @@ public class DSWorkwareDevice : IDevice
         try
         {
             // 工装特性:要先发送两次后才会返回数据
-            SerialPort.SendHexCRC("11 03 00 90 00 70", SerialPortLock);
-            SerialPort.SendHexCRC("11 03 00 90 00 70", SerialPortLock);
+            SerialPort.SendHexCRC($"{DeviceCard.SerialPortModel.NetworkAddress} 03 00 90 00 70", SerialPortLock);
+            SerialPort.SendHexCRC($"{DeviceCard.SerialPortModel.NetworkAddress} 03 00 90 00 70", SerialPortLock);
 
             _ = await Task.Factory.StartNew(
                 async () =>
@@ -65,7 +65,7 @@ public class DSWorkwareDevice : IDevice
                         // 如果发送失败直接退出循环
                         try
                         {
-                            SerialPort.SendHexCRC("11 03 00 90 00 70", SerialPortLock);
+                            SerialPort.SendHexCRC($"{DeviceCard.SerialPortModel.NetworkAddress} 03 00 90 00 70", SerialPortLock);
 
                             // 每1秒获得数据
                             await Task.Delay(1000);

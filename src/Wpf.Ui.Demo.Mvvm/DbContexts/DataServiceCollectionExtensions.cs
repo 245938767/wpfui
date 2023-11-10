@@ -31,6 +31,5 @@ public static class DataServiceCollectionExtensions
      */
     public static void AddDbModules(this IServiceCollection services)
     {
-
     }
 }

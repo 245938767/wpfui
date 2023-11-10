@@ -39,7 +39,7 @@ public partial class DevicePortConnectViewModel : ObservableObject
             115200,
         };
         DataBitList = new List<int>() { 6, 7, 8 };
-        NetworkAddressList = new List<string>() { "01", "02", "03" };
+        NetworkAddressList = new List<string>() { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15" };
 
         Init();
     }

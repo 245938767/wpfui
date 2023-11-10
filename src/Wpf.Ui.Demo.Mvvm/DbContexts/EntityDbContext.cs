@@ -186,7 +186,7 @@ public partial class EntityDbContext : DbContext
             BaudRate = 9600,
             DataBit = 8,
             DeviceStatus = false,
-            NetworkAddress = "01"
+            NetworkAddress = "11"
 
         };
         deviceCards.Add(pop);
