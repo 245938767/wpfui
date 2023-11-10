@@ -5,25 +5,24 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
+using Wpf.Ui.Demo.Mvvm.ViewModels;
 
 namespace Wpf.Ui.Demo.Mvvm.DeviceItem;
 
 public class DSWorkwareDevice : IDevice
 {
     private CancellationTokenSource? _cancelTokenMsg;
-    // 数据集合
-    // 测试标准数据
 
     public DSWorkwareDevice(DeviceCard deviceCard)
         : base(deviceCard)
     {
         SerialPort.SetDataReceiveData(ReceiveData);
-        // TODO  从Service中获得数据
     }
 
     public async override Task<bool> CloseConnect()
@@ -65,7 +64,8 @@ public class DSWorkwareDevice : IDevice
                         // 如果发送失败直接退出循环
                         try
                         {
-                            SerialPort.SendHexCRC($"{DeviceCard.SerialPortModel.NetworkAddress} 03 00 90 00 70", SerialPortLock);
+                            SerialPort.SendHexCRC($"{DeviceCard.SerialPortModel.NetworkAddress} 03 00 90 00 70",
+                                SerialPortLock);
 
                             // 每1秒获得数据
                             await Task.Delay(1000);
@@ -128,11 +128,42 @@ public class DSWorkwareDevice : IDevice
         // 装换成float数据
         List<float> list = CRCModelHelper.TranlationByteForFloat(receiveData);
         var data = new List<float>();
-        if (list != null && list.Count > 0)
+        if (list.Count <= 0)
         {
-            // 数据排序（获取到的数据排序为17-24,1-8,9-16）设置为（1-24）
-            data = list.Skip(32).Take(16).Concat(list.Take(16)).Concat(list.Skip(16).Take(16)).ToList();
-            DeviceCard.CurrentTemperature = list.Skip(48).Where(x => x > 0).Average();
+            return;
         }
+
+        // 数据排序（获取到的数据排序为17-24,1-8,9-16）设置为（1-24）
+        data = list.Skip(32).Take(16).Concat(list.Take(16)).Concat(list.Skip(16).Take(16)).ToList();
+        // 8个温度点
+        var temperatureList = list.Skip(48);
+        DeviceCard.CurrentTemperature =  temperatureList.Where(x => x > 0).Average();
+        DeviceCard.CurrentPressure = list.Take(48).Where(x => x > 0).Average();
+
+        // 生成对象数据
+        var homePageItemData = GlobalData.Instance.HomePageItemData;
+        var count = 0;
+
+        if (homePageItemData.Count > 0)
+        {
+            for (var i = 0; i < data.Count; i++)
+            {
+                var v = (DSWorkwareGridModel)homePageItemData[i];
+                v.Pressure = data[count++];
+                v.Temperature = data[count++];
+            }
+        }else 
+        {
+            for (var i = 0; i < data.Count; i++)
+            {
+                var dSWorkwareGridModel = new DSWorkwareGridModel();
+                dSWorkwareGridModel.Pressure = data[count++];
+                dSWorkwareGridModel.Temperature = data[count++];
+                homePageItemData.Add(dSWorkwareGridModel);
+            }
+        }
+
+       
+
     }
 }

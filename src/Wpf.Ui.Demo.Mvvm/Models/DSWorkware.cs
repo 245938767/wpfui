@@ -3,36 +3,64 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace Wpf.Ui.Demo.Mvvm.Models;
 
-namespace Wpf.Ui.Demo.Mvvm.Models.DSWorkwareData;
-public class DSWorkware
+public partial class DSWorkware : ObservableObject {
+    public long Id { get; set; }
+    /// 标准对象外键
+    /// </summary>
+    public int StandardId { get; set; }
+    public Standard? Standard { get; set; }
+    public List<DSWorkwareArea>? DSWorkwareAreas { get; set; }
+}
+
+/// <summary>
+/// Ds 数据域
+/// </summary>
+public partial class DSWorkwareArea
 {
     public long Id { get; set; }
-    public string DomainKey { get; set; }
-    public float Pressure { get; set; }
-    public float Temperature { get; set; }
+    public long DSWorkwareId { get; set; }
+    /// <summary>
+    /// 设备ID
+    /// </summary>
+    public string? Equipment { get; set; }
+
+    /// <summary>
+    /// 工装压力数据
+    /// </summary>
+    public float? Pressure { get; set; }
+
+    /// <summary>
+    /// 工装温度数据
+    /// </summary>
+    public float? Temperature { get; set; }
+
 }
 
-public class DSStandardData {
-    public int Id { get; set; }
-    public StandardEnum Standard { get; set; }
-    /// <summary>
-    /// 标准值
-    /// </summary>
-    public float Value { get; set; }
-    /// <summary>
-    /// 阈值
-    /// </summary>
-    public float ThresholdValue { get; set; }
-}
-
-public enum StandardEnum
+/// <summary>
+/// 页面显示Model
+/// </summary>
+public partial class DSWorkwareGridModel : ObservableObject
 {
-    Pressure,
-    Temperature,
+
+    /// <summary>
+    /// 设备ID
+    /// </summary>
+    [ObservableProperty]
+    private string? _equipment;
+
+    /// <summary>
+    /// 工装压力数据
+    /// </summary>
+    [ObservableProperty]
+    private float? _pressure;
+
+    /// <summary>
+    /// 工装温度数据
+    /// </summary>
+    [ObservableProperty]
+    private float? _temperature;
+    [ObservableProperty]
+    private bool _isCheck;
 }

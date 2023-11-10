@@ -18,15 +18,20 @@ public partial class GlobalData : ObservableObject
     /// <summary>
     /// 是否开启了检测
     /// </summary>
-    [ObservableProperty]
-    private bool _isOpenCheck;
+    [ObservableProperty] private bool _isOpenCheck;
+
+    /// <summary>
+    /// 首页表格数据
+    /// </summary>
+    [ObservableProperty] private ObservableCollection<Object> _homePageItemData = new ObservableCollection<object>();
 
     /// <summary>
     /// 设备数据存储
     /// </summary>
     [ObservableProperty] private Dictionary<DeviceTypeEnum, IDevice> _deviceSerialPorts = new();
-    
+
     [ObservableProperty] private Dictionary<ProcessFlowEnum, IProcessFlow> _processFlow = new();
+
     /// <summary>
     /// 全局日志信息
     /// </summary>

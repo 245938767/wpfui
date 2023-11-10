@@ -4,10 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Wpf.Ui.Demo.Mvvm.Views.Pages"
-        xmlns:helpers="clr-namespace:Wpf.Ui.Demo.Mvvm.Helpers"
+    xmlns:models="clr-namespace:Wpf.Ui.Demo.Mvvm.ViewModels"
+    xmlns:helpers="clr-namespace:Wpf.Ui.Demo.Mvvm.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-                 xmlns:controls="clr-namespace:Wpf.Ui.Demo.Mvvm.Controls"
+    xmlns:controls="clr-namespace:Wpf.Ui.Demo.Mvvm.Controls"
     Title="DashboardPage"
     d:DataContext="{d:DesignInstance local:DashboardPage,
                                      IsDesignTimeCreatable=False}"
@@ -47,13 +48,13 @@
                             <DataTemplate>
 
                                 <ui:CardAction
-                                        Grid.Row="0"
-                                        Margin="0,0,10,0"
-                                        Padding="5"
-                                        VerticalAlignment="Stretch"
-                                        Command="{Binding ViewModel.DeviceConnectCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:DashboardPage}, Mode=OneWay}"
-                                        CommandParameter="{Binding}"
-                                        IsChevronVisible="False">
+                                    Grid.Row="0"
+                                    Margin="0,0,10,0"
+                                    Padding="5"
+                                    VerticalAlignment="Stretch"
+                                    Command="{Binding ViewModel.DeviceConnectCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:DashboardPage}, Mode=OneWay}"
+                                    CommandParameter="{Binding}"
+                                    IsChevronVisible="False">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -65,50 +66,50 @@
                                         </Grid.RowDefinitions>
 
                                         <Image Grid.Row="0" Grid.Column="0"
-                                                   Width="60"
-                                                   Margin="24,0,0,0"
-                                                   Source="{Binding ImageUrl,Mode=OneWay}" />
+                                               Width="60"
+                                               Margin="24,0,0,0"
+                                               Source="{Binding ImageUrl,Mode=OneWay}" />
 
                                         <StackPanel Margin="23,23,23,15" Grid.Row="0" Grid.Column="1"
-                                                        MinHeight="55" MinWidth="100">
+                                                    MinHeight="55" MinWidth="100">
 
                                             <StackPanel
-                                                    Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
+                                                Orientation="Horizontal"
+                                                VerticalAlignment="Center">
                                                 <ui:TextBlock
-                                                        Margin="-1"
-                                                        FontTypography="BodyStrong"
-                                                        Text="Port:"
-                                                        TextWrapping="WrapWithOverflow" />
+                                                    Margin="-1"
+                                                    FontTypography="BodyStrong"
+                                                    Text="Port:"
+                                                    TextWrapping="WrapWithOverflow" />
                                                 <ui:TextBlock
-                                                        Margin="10,0,0,0"
-                                                        Appearance="Tertiary"
-                                                        Text="{Binding SerialPortModel.PortName,Mode=OneWay}"
-                                                        TextWrapping="WrapWithOverflow" />
+                                                    Margin="10,0,0,0"
+                                                    Appearance="Tertiary"
+                                                    Text="{Binding SerialPortModel.PortName,Mode=OneWay}"
+                                                    TextWrapping="WrapWithOverflow" />
 
                                             </StackPanel>
                                             <StackPanel
-                                                    Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
+                                                Orientation="Horizontal"
+                                                VerticalAlignment="Center">
                                                 <ui:TextBlock
-                                                        Margin="-1"
-                                                        FontTypography="BodyStrong"
-                                                        Text="CurrentPressure:"
-                                                        TextWrapping="WrapWithOverflow" />
+                                                    Margin="-1"
+                                                    FontTypography="BodyStrong"
+                                                    Text="CurrentPressure:"
+                                                    TextWrapping="WrapWithOverflow" />
                                                 <ui:TextBlock
-                                                        Margin="10,0,5,0"
+                                                    Margin="10,0,5,0"
                                                     x:Name="CurrentPressureText"
 
-                                                        Appearance="Tertiary"
-                                                        Text="{Binding CurrentPressure,Mode=OneWay, StringFormat={}{0:F4}}"
-                                                        TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}"/>
+                                                    Appearance="Tertiary"
+                                                    Text="{Binding CurrentPressure,Mode=OneWay, StringFormat={}{0:F4}}"
+                                                    TextWrapping="WrapWithOverflow" />
+                                                <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}" />
                                                 <StackPanel.Style>
                                                     <Style TargetType="StackPanel">
                                                         <Style.Triggers>
                                                             <DataTrigger
-                                                                    Binding="{Binding Text,ElementName=CurrentPressureText}"
-                                                                    Value="">
+                                                                Binding="{Binding Text,ElementName=CurrentPressureText}"
+                                                                Value="">
                                                                 <Setter Property="Visibility" Value="Collapsed"></Setter>
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -116,27 +117,27 @@
                                                 </StackPanel.Style>
                                             </StackPanel>
                                             <StackPanel
-                                                    Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
+                                                Orientation="Horizontal"
+                                                VerticalAlignment="Center">
                                                 <ui:TextBlock
-                                                        Margin="-1"
-                                                        FontTypography="BodyStrong"
-                                                        Text="CurrentTemperature:"
-                                                        TextWrapping="WrapWithOverflow" />
+                                                    Margin="-1"
+                                                    FontTypography="BodyStrong"
+                                                    Text="CurrentTemperature:"
+                                                    TextWrapping="WrapWithOverflow" />
                                                 <ui:TextBlock
-                                                        Margin="10,0,5,0"
-                                                        x:Name="CurrentTemperatureText"
-                                                        Appearance="Tertiary"
-                                                        Text="{Binding CurrentTemperature,Mode=OneWay, StringFormat={}{0:F4}}"
-                                                        TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}"/>
+                                                    Margin="10,0,5,0"
+                                                    x:Name="CurrentTemperatureText"
+                                                    Appearance="Tertiary"
+                                                    Text="{Binding CurrentTemperature,Mode=OneWay, StringFormat={}{0:F4}}"
+                                                    TextWrapping="WrapWithOverflow" />
+                                                <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}" />
 
                                                 <StackPanel.Style>
                                                     <Style TargetType="StackPanel">
                                                         <Style.Triggers>
                                                             <DataTrigger
-                                                                    Binding="{Binding Text,ElementName=CurrentTemperatureText}"
-                                                                    Value="">
+                                                                Binding="{Binding Text,ElementName=CurrentTemperatureText}"
+                                                                Value="">
                                                                 <Setter Property="Visibility" Value="Collapsed"></Setter>
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -145,27 +146,27 @@
                                             </StackPanel>
 
                                             <StackPanel
-                                                    Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
+                                                Orientation="Horizontal"
+                                                VerticalAlignment="Center">
                                                 <ui:TextBlock
-                                                        Margin="-1"
-                                                        FontTypography="BodyStrong"
-                                                        Text="SettingPressure:"
-                                                        TextWrapping="WrapWithOverflow" />
+                                                    Margin="-1"
+                                                    FontTypography="BodyStrong"
+                                                    Text="SettingPressure:"
+                                                    TextWrapping="WrapWithOverflow" />
                                                 <ui:TextBlock
-                                                        Margin="10,0,5,0"
-                                                        x:Name="SettingPressureText"
-                                                        Appearance="Tertiary"
-                                                        Text="{Binding SettingPressure,Mode=OneWay, StringFormat={}{0:F4}}"
-                                                        TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}"/>
+                                                    Margin="10,0,5,0"
+                                                    x:Name="SettingPressureText"
+                                                    Appearance="Tertiary"
+                                                    Text="{Binding SettingPressure,Mode=OneWay, StringFormat={}{0:F4}}"
+                                                    TextWrapping="WrapWithOverflow" />
+                                                <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}" />
 
                                                 <StackPanel.Style>
                                                     <Style TargetType="StackPanel">
                                                         <Style.Triggers>
                                                             <DataTrigger
-                                                                    Binding="{Binding Text,ElementName=SettingPressureText}"
-                                                                    Value="">
+                                                                Binding="{Binding Text,ElementName=SettingPressureText}"
+                                                                Value="">
                                                                 <Setter Property="Visibility" Value="Collapsed"></Setter>
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -173,27 +174,27 @@
                                                 </StackPanel.Style>
                                             </StackPanel>
                                             <StackPanel
-                                                    Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
+                                                Orientation="Horizontal"
+                                                VerticalAlignment="Center">
                                                 <ui:TextBlock
-                                                        Margin="-1"
-                                                        FontTypography="BodyStrong"
-                                                        Text="SettingTemperature:"
-                                                        TextWrapping="WrapWithOverflow" />
+                                                    Margin="-1"
+                                                    FontTypography="BodyStrong"
+                                                    Text="SettingTemperature:"
+                                                    TextWrapping="WrapWithOverflow" />
                                                 <ui:TextBlock
-                                                        Margin="10,0,5,0"
-                                                        x:Name="SettingTemperatureText"
-                                                        Appearance="Tertiary"
-                                                        Text="{Binding SettingTemperature,Mode=OneWay, StringFormat={}{0:F4}}"
-                                                        TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}"/>
+                                                    Margin="10,0,5,0"
+                                                    x:Name="SettingTemperatureText"
+                                                    Appearance="Tertiary"
+                                                    Text="{Binding SettingTemperature,Mode=OneWay, StringFormat={}{0:F4}}"
+                                                    TextWrapping="WrapWithOverflow" />
+                                                <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}" />
 
                                                 <StackPanel.Style>
                                                     <Style TargetType="StackPanel">
                                                         <Style.Triggers>
                                                             <DataTrigger
-                                                                    Binding="{Binding Text,ElementName=SettingTemperatureText}"
-                                                                    Value="">
+                                                                Binding="{Binding Text,ElementName=SettingTemperatureText}"
+                                                                Value="">
                                                                 <Setter Property="Visibility" Value="Collapsed"></Setter>
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -203,24 +204,25 @@
                                         </StackPanel>
 
                                         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
-                                                        VerticalAlignment="Center" HorizontalAlignment="Left"
-                                                        Margin="3,0,0,0">
+                                                    VerticalAlignment="Center" HorizontalAlignment="Left"
+                                                    Margin="3,0,0,0">
 
-                                            <Ellipse Width="10" Height="10" Margin="0,0,2,0" Fill="{Binding SerialPortModel.DeviceStatus,Converter={StaticResource BooleanToDeviceStatusConverter},Mode=OneWay}">
+                                            <Ellipse Width="10" Height="10" Margin="0,0,2,0"
+                                                     Fill="{Binding SerialPortModel.DeviceStatus,Converter={StaticResource BooleanToDeviceStatusConverter},Mode=OneWay}">
 
                                             </Ellipse>
                                             <ui:TextBlock Text="{Binding DeviceName,Mode=OneWay}" />
                                         </StackPanel>
                                         <ui:TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right"
 
-                                                          Margin="0,0,5,0">
+                                                      Margin="0,0,5,0">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Text" Value="连接设备"></Setter>
                                                     <Style.Triggers>
                                                         <DataTrigger
-                                                                Binding="{Binding SerialPortModel.DeviceStatus}"
-                                                                Value="True">
+                                                            Binding="{Binding SerialPortModel.DeviceStatus}"
+                                                            Value="True">
                                                             <Setter Property="Text" Value="关闭连接" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -283,16 +285,18 @@
                             MinWidth="300" Margin="0,20,20,20"
                             IsReadOnly="True">
                 </ui:TextBox>
-                <Grid  Grid.Column="1" Margin="20,20,0,20">
+                <Grid Grid.Column="1" Margin="20,20,0,20">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <ProgressBar />
-                    <ui:DataGrid Grid.Row="1"></ui:DataGrid>
+                    <ui:DataGrid d:DataContext="{d:DesignInstance Type=models:GlobalData}" Grid.Row="1"
+                                 ItemsSource="{Binding  GlobalData.Instance.HomePageItemData}">
+                    </ui:DataGrid>
                 </Grid>
 
             </Grid>
