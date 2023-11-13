@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Wpf.Ui.Demo.Mvvm.Helpers;
+namespace Wpf.Ui.Demo.Mvvm.Helpers.Converter;
 public class EnumDescriptionTypeConverter : EnumConverter
 {
     public EnumDescriptionTypeConverter(Type type) : base(type)

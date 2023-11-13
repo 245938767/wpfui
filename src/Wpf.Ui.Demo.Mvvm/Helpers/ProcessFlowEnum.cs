@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wpf.Ui.Demo.Mvvm.Helpers.Converter;
 
 namespace Wpf.Ui.Demo.Mvvm.Helpers;
 
