@@ -254,8 +254,8 @@
                     VerticalAlignment="Center"
                     SelectedItem="{Binding ViewModel.ProcessFlow,Mode=TwoWay}"
                     ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProcessFlowEnum}}}"
-                    IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}">
-                </ComboBox>
+                    IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"/>
+
 
                 <Grid Grid.Column="2">
 

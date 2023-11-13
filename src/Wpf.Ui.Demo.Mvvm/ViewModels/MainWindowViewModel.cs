@@ -47,6 +47,11 @@ public partial class MainWindowViewModel : ObservableObject
                 Content = "Data",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.DataHistogram24 },
                 TargetPageType = typeof(Views.Pages.DataPage)
+            },
+            new NavigationViewItem(){ 
+            Content="Configuration",
+            Icon=new SymbolIcon{Symbol=SymbolRegular.Accessibility20},
+            TargetPageType=typeof(Views.Pages.DataConfigurationPage)
             }
         };
 

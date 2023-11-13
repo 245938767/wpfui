@@ -40,6 +40,15 @@ public abstract class IDevice
     }
 
     /// <summary>
+    /// 设备是否连接
+    /// </summary>
+    /// <returns></returns>
+    public bool IsConnection()
+    {
+        return DeviceCard.SerialPortModel?.DeviceStatus ?? false;
+    }
+
+    /// <summary>
     /// 开启设备
     /// </summary>
     /// <returns> 是否开启成功</returns>

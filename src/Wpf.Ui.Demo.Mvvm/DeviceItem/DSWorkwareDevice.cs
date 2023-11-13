@@ -39,7 +39,6 @@ public class DSWorkwareDevice : IDevice
         {
             return true;
         }
-
         return !SerialPort.IsOpen;
     }
 

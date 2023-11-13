@@ -31,6 +31,7 @@ public partial class EntityDbContext : DbContext
         Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<SerialPortModel> SerialPortBuilder= builder.Entity<SerialPortModel>();
         _ = SerialPortBuilder.HasData(initSerialPort());
         SerialPortBuilder.Ignore(o => o.DeviceStatus);
+
         Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<DeviceCard> DeviceCardBuilder = builder.Entity<DeviceCard>();
         DeviceCardBuilder.Ignore(o => o.CurrentPressure);
         DeviceCardBuilder.Ignore(o => o.CurrentTemperature);
@@ -38,6 +39,9 @@ public partial class EntityDbContext : DbContext
         DeviceCardBuilder.Ignore(o => o.SettingTemperature);
         DeviceCardBuilder.HasOne(o => o.SerialPortModel).WithOne(o => o.DeviceCards).HasForeignKey<DeviceCard>(o=>o.ForeignKey);
         _ = DeviceCardBuilder.HasData(init());
+
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Standard> StandardBuilder = builder.Entity<Standard>();
+        StandardBuilder.HasMany(o => o.StandarDatas).WithOne(o => o.Standard).HasForeignKey(k => k.StandardId).IsRequired();
         ConfigureConventions(builder);
     }
 
@@ -45,7 +49,11 @@ public partial class EntityDbContext : DbContext
     {
         foreach (var entityType in builder.Model.GetEntityTypes())
         {
-            if (entityType.BaseType != null) continue;
+            if (entityType.BaseType != null)
+            {
+                continue;
+            }
+
             var tableName = entityType.GetTableName();
             entityType.SetTableName("t_" + tableName);
 
@@ -81,6 +89,8 @@ public partial class EntityDbContext : DbContext
 
     public DbSet<DeviceCard> DeviceCards { get; set; }
     public DbSet<SerialPortModel> SerialPortModels { get; set; }
+    public DbSet<Standard> Standards { get; set; }
+    public DbSet<StandardData> StandardDatas { get; set; }
 
     private static List<DeviceCard> init()
     {

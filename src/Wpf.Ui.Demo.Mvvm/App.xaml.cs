@@ -73,7 +73,11 @@ public partial class App
                 services.AddSingleton<ViewModels.SettingsViewModel>();
                 services.AddSingleton<Views.Pages.DevicePortConnectPage>();
                 services.AddSingleton<ViewModels.DevicePortConnectViewModel>();
+                services.AddSingleton<Views.Pages.DataConfigurationPage>();
+                services.AddSingleton<ViewModels.DataConfigurationViewModel>();
                 services.AddSingleton<DeviceService>();
+                services.AddSingleton<StandardService>();
+
 
                 // Configuration
                 services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));

@@ -42,15 +42,6 @@
             PaneDisplayMode="LeftFluent"
             FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
             MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}">
-            <!-- <ui:NavigationView.AutoSuggestBox> -->
-            <!--     <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search"> -->
-            <!--         <ui:AutoSuggestBox.Icon> -->
-            <!--             <ui:IconSourceElement> -->
-            <!--                 <ui:SymbolIconSource Symbol="Search24" /> -->
-            <!--             </ui:IconSourceElement> -->
-            <!--         </ui:AutoSuggestBox.Icon> -->
-            <!--     </ui:AutoSuggestBox> -->
-            <!-- </ui:NavigationView.AutoSuggestBox> -->
             <ui:NavigationView.Header>
                 <ui:BreadcrumbBar
                     Margin="0,20,0,0"

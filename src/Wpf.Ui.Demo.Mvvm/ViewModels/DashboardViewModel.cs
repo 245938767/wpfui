@@ -188,12 +188,10 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         if (result == ContentDialogResult.Primary)
         {
             // TODO 根据流程实例化对应的决策
-            GlobalData.Instance.IsOpenCheck = true;
             await processFlow.ExecutionProcess();
         }
         else
         {
-            GlobalData.Instance.IsOpenCheck = false;
             return;
         }
     }

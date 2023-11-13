@@ -3,21 +3,28 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
+using System.ComponentModel;
+
 namespace Wpf.Ui.Demo.Mvvm.Models;
 
-public partial class DSWorkware : ObservableObject {
+public class DSWorkware {
     public long Id { get; set; }
     /// 标准对象外键
     /// </summary>
     public int StandardId { get; set; }
+    //标准数据
+    [Description("标准数据")]
     public Standard? Standard { get; set; }
+    [Description("数据集")]
     public List<DSWorkwareArea>? DSWorkwareAreas { get; set; }
+    [Description("是否检测完成")]
+    public bool IsCheck { get; set; }
 }
 
 /// <summary>
 /// Ds 数据域
 /// </summary>
-public partial class DSWorkwareArea
+public  class DSWorkwareArea
 {
     public long Id { get; set; }
     public long DSWorkwareId { get; set; }
