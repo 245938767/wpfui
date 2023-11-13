@@ -24,16 +24,6 @@ public partial class GlobalData : ObservableObject
     [ObservableProperty] private bool _isOpenCheck;
 
     /// <summary>
-    /// 首页表格数据
-    /// </summary>
-    [ObservableProperty] private ObservableCollection<object> _homePageItemData = new ObservableCollection<object>();
-    public void AddHomePageItemData(object o) {
-        dispatcher.Invoke(() => {
-            HomePageItemData.Add(o);
-        });
-    }
-
-    /// <summary>
     /// 设备数据存储
     /// </summary>
     [ObservableProperty] private Dictionary<DeviceTypeEnum, IDevice> _deviceSerialPorts = new();

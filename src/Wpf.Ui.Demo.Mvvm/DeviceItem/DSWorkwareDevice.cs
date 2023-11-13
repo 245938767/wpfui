@@ -17,11 +17,13 @@ namespace Wpf.Ui.Demo.Mvvm.DeviceItem;
 
 public class DSWorkwareDevice : IDevice
 {
+    private readonly ObservableCollection<object>? _viewList;
     private CancellationTokenSource? _cancelTokenMsg;
 
-    public DSWorkwareDevice(DeviceCard deviceCard)
+    public DSWorkwareDevice(DeviceCard deviceCard,ObservableCollection<object>? viewList=null)
         : base(deviceCard)
     {
+        _viewList = viewList;
         SerialPort.SetDataReceiveData(ReceiveData);
     }
 
@@ -30,6 +32,7 @@ public class DSWorkwareDevice : IDevice
         try
         {
             _cancelTokenMsg!.Cancel();
+            await Task.Delay(500);
             SerialPort.ClosePort(SerialPortLock);
         }
         catch (InvalidOperationException)
@@ -138,10 +141,9 @@ public class DSWorkwareDevice : IDevice
         // 8个温度点
         var temperatureList = list.Skip(48);
         DeviceCard.CurrentTemperature =  temperatureList.Where(x => x > 0).Average();
-        GlobalData instance = GlobalData.Instance;
 
         // 生成对象数据
-        var homePageItemData = instance.HomePageItemData;
+        var homePageItemData = _viewList;
         var count = 0;
         var datafloat = new List<float>();
         if (homePageItemData.Count > 0)
@@ -162,7 +164,7 @@ public class DSWorkwareDevice : IDevice
                 dSWorkwareGridModel.SerialNumber = i + 1;
                 dSWorkwareGridModel.Pressure = float.Parse( data[count++].ToString("#.000"));
                 dSWorkwareGridModel.Temperature = float.Parse(data[count++].ToString("#.00"));
-                instance.AddHomePageItemData(dSWorkwareGridModel);
+                homePageItemData.Add(dSWorkwareGridModel);
                 datafloat.Add((float)dSWorkwareGridModel.Pressure!);
             }
         }

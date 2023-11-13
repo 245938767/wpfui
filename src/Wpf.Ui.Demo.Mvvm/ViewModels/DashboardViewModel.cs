@@ -4,6 +4,7 @@
 // All Rights Reserved.
 
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
@@ -26,6 +27,10 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     [ObservableProperty] private List<DeviceCard> _deviceCards = new();
     [ObservableProperty]
     private ProcessFlowEnum _processFlow = ProcessFlowEnum.DSTest;
+    /// <summary>
+    /// 首页表格数据
+    /// </summary>
+    [ObservableProperty] private ObservableCollection<object> _homePageItemData = new ObservableCollection<object>();
 
     public DashboardViewModel(IContentDialogService contentDialogService,DeviceService deviceService)
     {
@@ -145,6 +150,17 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     [RelayCommand]
     private async Task StartCheck()
     {
+        if (!GlobalData.Instance.ProcessFlow.ContainsKey(ProcessFlow))
+        {
+            var uiMessageBox = new Wpf.Ui.Controls.MessageBox
+            {
+                Title = "功能未开通提醒",
+                Content =
+             $"此测试功能未开通敬请期待...",
+            };
+            _ = await uiMessageBox.ShowDialogAsync();
+            return;
+        }
         IProcessFlow processFlow = GlobalData.Instance.ProcessFlow[ProcessFlow];
 
         // 检查主程序是否在运行（在运行不允许再次连接）
@@ -213,7 +229,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.DSWork, new DSWorkwareDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.DSWork)));
 
         // TODO 初始化 流程逻辑类
-        GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.DSTest, new DSTestDetection());
+        GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.DSTest, new DSTestDetection(ProcessFlow,HomePageItemData));
     }
 
  

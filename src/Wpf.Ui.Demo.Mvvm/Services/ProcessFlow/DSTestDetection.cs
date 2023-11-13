@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ class DSTestDetection : IProcessFlow
     private readonly DSWorkwareDevice? dSWorkwareDevice;
 
 
-    public DSTestDetection()
+    public DSTestDetection(ProcessFlowEnum processFlow, ObservableCollection<object> homePageItemData):base(processFlow,homePageItemData)
     {
         Dictionary<DeviceTypeEnum, IDevice> deviceSerialPorts = GlobalData.Instance.DeviceSerialPorts;
         dSWorkwareDevice = (DSWorkwareDevice?)deviceSerialPorts[Helpers.DeviceTypeEnum.DSWork];

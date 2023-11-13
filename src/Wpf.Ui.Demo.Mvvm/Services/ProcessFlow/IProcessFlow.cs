@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,20 @@ namespace Wpf.Ui.Demo.Mvvm.Services.ProcessFlow;
 
 public abstract class IProcessFlow : IDisposable
 {
+    protected ProcessFlowEnum ProcessFlow = ProcessFlowEnum.DSTest;
+    /// <summary>
+    /// 首页表格数据
+    /// </summary>
+     protected ObservableCollection<object> HomePageItemData = new ObservableCollection<object>();
+
+    public IProcessFlow(ProcessFlowEnum processFlow, ObservableCollection<object> homePageItemData)
+    {
+        ProcessFlow = processFlow;
+        HomePageItemData = homePageItemData;
+    }
+
+
+
     /// <summary>
     /// 执行检测
     /// </summary>
