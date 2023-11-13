@@ -7,13 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace Wpf.Ui.Demo.Mvvm.Helpers;
+namespace Wpf.Ui.Demo.Mvvm.Helpers.Converter;
 
 internal class BooleanToDeviceStatusConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is bool) {
+        if (value is bool)
+        {
             return (bool)value == true ? "Green" : "Red";
         }
 

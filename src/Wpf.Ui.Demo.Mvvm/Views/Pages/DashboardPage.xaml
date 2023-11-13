@@ -18,9 +18,7 @@
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
-    <Page.Resources>
-        <helpers:BooleanToDeviceStatusConverter x:Key="BooleanToDeviceStatusConverter" />
-    </Page.Resources>
+
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -255,7 +253,8 @@
                     Margin="0,8,0,0"
                     VerticalAlignment="Center"
                     SelectedItem="{Binding ViewModel.ProcessFlow,Mode=TwoWay}"
-                    ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProcessFlowEnum}}}">
+                    ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProcessFlowEnum}}}"
+                    IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}">
                 </ComboBox>
 
                 <Grid Grid.Column="2">
@@ -268,10 +267,13 @@
                         </Grid.ColumnDefinitions>
 
                         <ui:Button Grid.Column="0" MinWidth="100" MinHeight="25" Content="开始检测" Margin="20,0,20,0"
-                                   Command="{Binding ViewModel.StartCheckCommand,Mode=OneWay}">
-                        </ui:Button>
-                        <ui:Button Grid.Column="1" MinWidth="100" MinHeight="25" Content="停止检测" Margin="20,0,20,0"></ui:Button>
-                        <ui:Button Grid.Column="2" MinWidth="100" MinHeight="25" Content="导出Excel" Margin="20,0,0,0"></ui:Button>
+                                   Command="{Binding ViewModel.StartCheckCommand,Mode=OneWay}"
+                                    IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                        <ui:Button Grid.Column="1" MinWidth="100" MinHeight="25" Content="停止检测" Margin="20,0,20,0" 
+                                     Command="{Binding ViewModel.ColseCheckCommand,Mode=OneWay}"
+                                   IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay}"/>
+                        <ui:Button Grid.Column="2" MinWidth="100" MinHeight="25" Content="导出Excel" Margin="20,0,0,0"/>
                     </Grid>
                 </Grid>
 
@@ -296,7 +298,7 @@
                     <ProgressBar />
                     <ui:DataGrid x:Name="MyDataGrid" Grid.Row="1"
 
-                                 ItemsSource="{Binding Source={x:Static models:GlobalData.Instance}, Path=HomePageItemData,Mode=TwoWay}">
+                                 ItemsSource="{Binding ViewModel.HomePageItemData,Mode=TwoWay}">
       
                     </ui:DataGrid>
                 </Grid>

@@ -28,11 +28,6 @@ class DSTestDetection : IProcessFlow
         pumpDevice = (PumpDevice?)deviceSerialPorts[Helpers.DeviceTypeEnum.Pump];
     }
 
-    public override bool BreakExecution()
-    {
-        _cancellation?.Cancel();
-        throw new NotImplementedException();
-    }
 
     public override bool CheckExecution()
     {
@@ -46,7 +41,7 @@ class DSTestDetection : IProcessFlow
 
     public override void Dispose()
     {
-        throw new NotImplementedException();
+        _cancellation?.Cancel();
     }
 
     public override async Task<bool> ExecutionDetection()

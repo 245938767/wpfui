@@ -1,7 +1,7 @@
 using System.IO.Ports;
 using Wpf.Ui.Demo.Mvvm.Models;
 
-namespace Wpf.Ui.Demo.Mvvm.Helpers;
+namespace Wpf.Ui.Demo.Mvvm.Helpers.Extension;
 
 public static class SerialPortExtension
 {

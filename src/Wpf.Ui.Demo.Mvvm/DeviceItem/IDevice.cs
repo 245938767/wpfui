@@ -4,7 +4,7 @@
 // All Rights Reserved.
 
 using System.IO.Ports;
-using Wpf.Ui.Demo.Mvvm.Helpers;
+using Wpf.Ui.Demo.Mvvm.Helpers.Extension;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.DeviceItem;

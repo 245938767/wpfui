@@ -5,7 +5,7 @@
 
 using System.Text;
 using CommunityToolkit.Mvvm.Messaging;
-using Wpf.Ui.Demo.Mvvm.Helpers;
+using Wpf.Ui.Demo.Mvvm.Helpers.Extension;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
 

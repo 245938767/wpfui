@@ -48,8 +48,6 @@ public abstract class IProcessFlow : IDisposable
     /// 中断执行
     /// </summary>
     /// <returns></returns>
-    public abstract bool BreakExecution();
-
     public abstract void Dispose();
 
     /// <summary>

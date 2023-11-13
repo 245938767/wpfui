@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace Wpf.Ui.Demo.Mvvm.Helpers;
+namespace Wpf.Ui.Demo.Mvvm.Helpers.Converter;
 public class RowNumberConverter : IMultiValueConverter
 {
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
         if (values[0] is DataGrid dataGrid && values[1] is DataGridRow row)
         {
-            int index = dataGrid.ItemContainerGenerator.IndexFromContainer(row) + 1;
+            var index = dataGrid.ItemContainerGenerator.IndexFromContainer(row) + 1;
             return index.ToString();
         }
 

@@ -180,7 +180,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
             new SimpleContentDialogCreateOptions()
             {
                 Title = "开始检测提醒",
-                Content = $"是否开始测试: {ProcessFlow.ToString()}",
+                Content = $"是否开始测试: {ProcessFlow.ToDescription()}",
                 PrimaryButtonText = "确定",
                 CloseButtonText = "取消",
             }
@@ -195,6 +195,29 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         {
             GlobalData.Instance.IsOpenCheck = false;
             return;
+        }
+    }
+    /// <summary>
+    /// 取消检测（中断检测）
+    /// </summary>
+    /// <returns></returns>
+    [RelayCommand]
+    private async Task ColseCheck()
+    {
+        ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
+         new SimpleContentDialogCreateOptions()
+         {
+             Title = "中断检测提醒",
+             Content = $"是否中断测试: {ProcessFlow.ToDescription()}",
+             PrimaryButtonText = "确定",
+             CloseButtonText = "取消",
+         }
+     );
+        if (result == ContentDialogResult.Primary)
+        {
+            GlobalData.Instance.IsOpenCheck = false;
+            IProcessFlow processFlow = GlobalData.Instance.ProcessFlow[ProcessFlow];
+            processFlow.Dispose();
         }
     }
 

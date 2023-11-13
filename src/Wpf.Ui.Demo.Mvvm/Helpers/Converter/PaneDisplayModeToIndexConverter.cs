@@ -2,25 +2,29 @@
 // If a copy of the MIT was not distributed with this file, You can obtain one at https://opensource.org/licenses/MIT.
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
-
 using System.Globalization;
 using System.Windows.Data;
 using Wpf.Ui.Appearance;
+using Wpf.Ui.Controls;
 
-namespace Wpf.Ui.Demo.Mvvm.Helpers;
-
-internal sealed class ThemeToIndexConverter : IValueConverter
+namespace Wpf.Ui.Demo.Mvvm.Helpers.Converter;
+internal sealed class PaneDisplayModeToIndexConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is ApplicationTheme.Dark)
+        if (value is NavigationViewPaneDisplayMode.LeftFluent)
         {
             return 1;
         }
 
-        if (value is ApplicationTheme.HighContrast)
+        if (value is NavigationViewPaneDisplayMode.Top)
         {
             return 2;
+        }
+
+        if (value is NavigationViewPaneDisplayMode.Bottom)
+        {
+            return 3;
         }
 
         return 0;
@@ -30,14 +34,19 @@ internal sealed class ThemeToIndexConverter : IValueConverter
     {
         if (value is 1)
         {
-            return ApplicationTheme.Dark;
+            return NavigationViewPaneDisplayMode.LeftFluent;
         }
 
         if (value is 2)
         {
-            return ApplicationTheme.HighContrast;
+            return NavigationViewPaneDisplayMode.Top;
         }
 
-        return ApplicationTheme.Light;
+        if (value is 3)
+        {
+            return NavigationViewPaneDisplayMode.Bottom;
+        }
+
+        return NavigationViewPaneDisplayMode.Left;
     }
 }
