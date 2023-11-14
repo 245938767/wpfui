@@ -49,6 +49,8 @@ public partial class App
                 // Page resolver service
                 services.AddSingleton<IPageService, PageService>();
                 services.AddSingleton<IContentDialogService, ContentDialogService>();
+                services.AddSingleton<DeviceService>();
+                services.AddSingleton<StandardService>();
 
                 // Theme manipulation
                 services.AddSingleton<IThemeService, ThemeService>();
@@ -73,10 +75,11 @@ public partial class App
                 services.AddSingleton<ViewModels.SettingsViewModel>();
                 services.AddSingleton<Views.Pages.DevicePortConnectPage>();
                 services.AddSingleton<ViewModels.DevicePortConnectViewModel>();
-                services.AddSingleton<Views.Pages.DataConfigurationPage>();
-                services.AddSingleton<ViewModels.DataConfigurationViewModel>();
-                services.AddSingleton<DeviceService>();
-                services.AddSingleton<StandardService>();
+                services.AddSingleton<Views.Pages.DataConfigurationPage.DataConfigurationListPage>();
+                services.AddSingleton<ViewModels.DataConfigurationListViewModel>();
+
+
+
 
 
                 // Configuration

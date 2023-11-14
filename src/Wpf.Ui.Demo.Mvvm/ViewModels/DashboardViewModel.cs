@@ -25,6 +25,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     private bool _isInitialized = false;
 
     [ObservableProperty] private List<DeviceCard> _deviceCards = new();
+
     [ObservableProperty]
     private ProcessFlowEnum _processFlow = ProcessFlowEnum.DSTest;
     /// <summary>

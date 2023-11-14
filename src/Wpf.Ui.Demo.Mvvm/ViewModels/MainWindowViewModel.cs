@@ -51,7 +51,7 @@ public partial class MainWindowViewModel : ObservableObject
             new NavigationViewItem(){ 
             Content="Configuration",
             Icon=new SymbolIcon{Symbol=SymbolRegular.Accessibility20},
-            TargetPageType=typeof(Views.Pages.DataConfigurationPage)
+            TargetPageType=typeof(Views.Pages.DataConfigurationPage.DataConfigurationListPage)
             }
         };
 

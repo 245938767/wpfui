@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wpf.Ui.Demo.Mvvm.DbContexts;
+using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.Services;
@@ -25,5 +26,20 @@ public class StandardService
     public List<Standard> GetList()
     {
         return _dbContext.Standards.Include(o => o.StandarDatas).ToList();
-            }
+    }
+
+    public Standard? GetStandard(ProcessFlowEnum processFlow) {
+        return _dbContext.Standards.Include(o => o.StandarDatas).FirstOrDefault(o=> o.ProcessFlow == processFlow);
+    }
+
+    public int Save(Standard standard) {
+        _ = _dbContext.Standards.Add(standard);
+        return _dbContext.SaveChanges();
+    }
+
+    public int Update(Standard standard)
+    {
+        _ = _dbContext.Standards.Update(standard);
+        return _dbContext.SaveChanges();
+    }
 }

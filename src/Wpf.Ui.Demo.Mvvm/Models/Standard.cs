@@ -34,7 +34,7 @@ public class Standard
 public class StandardData
 {
     public int Id { get; set; }
-    [Description("夫Id")]
+    [Description("父Id")]
     public int StandardId { get; set; }
     [Description("配置类型")]
     public StandardEnum StandardType { get; set; }
