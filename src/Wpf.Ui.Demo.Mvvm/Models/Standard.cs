@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Wpf.Ui.Demo.Mvvm.Models;
 /// <summary>
 /// 测试数据对象集
 /// </summary>
-public class Standard
+public partial class Standard: ObservableObject
 {
     public int Id { get; set; }
     [Description("数据名称")]
@@ -25,32 +26,36 @@ public class Standard
     public ProcessFlowEnum ProcessFlow { get; set; }
 
     [Description("数据")]
-    public ICollection<StandardData> StandarDatas { get; set; } = new List<StandardData>();
+    public ObservableCollection<StandardData> StandarDatas { get; set; } = new ObservableCollection<StandardData>();
 
 }
 /// <summary>
 /// DS 工装 标准对象
 /// </summary>
-public class StandardData
+public partial class StandardData:ObservableObject
 {
     public int Id { get; set; }
+
     [Description("父Id")]
     public int StandardId { get; set; }
+
     [Description("配置类型")]
-    public StandardEnum StandardType { get; set; }
+    [ObservableProperty]
+    private StandardEnum _standardType;
 
     /// <summary>
     /// 标准值
     /// </summary>
     [Description("标准值")]
-
-    public float Value { get; set; }
+    [ObservableProperty]
+    private float _value;
 
     /// <summary>
     /// 阈值
     /// </summary>
     [Description("阈值")]
-    public float ThresholdValue { get; set; }
+    [ObservableProperty]
+    private float _thresholdValue;
     public Standard Standard { get; set; }
 }
 

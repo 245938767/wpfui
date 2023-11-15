@@ -36,7 +36,15 @@ public class StandardService
         _ = _dbContext.Standards.Add(standard);
         return _dbContext.SaveChanges();
     }
-
+    public int SaveStandardData(StandardData standardData) {
+        _dbContext.StandardDatas.Add(standardData);
+        return _dbContext.SaveChanges();
+    }
+    public int UpdateStandardData(StandardData standardData)
+    {
+        _dbContext.StandardDatas.Update(standardData);
+        return _dbContext.SaveChanges();
+    }
     public int Update(Standard standard)
     {
         _ = _dbContext.Standards.Update(standard);

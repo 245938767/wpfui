@@ -28,19 +28,25 @@
             <RowDefinition Height="*"/>
 
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBlock Text="选择配置项"/>
+        <Grid Grid.Row="0" Margin="10">
+            <StackPanel Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal"
+                       >
+                <TextBlock Text="选择配置项"  VerticalAlignment="Center" />
                 <ComboBox
                     MinWidth="140"
-                    Width="200"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
                     SelectedItem="{Binding ViewModel.ProcessFlowEnum,Mode=TwoWay}"
                     ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProcessFlowEnum}}}"/>
             </StackPanel>
-      
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <ui:Button Content="添加" Command="{Binding ViewModel.EditOrCreateCommand}" CommandParameter="True" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                <ui:Button Content="编辑" VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Collapsed" Command="{Binding ViewModel.EditOrCreateCommand}" CommandParameter="False" />
+            </StackPanel>
+       
 
         </Grid>
-        <ListView  Grid.Row="1" ItemsSource="{Binding ViewModel.Standard.StandarDatas}">
+        <ListView x:Name="ListView"  Grid.Row="1" ItemsSource="{Binding ViewModel.Standard.StandarDatas,Mode=OneWay}" Margin="20" SelectionMode="Single">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:StandardData}">
                     <StackPanel>

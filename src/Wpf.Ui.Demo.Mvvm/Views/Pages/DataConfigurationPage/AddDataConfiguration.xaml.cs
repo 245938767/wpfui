@@ -11,7 +11,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using static Wpf.Ui.Demo.Mvvm.Views.Pages.DevicePortConnectPage;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.Views.Pages.DataConfigurationPage
@@ -21,8 +20,8 @@ namespace Wpf.Ui.Demo.Mvvm.Views.Pages.DataConfigurationPage
     /// </summary>
     public partial class AddDataConfiguration 
     {
-        public readonly ViewModels.AddDataConfiguration ViewModel;
-        public AddDataConfiguration(ViewModels.AddDataConfiguration viewModel)
+        public readonly ViewModels.AddDataConfigurationViewModel ViewModel;
+        public AddDataConfiguration(ViewModels.AddDataConfigurationViewModel viewModel)
         {
             this.ViewModel = viewModel;
             InitializeComponent();
@@ -34,7 +33,8 @@ namespace Wpf.Ui.Demo.Mvvm.Views.Pages.DataConfigurationPage
 
         private async void OK_OnClickAsync(object sender, RoutedEventArgs e)
         {
-
+            ViewModel.SaveCommand.Execute(null);
+            Close();
         }
     }
    

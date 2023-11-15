@@ -6,6 +6,9 @@
     xmlns:local="clr-namespace:Wpf.Ui.Demo.Mvvm.Views.Pages.DataConfigurationPage"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:models="clr-namespace:Wpf.Ui.Demo.Mvvm.Models"
+        xmlns:helpers="clr-namespace:Wpf.Ui.Demo.Mvvm.Helpers"
+
     Title="WPF UI - Monaco Editor"
     Width="350"
     Height="500"
@@ -20,7 +23,7 @@
     WindowCornerPreference="Default"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
-    <Grid>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -42,7 +45,35 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-         
+            <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal"
+                        Margin="10">
+                <ui:TextBlock Text="Name" Width="120" VerticalAlignment="Center" />
+
+                <ui:TextBox MinWidth="100" Text="" IsEnabled="False"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal"
+                        Margin="10">
+                <ui:TextBlock Text="Baud Rate:" Width="120" VerticalAlignment="Center" />
+
+                <ComboBox
+                    MinWidth="140"
+                    Margin="0,8,0,0"
+                    VerticalAlignment="Center"
+                                        SelectedItem="{Binding ViewModel.StandardData.StandardType,Mode=TwoWay}"
+                    ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type models:StandardEnum}}}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal"
+                        Margin="10">
+                <ui:TextBlock Text="Value" Width="120" VerticalAlignment="Center" />
+
+                <ui:TextBox MinWidth="100" Text="{Binding ViewModel.StandardData.Value,Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal"
+                        Margin="10">
+                <ui:TextBlock Text="Around" Width="120" VerticalAlignment="Center" />
+
+                <ui:TextBox MinWidth="100" Text="{Binding ViewModel.StandardData.ThresholdValue,Mode=TwoWay}"/>
+            </StackPanel>
             <StackPanel Grid.Row="6" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                 <ui:Button Click="OK_OnClickAsync" Margin="30">Ok</ui:Button>
                 <ui:Button Click="Cancel_OnClick" Margin="30">Cancel</ui:Button>

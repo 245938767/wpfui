@@ -7,6 +7,7 @@ using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.Services;
+using Wpf.Ui.Demo.Mvvm.Views.Pages.DataConfigurationPage;
 
 namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 
@@ -19,7 +20,7 @@ public partial class DataConfigurationListViewModel : ObservableObject
         InitializeViewModel();
     }
     [ObservableProperty]
-    private Standard _standard;
+    private Standard? _standard;
 
     /// <summary>
     /// 配置页面流程选择
@@ -28,7 +29,7 @@ public partial class DataConfigurationListViewModel : ObservableObject
     private ProcessFlowEnum _processFlowEnum = ProcessFlowEnum.DSTest;
 
     private void InitializeViewModel()
-    {        //  获得全局变量
+    {      
         // 获得当前的选择的数据
         Standard? standard = standardService.GetStandard(ProcessFlowEnum);
         if (standard == null) {
@@ -39,7 +40,21 @@ public partial class DataConfigurationListViewModel : ObservableObject
             };
             standardService.Save(standard);
         }
-
+        Standard = null;
         Standard = standard;
+    }
+    [RelayCommand]
+    private void EditOrCreate(string isCreate) {
+        if (isCreate=="True")
+        {
+            var standardData = new StandardData();
+            standardData.StandardId = Standard.Id;
+            var addDataConfiguration = new AddDataConfigurationViewModel(standardData, standardService);
+            var addDataConfigurationPage = new AddDataConfiguration(addDataConfiguration);
+            addDataConfigurationPage.Show();
+        }
+        else { 
+        }
+        InitializeViewModel();
     }
 }
