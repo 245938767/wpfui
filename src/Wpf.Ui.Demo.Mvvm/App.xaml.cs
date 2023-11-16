@@ -77,6 +77,8 @@ public partial class App
                 services.AddSingleton<ViewModels.DevicePortConnectViewModel>();
                 services.AddSingleton<Views.Pages.DataConfigurationPage.DataConfigurationListPage>();
                 services.AddSingleton<ViewModels.DataConfigurationListViewModel>();
+                services.AddSingleton<Views.Pages.DataConfigurationPage.AddDataConfiguration>();
+                services.AddSingleton<ViewModels.AddDataConfigurationViewModel>();
 
 
 

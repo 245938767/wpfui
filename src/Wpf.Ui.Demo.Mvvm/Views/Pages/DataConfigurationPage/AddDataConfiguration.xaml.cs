@@ -18,12 +18,13 @@ namespace Wpf.Ui.Demo.Mvvm.Views.Pages.DataConfigurationPage
     /// <summary>
     /// AddDataConfiguration.xaml 的交互逻辑
     /// </summary>
-    public partial class AddDataConfiguration 
+    public partial class AddDataConfiguration
     {
-        public readonly ViewModels.AddDataConfigurationViewModel ViewModel;
+        public  ViewModels.AddDataConfigurationViewModel ViewModel { get; init; }
         public AddDataConfiguration(ViewModels.AddDataConfigurationViewModel viewModel)
         {
-            this.ViewModel = viewModel;
+            ViewModel = viewModel;
+            DataContext = this;
             InitializeComponent();
         }
         private void Cancel_OnClick(object sender, RoutedEventArgs e)

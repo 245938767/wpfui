@@ -29,7 +29,8 @@ public class StandardService
     }
 
     public Standard? GetStandard(ProcessFlowEnum processFlow) {
-        return _dbContext.Standards.Include(o => o.StandarDatas).FirstOrDefault(o=> o.ProcessFlow == processFlow);
+        var data=_dbContext.Standards.Include(o => o.StandarDatas.OrderBy(o=>o.StandardType).OrderBy(o=>o.Id)).FirstOrDefault(o => o.ProcessFlow == processFlow);
+        return data;
     }
 
     public int Save(Standard standard) {
@@ -37,17 +38,23 @@ public class StandardService
         return _dbContext.SaveChanges();
     }
     public int SaveStandardData(StandardData standardData) {
-        _dbContext.StandardDatas.Add(standardData);
+        _ = _dbContext.StandardDatas.Add(standardData);
         return _dbContext.SaveChanges();
     }
     public int UpdateStandardData(StandardData standardData)
     {
-        _dbContext.StandardDatas.Update(standardData);
+        _ = _dbContext.StandardDatas.Update(standardData);
         return _dbContext.SaveChanges();
     }
+
     public int Update(Standard standard)
     {
         _ = _dbContext.Standards.Update(standard);
+        return _dbContext.SaveChanges();
+    }
+
+    public int Deleted(int id) {
+        _ = _dbContext.StandardDatas.Remove(_dbContext.StandardDatas.First(x => x.Id == id));
         return _dbContext.SaveChanges();
     }
 }

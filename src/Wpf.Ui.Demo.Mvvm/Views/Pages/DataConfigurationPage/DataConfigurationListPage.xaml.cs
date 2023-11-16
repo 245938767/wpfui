@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Wpf.Ui.Controls;
+using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.Views.Pages.DataConfigurationPage;
 
@@ -21,7 +22,7 @@ namespace Wpf.Ui.Demo.Mvvm.Views.Pages.DataConfigurationPage;
 /// </summary>
 public partial class DataConfigurationListPage : INavigableView<ViewModels.DataConfigurationListViewModel>
 {
-    public ViewModels.DataConfigurationListViewModel ViewModel { get; }
+    public ViewModels.DataConfigurationListViewModel ViewModel { get; init; }
 
     public DataConfigurationListPage(ViewModels.DataConfigurationListViewModel viewModel)
     {
@@ -29,4 +30,21 @@ public partial class DataConfigurationListPage : INavigableView<ViewModels.DataC
         DataContext = this;
         InitializeComponent();
     }
+
+    private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        ViewModel.InitCommand.Execute(null);
+    }
+    private void ListView_Edit(object sender, RoutedEventArgs e)
+    {
+        var selectedItem = (StandardData)ListViewx.SelectedItem;
+        ViewModel.EditCommand.Execute(selectedItem);
+    }
+
+    private void ListView_Deleted(object sender, RoutedEventArgs e)
+    {
+        var selectedItem = (StandardData)ListViewx.SelectedItem;
+        ViewModel.DeletedCommand.Execute(selectedItem);
+    }
+
 }

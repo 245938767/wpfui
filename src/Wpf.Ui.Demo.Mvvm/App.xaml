@@ -19,7 +19,7 @@
             <converter:RowNumberConverter x:Key="RowNumberConverter"/>
             <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
             <converter:BooleanToDeviceStatusConverter x:Key="BooleanToDeviceStatusConverter" />
-
+            <converter:StandardEnumToUnitConverter x:Key="StandardEnumToUnitConverter" />
 
         </ResourceDictionary>
     </Application.Resources>

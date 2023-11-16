@@ -32,28 +32,25 @@ public partial class Standard: ObservableObject
 /// <summary>
 /// DS 工装 标准对象
 /// </summary>
-public partial class StandardData:ObservableObject
+public partial class StandardData: ObservableObject
 {
     public int Id { get; set; }
 
     [Description("父Id")]
     public int StandardId { get; set; }
 
-    [Description("配置类型")]
     [ObservableProperty]
     private StandardEnum _standardType;
 
     /// <summary>
     /// 标准值
     /// </summary>
-    [Description("标准值")]
     [ObservableProperty]
     private float _value;
 
     /// <summary>
     /// 阈值
     /// </summary>
-    [Description("阈值")]
     [ObservableProperty]
     private float _thresholdValue;
     public Standard Standard { get; set; }

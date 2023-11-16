@@ -35,25 +35,46 @@
                 <ComboBox
                     MinWidth="140"
                     Margin="8,0,0,0"
+                    SelectionChanged="ComboBox_SelectionChanged"
                     VerticalAlignment="Center"
                     SelectedItem="{Binding ViewModel.ProcessFlowEnum,Mode=TwoWay}"
                     ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProcessFlowEnum}}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <ui:Button Content="添加" Command="{Binding ViewModel.EditOrCreateCommand}" CommandParameter="True" VerticalAlignment="Center" HorizontalAlignment="Right" />
-                <ui:Button Content="编辑" VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Collapsed" Command="{Binding ViewModel.EditOrCreateCommand}" CommandParameter="False" />
+                <ui:Button Content="添加" Command="{Binding ViewModel.EditOrCreateCommand}"  VerticalAlignment="Center" HorizontalAlignment="Right" />
             </StackPanel>
        
 
         </Grid>
-        <ListView x:Name="ListView"  Grid.Row="1" ItemsSource="{Binding ViewModel.Standard.StandarDatas,Mode=OneWay}" Margin="20" SelectionMode="Single">
+        <ListView x:Name="ListViewx"  Grid.Row="1" ItemsSource="{Binding ViewModel.Standard.StandarDatas,Mode=OneWay}" Margin="20" SelectionMode="Single">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:StandardData}">
-                    <StackPanel>
-                        <TextBlock Text="{Binding Value}"/>
+                    <StackPanel Orientation="Horizontal">
+                        
+                        <TextBlock Margin="10,0,0,0" Text="{Binding StandardType}"/>
+                        <TextBlock Margin="10,0,0,0" Text="阈值: "/>
+
+                        <TextBlock  Text="{Binding Value}"/>
+                        <TextBlock Text="{Binding StandardType,Converter={StaticResource StandardEnumToUnitConverter}}"/>
+                        <TextBlock Margin="10,0,0,0" Text="范围: ±"/>
+                        <TextBlock Text="{Binding ThresholdValue}"/>
+                        <TextBlock Text="{Binding StandardType,Converter={StaticResource StandardEnumToUnitConverter}}"/>
+
+                        <StackPanel.ContextMenu>
+                        <ContextMenu>
+                                <MenuItem Click="ListView_Edit">
+                                    <MenuItem.Header>Edit</MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem  Click="ListView_Deleted">
+                                    <MenuItem.Header>Deleted</MenuItem.Header>
+                                </MenuItem>
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
                     </StackPanel>
+
                 </DataTemplate>
             </ListView.ItemTemplate>
+      
         </ListView>
     </Grid>
 </Page>

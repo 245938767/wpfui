@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.VoiceCommands;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Models;
@@ -40,21 +41,36 @@ public partial class DataConfigurationListViewModel : ObservableObject
             };
             standardService.Save(standard);
         }
-        Standard = null;
         Standard = standard;
     }
+
     [RelayCommand]
-    private void EditOrCreate(string isCreate) {
-        if (isCreate=="True")
-        {
+    private void Init()
+    {
+        InitializeViewModel();
+    }
+
+    [RelayCommand]
+    private void EditOrCreate() {
             var standardData = new StandardData();
             standardData.StandardId = Standard.Id;
-            var addDataConfiguration = new AddDataConfigurationViewModel(standardData, standardService);
+            var addDataConfiguration = new AddDataConfigurationViewModel(standardData,Standard.Name, standardService);
             var addDataConfigurationPage = new AddDataConfiguration(addDataConfiguration);
             addDataConfigurationPage.Show();
-        }
-        else { 
-        }
-        InitializeViewModel();
+            InitializeViewModel();
+    }
+
+    [RelayCommand]
+    private void Edit(StandardData standard) {
+        var addDataConfiguration = new AddDataConfigurationViewModel(standard,Standard.Name, standardService);
+        var addDataConfigurationPage = new AddDataConfiguration(addDataConfiguration);
+        addDataConfigurationPage.Show();
+    }
+
+    [RelayCommand]
+    private void Deleted(StandardData standard) {
+        _ = standardService.Deleted(standard.Id);
+        var v = Standard.StandarDatas.Remove(standard);
+
     }
 }

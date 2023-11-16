@@ -9,25 +9,31 @@ using Wpf.Ui.Demo.Mvvm.Services;
 namespace Wpf.Ui.Demo.Mvvm.ViewModels;
 
 
-public partial class AddDataConfigurationViewModel:ObservableObject
+public partial class AddDataConfigurationViewModel : ObservableObject
 {
     [ObservableProperty]
     private StandardData _standardData;
-    private readonly StandardService _standardService;
-    public AddDataConfigurationViewModel(StandardData standard,StandardService standardService) {
-        StandardData = standard;
-        _standardService = standardService;
+    [ObservableProperty]
+    private string _name;
+
+    private readonly StandardService standardService;
+    public AddDataConfigurationViewModel(StandardData standard,string name,StandardService standardService) {
+        _standardData = standard;
+        _name = name;
+        this.standardService = standardService;
     }
 
     [RelayCommand]
-    private void Save() {
+    private void Save()
+    {
 
         if (StandardData.Id == 0)
         {
-            _ = _standardService.SaveStandardData(StandardData);
+            _ = standardService.SaveStandardData(StandardData);
         }
-        else {
-            _=_standardService.UpdateStandardData(StandardData);
+        else
+        {
+            _ = standardService.UpdateStandardData(StandardData);
         }
     }
 
