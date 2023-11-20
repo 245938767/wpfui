@@ -27,8 +27,6 @@ public class PumpDevice : IDevice
             return false;
         }
 
-        SerialPort.RtsEnable = true;
-        SerialPort.DtrEnable = true;
         return true;
     }
 
@@ -37,10 +35,26 @@ public class PumpDevice : IDevice
         throw new NotSupportedException();
     }
 
-    public async override Task<bool> CloseConnect()
-    {
+    /// <summary>
+    /// 开启空气泵
+    /// </summary>
+    public void OpenPump() {
         SerialPort.RtsEnable = true;
         SerialPort.DtrEnable = true;
+    }
+
+    /// <summary>
+    /// 关闭空气泵
+    /// </summary>
+    public void ClosePump() {
+        SerialPort.RtsEnable = true;
+        SerialPort.DtrEnable = true;
+    }
+
+    public async override Task<bool> CloseConnect()
+    {
+        SerialPort.RtsEnable = false;
+        SerialPort.DtrEnable = false;
         try
         {
             SerialPort.ClosePort(SerialPortLock);

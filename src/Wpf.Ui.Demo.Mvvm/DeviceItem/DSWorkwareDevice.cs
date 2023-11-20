@@ -86,7 +86,7 @@ public class DSWorkwareDevice : IDevice
         }
     }
 
-    public async override Task<bool> SetCurrentStatus(float value, float around, double timeOutSecond)
+    public async override Task<bool> SetCurrentStatus(float value, float around, double timeOutSecond = 8200)
     {
         using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(timeOutSecond));
         try
@@ -137,32 +137,35 @@ public class DSWorkwareDevice : IDevice
 
         // 数据排序（获取到的数据排序为17-24,1-8,9-16）设置为（1-24）
         data = list.Skip(32).Take(16).Concat(list.Take(16)).Concat(list.Skip(16).Take(16)).ToList();
+
         // 8个温度点
         var temperatureList = list.Skip(48);
-        DeviceCard.CurrentTemperature =  temperatureList.Where(x => x > 0).Average();
+
+        DeviceCard.CurrentTemperature = temperatureList.Where(x => x > 0).Average();
 
         // 生成对象数据
         var homePageItemData = _viewList;
         var count = 0;
         var datafloat = new List<float>();
+
         if (homePageItemData.Count > 0)
         {
             for (var i = 0; i < data.Count / 2; i++)
             {
                 var v = (DSWorkwareGridModel)homePageItemData[i];
-                v.Pressure = float.Parse(data[count++].ToString("#.000"));
-                v.Temperature = float.Parse(data[count++].ToString("#.00"));
+                v.Pressure = Single.Parse(data[count++].ToString("#.000"));
+                v.Temperature = Single.Parse(data[count++].ToString("#.00"));
                 datafloat.Add((float)v.Pressure!);
             }
         }
-        else 
+        else
         {
-            for (var i = 0; i < data.Count/2; i++)
+            for (var i = 0; i < data.Count / 2; i++)
             {
                 var dSWorkwareGridModel = new DSWorkwareGridModel();
                 dSWorkwareGridModel.SerialNumber = i + 1;
-                dSWorkwareGridModel.Pressure = float.Parse( data[count++].ToString("#.000"));
-                dSWorkwareGridModel.Temperature = float.Parse(data[count++].ToString("#.00"));
+                dSWorkwareGridModel.Pressure = Single.Parse(data[count++].ToString("#.000"));
+                dSWorkwareGridModel.Temperature = Single.Parse(data[count++].ToString("#.00"));
                 homePageItemData.Add(dSWorkwareGridModel);
                 datafloat.Add((float)dSWorkwareGridModel.Pressure!);
             }

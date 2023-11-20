@@ -72,7 +72,7 @@ public class PressureDevice : IDevice
         return true;
     }
 
-    public override async Task<bool> SetCurrentStatus(float value, float around, double timeOutSecond)
+    public override async Task<bool> SetCurrentStatus(float value, float around, double timeOutSecond = 120)
     {
         await CurrentPressure(value);
         using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(timeOutSecond));

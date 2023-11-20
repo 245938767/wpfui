@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Services.Maps;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
+using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
 
 namespace Wpf.Ui.Demo.Mvvm.Services.ProcessFlow;
@@ -17,10 +19,20 @@ class DSTestDetection : IProcessFlow
     private readonly PressureDevice pressureDevice;
     private readonly TemperatureDevice temperatureDevice;
     private readonly DSWorkwareDevice dSWorkwareDevice;
+    private readonly StandardService standardService;
+    private readonly DSWorkwareService dSWorkwareService;
+    private readonly ProcessFlowEnum processFlow;
 
-
+    /// <summary>
+    /// 初始化测试流程
+    /// </summary>
+    /// <param name="processFlow">流程类型</param>
+    /// <param name="homePageItemData">显示绑定对象</param>
     public DSTestDetection(ProcessFlowEnum processFlow, ObservableCollection<object> homePageItemData):base(processFlow,homePageItemData)
     {
+        this.processFlow = processFlow;
+        dSWorkwareService = App.GetService<DSWorkwareService>()!;
+        standardService = App.GetService<StandardService>()!;
         Dictionary<DeviceTypeEnum, IDevice> deviceSerialPorts = GlobalData.Instance.DeviceSerialPorts;
         dSWorkwareDevice = (DSWorkwareDevice)deviceSerialPorts[Helpers.DeviceTypeEnum.DSWork];
         temperatureDevice = (TemperatureDevice)deviceSerialPorts[Helpers.DeviceTypeEnum.Temperature];
@@ -35,7 +47,6 @@ class DSTestDetection : IProcessFlow
         {
             return false;
         }
-
         return !_cancellation.IsCancellationRequested;
     }
 
@@ -98,8 +109,78 @@ class DSTestDetection : IProcessFlow
 
         _cancellation = new CancellationTokenSource();
         // 开始处理流程数据
-        
+
         // 获得测试标准数据和阈值
-        
+        var standard = standardService.GetStandard(processFlow);
+        if (standard == null) {
+            _cancellation.Cancel();
+
+            // 测试数据为空
+
+            return;
+        }
+        var dSWorkware = new DSWorkware
+        {
+            ProcessFlowEnum = processFlow,
+            CreateTime = DateTime.Now,
+        };
+         // pressure
+         var pressureList = standard.StandarDatas.Where(o => o.StandardType == StandardEnum.Pressure).ToList();
+        // temperature
+        var temperatureList = standard.StandarDatas.Where(o => o.StandardType == StandardEnum.Temperature).ToList();
+        foreach (var temperature in temperatureList)
+        {
+            pressureDevice.SetCurrentPressureLook();
+
+            if(await temperatureDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
+            {
+
+            }
+
+            if (_cancellation.IsCancellationRequested) {
+                return;
+            }
+
+            if(await dSWorkwareDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
+            {
+
+            }
+
+
+            foreach (var pressure in pressureList) {
+    
+                // 测试压力小于105 开启真空泵
+                if (pressure.Value < 105) {
+                    pumpDevice.OpenPump();
+                }
+                else
+                {
+                    pumpDevice.ClosePump();
+                }
+
+                if (await pressureDevice.SetCurrentStatus(pressure.Value, pressure.ThresholdValue))
+                {
+
+                }
+                var homePageItem=HomePageItemData.ToList();
+                var dSWorkwareItems = new List<DSWorkwareItem>();
+                foreach (var dataItem in homePageItem) {
+                
+                
+                }
+
+                // 获得数据
+                var dSWorkwareItem = new DSWorkwareItem {
+                    Equipment = " ",
+                    StandardPressure = pressure.Value,
+                    StandardTemperature = temperature.Value,
+                };
+
+                // 设置获得次数
+                dSWorkware.DSWorkwareItems.AddRange(dSWorkwareItems);
+
+            }
+        }
+        dSWorkwareService.SaveDSWorkware(dSWorkware);
     }
 }

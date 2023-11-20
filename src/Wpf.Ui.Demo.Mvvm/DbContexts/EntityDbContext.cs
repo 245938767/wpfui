@@ -28,7 +28,7 @@ public partial class EntityDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
 
-        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<SerialPortModel> SerialPortBuilder= builder.Entity<SerialPortModel>();
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<SerialPortModel> SerialPortBuilder = builder.Entity<SerialPortModel>();
         _ = SerialPortBuilder.HasData(initSerialPort());
         SerialPortBuilder.Ignore(o => o.DeviceStatus);
 
@@ -37,61 +37,61 @@ public partial class EntityDbContext : DbContext
         DeviceCardBuilder.Ignore(o => o.CurrentTemperature);
         DeviceCardBuilder.Ignore(o => o.SettingPressure);
         DeviceCardBuilder.Ignore(o => o.SettingTemperature);
-        DeviceCardBuilder.HasOne(o => o.SerialPortModel).WithOne(o => o.DeviceCards).HasForeignKey<DeviceCard>(o=>o.ForeignKey);
+        DeviceCardBuilder.HasOne(o => o.SerialPortModel).WithOne(o => o.DeviceCards).HasForeignKey<DeviceCard>(o => o.ForeignKey);
         _ = DeviceCardBuilder.HasData(init());
 
         Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Standard> StandardBuilder = builder.Entity<Standard>();
         StandardBuilder.HasMany(o => o.StandarDatas).WithOne(o => o.Standard).HasForeignKey(k => k.StandardId).IsRequired();
+        StandardBuilder.HasKey(o => o.Id);
+        StandardBuilder.HasData(StandardInitial());
+
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<StandardData> StandardDataBuilder = builder.Entity<StandardData>();
+        StandardDataBuilder.HasData(StandardDataInit());
+
+
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<DSWorkware> DSWorkwareBuilder = builder.Entity<DSWorkware>();
+        DSWorkwareBuilder.HasMany(o => o.DSWorkwareItems).WithOne(o => o.Dsworkware).HasForeignKey(k => k.WorkwareId).IsRequired();
+
+        Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<DSWorkwareItem> DSWorkwareItemBuilder = builder.Entity<DSWorkwareItem>();
+        DSWorkwareItemBuilder.HasMany(o => o.DSWorkwareAreas).WithOne(o => o.DSWorkwareItem).HasForeignKey(o => o.DSWorkwareItemId).IsRequired();
+
+
         ConfigureConventions(builder);
-    }
-
-    private void ConfigureConventions(ModelBuilder builder)
-    {
-        foreach (var entityType in builder.Model.GetEntityTypes())
-        {
-            if (entityType.BaseType != null)
-            {
-                continue;
-            }
-
-            var tableName = entityType.GetTableName();
-            entityType.SetTableName("t_" + tableName);
-
-            // 用DescriptionAttribute生成表说明
-            var attr = entityType.ClrType.GetCustomAttribute<DescriptionAttribute>();
-            if (attr != null)
-            {
-                entityType.SetComment(attr.Description);
-            }
-
-            foreach (var propertyType in entityType.GetProperties())
-            {
-                var propertyInfo = propertyType.PropertyInfo;
-                attr = propertyInfo?.GetCustomAttribute<DescriptionAttribute>();
-                if (attr == null || propertyInfo == null) continue;
-                var desc = attr.Description;
-                if (propertyInfo.PropertyType.IsEnum)
-                {
-                    var enums = Enum.GetNames(propertyInfo.PropertyType)
-                        .ToDictionary(o => Enum.Parse(propertyInfo.PropertyType, o),
-                            o => propertyInfo.PropertyType?.GetField(o)
-                                .GetCustomAttribute<DescriptionAttribute>()?.Description)
-                        .Where(o => !string.IsNullOrEmpty(o.Value) && o.Value != "-")
-                        .ToArray();
-
-                    desc += $"({string.Join(",", enums.Select(o => $"{(int)o.Key}={o.Value}"))})";
-                }
-
-                propertyType.SetComment(desc);
-            }
-        }
     }
 
     public DbSet<DeviceCard> DeviceCards { get; set; }
     public DbSet<SerialPortModel> SerialPortModels { get; set; }
     public DbSet<Standard> Standards { get; set; }
     public DbSet<StandardData> StandardDatas { get; set; }
+    public DbSet<DSWorkware> Dsworkwares { get; set; }
+    public DbSet<DSWorkwareItem> DSWorkwareItems { get; set; }
+    public DbSet<DSWorkwareArea> DsworkwareAreas { get; set; }
 
+
+    private static List<Standard> StandardInitial() => new List<Standard> {
+        new Standard
+        {
+            Id=1,
+            ProcessFlow=ProcessFlowEnum.DSTest,
+            Name=ProcessFlowEnum.DSTest.ToDescription()
+        }
+        };
+    private static List<StandardData> StandardDataInit()
+    {
+        return new List<StandardData> { 
+        new StandardData {Id=1, StandardId=1,StandardType=StandardEnum.Pressure,Value=80,ThresholdValue=0.01f },
+        new StandardData {Id=2, StandardId=1,StandardType=StandardEnum.Pressure,Value=90,ThresholdValue=0.01f },
+        new StandardData {Id=3, StandardId=1,StandardType=StandardEnum.Pressure,Value=100,ThresholdValue=0.01f },
+        new StandardData {Id=4, StandardId=1,StandardType=StandardEnum.Pressure,Value=110,ThresholdValue=0.01f },
+        new StandardData {Id=5, StandardId=1,StandardType=StandardEnum.Pressure,Value=120,ThresholdValue=0.01f },
+        new StandardData {Id=6, StandardId=1,StandardType=StandardEnum.Pressure,Value=130,ThresholdValue=0.01f },
+        new StandardData {Id=7, StandardId=1,StandardType=StandardEnum.Temperature,Value=60,ThresholdValue=0.5f },
+        new StandardData {Id=8, StandardId=1,StandardType=StandardEnum.Temperature,Value=35,ThresholdValue=0.5f },
+        new StandardData {Id=9, StandardId=1,StandardType=StandardEnum.Temperature,Value=20,ThresholdValue=0.5f },
+        new StandardData {Id=10, StandardId=1,StandardType=StandardEnum.Temperature,Value=0,ThresholdValue=0.5f },
+        new StandardData {Id=11, StandardId=1,StandardType=StandardEnum.Temperature,Value=-10,ThresholdValue=0.5f },
+        new StandardData { Id=12,StandardId=1,StandardType=StandardEnum.Temperature,Value=-20,ThresholdValue=0.5f },};
+    }
     private static List<DeviceCard> init()
     {
         var deviceCards = new List<DeviceCard>();
@@ -205,4 +205,47 @@ public partial class EntityDbContext : DbContext
         deviceCards.Add(work);
         return deviceCards;
     }
+
+    private void ConfigureConventions(ModelBuilder builder)
+    {
+        foreach (var entityType in builder.Model.GetEntityTypes())
+        {
+            if (entityType.BaseType != null)
+            {
+                continue;
+            }
+
+            var tableName = entityType.GetTableName();
+            entityType.SetTableName("t_" + tableName);
+
+            // 用DescriptionAttribute生成表说明
+            var attr = entityType.ClrType.GetCustomAttribute<DescriptionAttribute>();
+            if (attr != null)
+            {
+                entityType.SetComment(attr.Description);
+            }
+
+            foreach (var propertyType in entityType.GetProperties())
+            {
+                var propertyInfo = propertyType.PropertyInfo;
+                attr = propertyInfo?.GetCustomAttribute<DescriptionAttribute>();
+                if (attr == null || propertyInfo == null) continue;
+                var desc = attr.Description;
+                if (propertyInfo.PropertyType.IsEnum)
+                {
+                    var enums = Enum.GetNames(propertyInfo.PropertyType)
+                        .ToDictionary(o => Enum.Parse(propertyInfo.PropertyType, o),
+                            o => propertyInfo.PropertyType?.GetField(o)
+                                .GetCustomAttribute<DescriptionAttribute>()?.Description)
+                        .Where(o => !string.IsNullOrEmpty(o.Value) && o.Value != "-")
+                        .ToArray();
+
+                    desc += $"({string.Join(",", enums.Select(o => $"{(int)o.Key}={o.Value}"))})";
+                }
+
+                propertyType.SetComment(desc);
+            }
+        }
+    }
+
 }

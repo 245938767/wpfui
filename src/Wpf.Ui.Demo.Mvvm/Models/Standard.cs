@@ -17,7 +17,7 @@ namespace Wpf.Ui.Demo.Mvvm.Models;
 /// <summary>
 /// 测试数据对象集
 /// </summary>
-public partial class Standard: ObservableObject
+public  class Standard
 {
     public int Id { get; set; }
     [Description("数据名称")]
@@ -32,7 +32,7 @@ public partial class Standard: ObservableObject
 /// <summary>
 /// DS 工装 标准对象
 /// </summary>
-public partial class StandardData: ObservableObject
+public partial class StandardData : ObservableObject
 {
     public int Id { get; set; }
 
