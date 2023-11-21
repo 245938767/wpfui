@@ -20,7 +20,7 @@ public class DSWorkwareDevice : IDevice
     private readonly ObservableCollection<object>? _viewList;
     private CancellationTokenSource? _cancelTokenMsg;
 
-    public DSWorkwareDevice(DeviceCard deviceCard,ObservableCollection<object>? viewList=null)
+    public DSWorkwareDevice(DeviceCard deviceCard, ObservableCollection<object>? viewList = null)
         : base(deviceCard)
     {
         _viewList = viewList;
@@ -39,6 +39,7 @@ public class DSWorkwareDevice : IDevice
         {
             return true;
         }
+
         return !SerialPort.IsOpen;
     }
 
@@ -66,7 +67,8 @@ public class DSWorkwareDevice : IDevice
                         // 如果发送失败直接退出循环
                         try
                         {
-                            SerialPort.SendHexCRC($"{DeviceCard.SerialPortModel.NetworkAddress} 03 00 90 00 70",
+                            SerialPort.SendHexCRC(
+                                $"{DeviceCard.SerialPortModel.NetworkAddress} 03 00 90 00 70",
                                 SerialPortLock);
 
                             // 每1秒获得数据
@@ -74,6 +76,7 @@ public class DSWorkwareDevice : IDevice
                         }
                         catch
                         {
+                            // ignored
                         }
                     }
                 },
@@ -129,25 +132,25 @@ public class DSWorkwareDevice : IDevice
 
         // 装换成float数据
         List<float> list = CRCModelHelper.TranlationByteForFloat(receiveData);
-        var data = new List<float>();
         if (list.Count <= 0)
         {
             return;
         }
 
         // 数据排序（获取到的数据排序为17-24,1-8,9-16）设置为（1-24）
-        data = list.Skip(32).Take(16).Concat(list.Take(16)).Concat(list.Skip(16).Take(16)).ToList();
+        var data = list.Skip(32).Take(16).Concat(list.Take(16)).Concat(list.Skip(16).Take(16)).ToList();
 
         // 8个温度点
-        var temperatureList = list.Skip(48);
+        IEnumerable<float> temperatureList = list.Skip(48);
 
         DeviceCard.CurrentTemperature = temperatureList.Where(x => x > 0).Average();
 
         // 生成对象数据
-        var homePageItemData = _viewList;
+        ObservableCollection<object>? homePageItemData = _viewList;
         var count = 0;
         var datafloat = new List<float>();
 
+        // 根据是否有数据进行更新和创建渲染
         if (homePageItemData.Count > 0)
         {
             for (var i = 0; i < data.Count / 2; i++)
@@ -172,9 +175,6 @@ public class DSWorkwareDevice : IDevice
         }
 
         DeviceCard.CurrentPressure = datafloat.Average();
-
-
-
 
     }
 }

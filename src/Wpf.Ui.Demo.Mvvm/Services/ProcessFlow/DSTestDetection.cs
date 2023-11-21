@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.Services.Maps;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
+using Wpf.Ui.Demo.Mvvm.Helpers.Extension;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
 
@@ -28,7 +29,8 @@ class DSTestDetection : IProcessFlow
     /// </summary>
     /// <param name="processFlow">流程类型</param>
     /// <param name="homePageItemData">显示绑定对象</param>
-    public DSTestDetection(ProcessFlowEnum processFlow, ObservableCollection<object> homePageItemData):base(processFlow,homePageItemData)
+    public DSTestDetection(ProcessFlowEnum processFlow, ObservableCollection<object> homePageItemData) : base(
+        processFlow, homePageItemData)
     {
         this.processFlow = processFlow;
         dSWorkwareService = App.GetService<DSWorkwareService>()!;
@@ -47,6 +49,7 @@ class DSTestDetection : IProcessFlow
         {
             return false;
         }
+
         return !_cancellation.IsCancellationRequested;
     }
 
@@ -108,49 +111,48 @@ class DSTestDetection : IProcessFlow
         GlobalData.Instance.IsOpenCheck = true;
 
         _cancellation = new CancellationTokenSource();
-        // 开始处理流程数据
 
         // 获得测试标准数据和阈值
-        var standard = standardService.GetStandard(processFlow);
-        if (standard == null) {
+        Standard? standard = standardService.GetStandard(processFlow);
+        if (standard == null)
+        {
             _cancellation.Cancel();
 
             // 测试数据为空
 
             return;
         }
-        var dSWorkware = new DSWorkware
-        {
-            ProcessFlowEnum = processFlow,
-            CreateTime = DateTime.Now,
-        };
-         // pressure
-         var pressureList = standard.StandarDatas.Where(o => o.StandardType == StandardEnum.Pressure).ToList();
+
+        var dSWorkware = new DSWorkware { ProcessFlowEnum = processFlow, CreateTime = DateTime.Now, };
+        dSWorkwareService.SaveDSWorkware(dSWorkware);
+        // pressure
+        var pressureList = standard.StandarDatas.Where(o => o.StandardType == StandardEnum.Pressure).ToList();
+
         // temperature
         var temperatureList = standard.StandarDatas.Where(o => o.StandardType == StandardEnum.Temperature).ToList();
-        foreach (var temperature in temperatureList)
+        foreach (StandardData temperature in temperatureList)
         {
             pressureDevice.SetCurrentPressureLook();
 
-            if(await temperatureDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
+            if (await temperatureDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
             {
-
             }
 
-            if (_cancellation.IsCancellationRequested) {
+            if (_cancellation.IsCancellationRequested)
+            {
                 return;
             }
 
-            if(await dSWorkwareDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
+            if (await dSWorkwareDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
             {
-
             }
 
 
-            foreach (var pressure in pressureList) {
-    
+            foreach (StandardData pressure in pressureList)
+            {
                 // 测试压力小于105 开启真空泵
-                if (pressure.Value < 105) {
+                if (pressure.Value < 105)
+                {
                     pumpDevice.OpenPump();
                 }
                 else
@@ -160,27 +162,65 @@ class DSTestDetection : IProcessFlow
 
                 if (await pressureDevice.SetCurrentStatus(pressure.Value, pressure.ThresholdValue))
                 {
-
                 }
-                var homePageItem=HomePageItemData.ToList();
+
+                var homePageItem = HomePageItemData.ToList();
                 var dSWorkwareItems = new List<DSWorkwareItem>();
-                foreach (var dataItem in homePageItem) {
-                
-                
+
+                // 获得N次数据
+                for (var n = 0; n < 10; n++)
+                {
+                    // 获得设备数据
+                    for (var i = 0; i < homePageItem.Count; i++)
+                    {
+                        var data = (DSWorkwareGridModel)homePageItem[i];
+                        DSWorkwareItem dSWorkwareItem = dSWorkwareItems[i];
+                        if (n <= 0)
+                        {
+                            // 初始化数据
+                            dSWorkwareItems[i] = new DSWorkwareItem
+                            {
+                                Equipment = data.Equipment,
+                                StandardPressure = pressure.Value,
+                                StandardTemperature = temperature.Value,
+                            };
+                        }
+
+                        var dataPressure = data.Pressure ?? 0;
+                        var dataTemperature = data.Temperature ?? 0;
+                        dSWorkwareItem.DSWorkwareAreas.Add(new DSWorkwareArea
+                        {
+                            Pressure = dataPressure, Temperature = dataTemperature
+                        });
+
+                        // 检测数据是否合格
+                        if (!(dataPressure.CheckAround(pressure.Value, pressure.ThresholdValue) &&
+                              dataTemperature.CheckAround(temperature.Value, temperature.ThresholdValue)))
+                        {
+                            dSWorkwareItem.IsCheck = false;
+                        }
+                    }
+
+                    await Task.Delay(1500);
                 }
 
-                // 获得数据
-                var dSWorkwareItem = new DSWorkwareItem {
-                    Equipment = " ",
-                    StandardPressure = pressure.Value,
-                    StandardTemperature = temperature.Value,
-                };
-
-                // 设置获得次数
                 dSWorkware.DSWorkwareItems.AddRange(dSWorkwareItems);
-
+                dSWorkwareService.UpdateDSWorkware(dSWorkware);
             }
         }
-        dSWorkwareService.SaveDSWorkware(dSWorkware);
+
+        // 检测数据校验
+        dSWorkware.IsCheck = true;
+        dSWorkwareService.UpdateDSWorkware(dSWorkware);
+        IEnumerable<IGrouping<bool, string>> enumerable = from VAR in dSWorkware.DSWorkwareItems
+            group VAR.IsCheck by VAR.Equipment;
+        // 更新页面
+        var homePageItemData = HomePageItemData.ToList();
+
+        for (var i = 0; i < homePageItemData.Count; i++)
+        {
+            var v = (DSWorkwareGridModel)homePageItemData[i];
+            // 检测是否合格
+        }
     }
 }

@@ -12,6 +12,7 @@ using Wpf.Ui.Demo.Mvvm.DbContexts;
 using Wpf.Ui.Demo.Mvvm.Models;
 
 namespace Wpf.Ui.Demo.Mvvm.Services;
+
 public class DSWorkwareService
 {
     private readonly EntityDbContext _dbContext;
@@ -20,15 +21,27 @@ public class DSWorkwareService
     {
         _dbContext = dbContext;
     }
-    public int SaveDSWorkware(DSWorkware dSWorkware) {
+
+    public int SaveDSWorkware(DSWorkware dSWorkware)
+    {
         _ = _dbContext.Dsworkwares.Add(dSWorkware);
         return _dbContext.SaveChanges();
     }
-    public int SaveDSWorkwareItem(DSWorkwareItem sWorkwareItem) {
+
+    public int UpdateDSWorkware(DSWorkware dSWorkware)
+    {
+        _ = _dbContext.Dsworkwares.Update(dSWorkware);
+        return _dbContext.SaveChanges();
+    }
+
+    public int SaveDSWorkwareItem(DSWorkwareItem sWorkwareItem)
+    {
         _ = _dbContext.DSWorkwareItems.Add(sWorkwareItem);
         return _dbContext.SaveChanges();
     }
-    public int SaveDSWorkwareArea(DSWorkwareArea dSWorkwareArea) {
+
+    public int SaveDSWorkwareArea(DSWorkwareArea dSWorkwareArea)
+    {
         _ = _dbContext.DsworkwareAreas.Add(dSWorkwareArea);
         return _dbContext.SaveChanges();
     }
