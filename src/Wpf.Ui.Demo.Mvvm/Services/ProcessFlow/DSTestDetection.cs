@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Services.Maps;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
@@ -125,6 +126,7 @@ class DSTestDetection : IProcessFlow
 
         var dSWorkware = new DSWorkware { ProcessFlowEnum = processFlow, CreateTime = DateTime.Now, };
         dSWorkwareService.SaveDSWorkware(dSWorkware);
+
         // pressure
         var pressureList = standard.StandarDatas.Where(o => o.StandardType == StandardEnum.Pressure).ToList();
 
@@ -212,15 +214,18 @@ class DSTestDetection : IProcessFlow
         // 检测数据校验
         dSWorkware.IsCheck = true;
         dSWorkwareService.UpdateDSWorkware(dSWorkware);
-        IEnumerable<IGrouping<bool, string>> enumerable = from VAR in dSWorkware.DSWorkwareItems
-            group VAR.IsCheck by VAR.Equipment;
+        var dictionary = dSWorkware.DSWorkwareItems.GroupBy(o => o.Equipment)
+            .ToDictionary(o => o.Key, o => o.Any(x => !x.IsCheck));
+
         // 更新页面
         var homePageItemData = HomePageItemData.ToList();
 
         for (var i = 0; i < homePageItemData.Count; i++)
         {
             var v = (DSWorkwareGridModel)homePageItemData[i];
+
             // 检测是否合格
+            v.IsCheck = !dictionary[v.Equipment];
         }
     }
 }
