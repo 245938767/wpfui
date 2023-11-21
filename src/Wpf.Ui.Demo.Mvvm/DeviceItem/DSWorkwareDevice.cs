@@ -6,9 +6,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using Wpf.Ui.Demo.Mvvm.Helpers.Extension;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.ViewModels;
@@ -17,10 +19,10 @@ namespace Wpf.Ui.Demo.Mvvm.DeviceItem;
 
 public class DSWorkwareDevice : IDevice
 {
-    private readonly ObservableCollection<object>? _viewList;
+    private readonly ObservableCollection<object> _viewList;
     private CancellationTokenSource? _cancelTokenMsg;
 
-    public DSWorkwareDevice(DeviceCard deviceCard, ObservableCollection<object>? viewList = null)
+    public DSWorkwareDevice(DeviceCard deviceCard, ObservableCollection<object> viewList)
         : base(deviceCard)
     {
         _viewList = viewList;
@@ -146,7 +148,7 @@ public class DSWorkwareDevice : IDevice
         DeviceCard.CurrentTemperature = temperatureList.Where(x => x > 0).Average();
 
         // 生成对象数据
-        ObservableCollection<object>? homePageItemData = _viewList;
+        ObservableCollection<object> homePageItemData = _viewList;
         var count = 0;
         var datafloat = new List<float>();
 
@@ -169,7 +171,11 @@ public class DSWorkwareDevice : IDevice
                 dSWorkwareGridModel.SerialNumber = i + 1;
                 dSWorkwareGridModel.Pressure = Single.Parse(data[count++].ToString("#.000"));
                 dSWorkwareGridModel.Temperature = Single.Parse(data[count++].ToString("#.00"));
-                homePageItemData.Add(dSWorkwareGridModel);
+                System.Windows.Application.Current.Dispatcher.Invoke((Action)(() =>
+                {
+                    homePageItemData.Add(dSWorkwareGridModel);
+                }));
+
                 datafloat.Add((float)dSWorkwareGridModel.Pressure!);
             }
         }

@@ -248,7 +248,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pressure, new PressureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pressure)));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pump, new PumpDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pump)));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Temperature, new TemperatureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Temperature)));
-        instanceDeviceSerialPorts.Add(DeviceTypeEnum.DSWork, new DSWorkwareDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.DSWork)));
+        instanceDeviceSerialPorts.Add(DeviceTypeEnum.DSWork, new DSWorkwareDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.DSWork),HomePageItemData));
 
         // TODO 初始化 流程逻辑类
         GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.DSTest, new DSTestDetection(ProcessFlow,HomePageItemData));
