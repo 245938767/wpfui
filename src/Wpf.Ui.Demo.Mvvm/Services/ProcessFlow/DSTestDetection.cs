@@ -101,7 +101,7 @@ class DSTestDetection : IProcessFlow
             GlobalData.Instance.IsOpenCheck = false;
             return;
         }
-
+        GlobalData.Instance.ProcessBar = 5;
         // 检测当前是否有缓存数据
 
         // 数据加载缓存的，DoMain ID,加载日志记录
@@ -124,6 +124,8 @@ class DSTestDetection : IProcessFlow
             return;
         }
 
+        GlobalData.Instance.ProcessBar = 8;
+
         var dSWorkware = new DSWorkware { ProcessFlowEnum = processFlow, CreateTime = DateTime.Now, };
         dSWorkwareService.SaveDSWorkware(dSWorkware);
 
@@ -132,24 +134,34 @@ class DSTestDetection : IProcessFlow
 
         // temperature
         var temperatureList = standard.StandarDatas.Where(o => o.StandardType == StandardEnum.Temperature).ToList();
+        GlobalData.Instance.ProcessBar = 10;
+
+        // 80% weight
+        var weight = 80 / temperatureList.Count;
         foreach (StandardData temperature in temperatureList)
         {
+            // 4 份
+            var temWeight=weight / 4;
             pressureDevice.SetCurrentPressureLook();
 
             if (await temperatureDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
             {
             }
 
+            GlobalData.Instance.ProcessBar += temWeight;
+
             if (_cancellation.IsCancellationRequested)
             {
+                GlobalData.Instance.ProcessBar = 0;
                 return;
             }
 
             if (await dSWorkwareDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
             {
             }
+            GlobalData.Instance.ProcessBar += temWeight;
 
-
+            var pressureWright = (temWeight * 2) / 100;
             foreach (StandardData pressure in pressureList)
             {
                 // 测试压力小于105 开启真空泵
@@ -208,6 +220,7 @@ class DSTestDetection : IProcessFlow
 
                 dSWorkware.DSWorkwareItems.AddRange(dSWorkwareItems);
                 dSWorkwareService.UpdateDSWorkware(dSWorkware);
+                GlobalData.Instance.ProcessBar += pressureWright;
             }
         }
 
@@ -227,5 +240,6 @@ class DSTestDetection : IProcessFlow
             // 检测是否合格
             v.IsCheck = !dictionary[v.Equipment];
         }
+        GlobalData.Instance.ProcessBar = 100;
     }
 }

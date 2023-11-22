@@ -295,7 +295,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ProgressBar />
+                    <ProgressBar Value="{Binding Source={x:Static models:GlobalData.Instance}, Path=ProcessBar,Mode=TwoWay}"/>
                     <ui:DataGrid x:Name="MyDataGrid" Grid.Row="1"
 
                                  ItemsSource="{Binding ViewModel.HomePageItemData,Mode=TwoWay}">

@@ -22,6 +22,7 @@ public partial class GlobalData : ObservableObject
     /// 是否开启了检测
     /// </summary>
     [ObservableProperty] private bool _isOpenCheck;
+    [ObservableProperty] private int _processBar = 0;
 
     /// <summary>
     /// 设备数据存储
