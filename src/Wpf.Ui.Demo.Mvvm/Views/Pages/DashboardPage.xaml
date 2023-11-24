@@ -1,23 +1,22 @@
-<Page
-    x:Class="Wpf.Ui.Demo.Mvvm.Views.Pages.DashboardPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Wpf.Ui.Demo.Mvvm.Views.Pages"
-    xmlns:models="clr-namespace:Wpf.Ui.Demo.Mvvm.ViewModels"
-    xmlns:helpers="clr-namespace:Wpf.Ui.Demo.Mvvm.Helpers"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:controls="clr-namespace:Wpf.Ui.Demo.Mvvm.Controls"
-    Title="DashboardPage"
-    d:DataContext="{d:DesignInstance local:DashboardPage,
+<Page x:Class="Wpf.Ui.Demo.Mvvm.Views.Pages.DashboardPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:Wpf.Ui.Demo.Mvvm.Views.Pages"
+      xmlns:models="clr-namespace:Wpf.Ui.Demo.Mvvm.ViewModels"
+      xmlns:helpers="clr-namespace:Wpf.Ui.Demo.Mvvm.Helpers"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:controls="clr-namespace:Wpf.Ui.Demo.Mvvm.Controls"
+      Title="DashboardPage"
+      d:DataContext="{d:DesignInstance local:DashboardPage,
                                      IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    mc:Ignorable="d">
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+      ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+      Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+      mc:Ignorable="d">
 
     <Grid Margin="24">
         <Grid.RowDefinitions>
@@ -25,18 +24,16 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
-            <Border
-                Grid.Row="0"
-                Height="auto"
-                CornerRadius="8">
+            <Border Grid.Row="0"
+                    Height="auto"
+                    CornerRadius="8">
                 <Border CornerRadius="8">
-                    <ItemsControl
-                        ItemsSource="{Binding ViewModel.DeviceCards,UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center">
+                    <ItemsControl ItemsSource="{Binding ViewModel.DeviceCards,UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal" />
@@ -44,236 +41,82 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-
-                                <ui:CardAction
-                                    Grid.Row="0"
-                                    Margin="0,0,10,0"
-                                    Padding="5"
-                                    VerticalAlignment="Stretch"
-                                    Command="{Binding ViewModel.DeviceConnectCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:DashboardPage}, Mode=OneWay}"
-                                    CommandParameter="{Binding}"
-                                    IsChevronVisible="False">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="*" />
-                                        </Grid.RowDefinitions>
-
-                                        <Image Grid.Row="0" Grid.Column="0"
-                                               Width="60"
-                                               Margin="24,0,0,0"
-                                               Source="{Binding ImageUrl,Mode=OneWay}" />
-
-                                        <StackPanel Margin="23,23,23,15" Grid.Row="0" Grid.Column="1"
-                                                    MinHeight="55" MinWidth="100">
-
-                                            <StackPanel
-                                                Orientation="Horizontal"
-                                                VerticalAlignment="Center">
-                                                <ui:TextBlock
-                                                    Margin="-1"
-                                                    FontTypography="BodyStrong"
-                                                    Text="Port:"
-                                                    TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock
-                                                    Margin="10,0,0,0"
-                                                    Appearance="Tertiary"
-                                                    Text="{Binding SerialPortModel.PortName,Mode=OneWay}"
-                                                    TextWrapping="WrapWithOverflow" />
-
-                                            </StackPanel>
-                                            <StackPanel
-                                                Orientation="Horizontal"
-                                                VerticalAlignment="Center">
-                                                <ui:TextBlock
-                                                    Margin="-1"
-                                                    FontTypography="BodyStrong"
-                                                    Text="CurrentPressure:"
-                                                    TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock
-                                                    Margin="10,0,5,0"
-                                                    x:Name="CurrentPressureText"
-
-                                                    Appearance="Tertiary"
-                                                    Text="{Binding CurrentPressure,Mode=OneWay, StringFormat={}{0:F4}}"
-                                                    TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}" />
-                                                <StackPanel.Style>
-                                                    <Style TargetType="StackPanel">
-                                                        <Style.Triggers>
-                                                            <DataTrigger
-                                                                Binding="{Binding Text,ElementName=CurrentPressureText}"
-                                                                Value="">
-                                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </StackPanel.Style>
-                                            </StackPanel>
-                                            <StackPanel
-                                                Orientation="Horizontal"
-                                                VerticalAlignment="Center">
-                                                <ui:TextBlock
-                                                    Margin="-1"
-                                                    FontTypography="BodyStrong"
-                                                    Text="CurrentTemperature:"
-                                                    TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock
-                                                    Margin="10,0,5,0"
-                                                    x:Name="CurrentTemperatureText"
-                                                    Appearance="Tertiary"
-                                                    Text="{Binding CurrentTemperature,Mode=OneWay, StringFormat={}{0:F4}}"
-                                                    TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}" />
-
-                                                <StackPanel.Style>
-                                                    <Style TargetType="StackPanel">
-                                                        <Style.Triggers>
-                                                            <DataTrigger
-                                                                Binding="{Binding Text,ElementName=CurrentTemperatureText}"
-                                                                Value="">
-                                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </StackPanel.Style>
-                                            </StackPanel>
-
-                                            <StackPanel
-                                                Orientation="Horizontal"
-                                                VerticalAlignment="Center">
-                                                <ui:TextBlock
-                                                    Margin="-1"
-                                                    FontTypography="BodyStrong"
-                                                    Text="SettingPressure:"
-                                                    TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock
-                                                    Margin="10,0,5,0"
-                                                    x:Name="SettingPressureText"
-                                                    Appearance="Tertiary"
-                                                    Text="{Binding SettingPressure,Mode=OneWay, StringFormat={}{0:F4}}"
-                                                    TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock Text="{Binding UnitP,Mode=OneWay}" />
-
-                                                <StackPanel.Style>
-                                                    <Style TargetType="StackPanel">
-                                                        <Style.Triggers>
-                                                            <DataTrigger
-                                                                Binding="{Binding Text,ElementName=SettingPressureText}"
-                                                                Value="">
-                                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </StackPanel.Style>
-                                            </StackPanel>
-                                            <StackPanel
-                                                Orientation="Horizontal"
-                                                VerticalAlignment="Center">
-                                                <ui:TextBlock
-                                                    Margin="-1"
-                                                    FontTypography="BodyStrong"
-                                                    Text="SettingTemperature:"
-                                                    TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock
-                                                    Margin="10,0,5,0"
-                                                    x:Name="SettingTemperatureText"
-                                                    Appearance="Tertiary"
-                                                    Text="{Binding SettingTemperature,Mode=OneWay, StringFormat={}{0:F4}}"
-                                                    TextWrapping="WrapWithOverflow" />
-                                                <ui:TextBlock Text="{Binding UnitT,Mode=OneWay}" />
-
-                                                <StackPanel.Style>
-                                                    <Style TargetType="StackPanel">
-                                                        <Style.Triggers>
-                                                            <DataTrigger
-                                                                Binding="{Binding Text,ElementName=SettingTemperatureText}"
-                                                                Value="">
-                                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </StackPanel.Style>
-                                            </StackPanel>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
-                                                    VerticalAlignment="Center" HorizontalAlignment="Left"
-                                                    Margin="3,0,0,0">
-
-                                            <Ellipse Width="10" Height="10" Margin="0,0,2,0"
-                                                     Fill="{Binding SerialPortModel.DeviceStatus,Converter={StaticResource BooleanToDeviceStatusConverter},Mode=OneWay}">
-
-                                            </Ellipse>
-                                            <ui:TextBlock Text="{Binding DeviceName,Mode=OneWay}" />
-                                        </StackPanel>
-                                        <ui:TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right"
-
-                                                      Margin="0,0,5,0">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Text" Value="连接设备"></Setter>
-                                                    <Style.Triggers>
-                                                        <DataTrigger
-                                                            Binding="{Binding SerialPortModel.DeviceStatus}"
-                                                            Value="True">
-                                                            <Setter Property="Text" Value="关闭连接" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-
-                                        </ui:TextBlock>
-                                    </Grid>
+                                <ui:CardAction Grid.Row="0"
+                                               Margin="0,0,10,0"
+                                               Padding="5"
+                                               VerticalAlignment="Stretch"
+                                               Command="{Binding ViewModel.DeviceConnectCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:DashboardPage}, Mode=OneWay}"
+                                               CommandParameter="{Binding}"
+                                               IsChevronVisible="False">
+                                    <controls:DeviceCard Width="200"
+                                                         ImageUrl="{Binding ImageUrl,Mode=OneWay}"
+                                                         PortText="{Binding SerialPortModel.PortName,Mode=OneWay}"
+                                                         PressureText="{Binding CurrentPressure,Mode=OneWay,StringFormat={}{0:F4}}"
+                                                         TemperatureText="{Binding CurrentTemperature,Mode=OneWay,StringFormat={}{0:F4}}"
+                                                         DeviceNameText="{Binding DeviceName,Mode=OneWay}"
+                                                         Status="{Binding SerialPortModel.DeviceStatus,Mode=OneWay}"
+                                                         TUtil="{Binding UnitT,Mode=OneWay}"
+                                                         PUtil="{Binding UnitP,Mode=OneWay}" />
                                 </ui:CardAction>
-
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Border>
             </Border>
         </ScrollViewer>
-        <Grid Grid.Row="1" Margin="0,10,0,0">
+
+        <Grid Grid.Row="1"
+              Margin="0,10,0,0">
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="0,0,0,0">
+            <Grid Grid.Row="0"
+                  Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ComboBox
-                    MinWidth="140"
-                    Margin="0,8,0,0"
-                    VerticalAlignment="Center"
-                    SelectedItem="{Binding ViewModel.ProcessFlow,Mode=TwoWay}"
-                    ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProcessFlowEnum}}}"
-                    IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"/>
+                <ComboBox MinWidth="140"
+                          Margin="0,8,0,0"
+                          VerticalAlignment="Center"
+                          SelectedItem="{Binding ViewModel.ProcessFlow,Mode=TwoWay}"
+                          ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProcessFlowEnum}}}"
+                          IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}" />
 
 
                 <Grid Grid.Column="2">
 
-                    <Grid Margin="0,0,0,0" HorizontalAlignment="Right">
+                    <Grid Margin="0,0,0,0"
+                          HorizontalAlignment="Right">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <ui:Button Grid.Column="0" MinWidth="100" MinHeight="25" Content="开始检测" Margin="20,0,20,0"
+                        <ui:Button Grid.Column="0"
+                                   MinWidth="100"
+                                   MinHeight="25"
+                                   Content="开始检测"
+                                   Margin="20,0,20,0"
                                    Command="{Binding ViewModel.StartCheckCommand,Mode=OneWay}"
-                                    IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"/>
+                                   IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}" />
 
-                        <ui:Button Grid.Column="1" MinWidth="100" MinHeight="25" Content="停止检测" Margin="20,0,20,0" 
-                                     Command="{Binding ViewModel.ColseCheckCommand,Mode=OneWay}"
-                                   IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay}"/>
-                        <ui:Button Grid.Column="2" MinWidth="100" MinHeight="25" Content="导出Excel" Margin="20,0,0,0"/>
+                        <ui:Button Grid.Column="1"
+                                   MinWidth="100"
+                                   MinHeight="25"
+                                   Content="停止检测"
+                                   Margin="20,0,20,0"
+                                   Command="{Binding ViewModel.ColseCheckCommand,Mode=OneWay}"
+                                   IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay}" />
+                        <ui:Button Grid.Column="2"
+                                   MinWidth="100"
+                                   MinHeight="25"
+                                   Content="导出Excel"
+                                   Margin="20,0,0,0" />
                     </Grid>
                 </Grid>
 
@@ -283,11 +126,15 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ui:TextBox x:Name="logRichTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                            MinWidth="300" Margin="0,20,20,20"
+                <ui:TextBox x:Name="logRichTextBox"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Auto"
+                            MinWidth="300"
+                            Margin="0,20,20,20"
                             IsReadOnly="True">
                 </ui:TextBox>
-                <Grid Grid.Column="1" Margin="20,20,0,20">
+                <Grid Grid.Column="1"
+                      Margin="20,20,0,20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -295,11 +142,12 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ProgressBar Value="{Binding Source={x:Static models:GlobalData.Instance}, Path=ProcessBar,Mode=TwoWay}"/>
-                    <ui:DataGrid x:Name="MyDataGrid" Grid.Row="1"
-
+                    <ProgressBar Margin="2"
+                                 Value="{Binding Source={x:Static models:GlobalData.Instance}, Path=ProcessBar,Mode=TwoWay}" />
+                    <ui:DataGrid x:Name="MyDataGrid"
+                                 Grid.Row="1"
                                  ItemsSource="{Binding ViewModel.HomePageItemData,Mode=TwoWay}">
-      
+
                     </ui:DataGrid>
                 </Grid>
 
