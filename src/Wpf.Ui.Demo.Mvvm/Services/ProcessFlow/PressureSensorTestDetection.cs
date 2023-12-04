@@ -90,7 +90,13 @@ class PressureSensorTestDetection : IProcessFlow
         _ = await pressureDevice.SetCurrentStatus(150, 0.01f, 60);
         pressureDevice.SetCurrentPressureLook();
         await Task.Delay(30000);
-        var check = pressureDevice.CheckAround(150, 0.01f);
+        var check = pressureDevice.CheckAround(150, 0.1f);
+        if (!check)
+        {
+            await ShowDeviceProcessErrorMessages("压力检测失败");
+            return check;
+
+        }
         return check;
     }
 
@@ -120,7 +126,9 @@ class PressureSensorTestDetection : IProcessFlow
             _cancellation.Cancel();
 
             // 测试数据为空
-            await ShowDeviceConnnectionError("无测试数据");
+            await ShowDeviceProcessErrorMessages("无测试数据");
+            GlobalData.Instance.IsOpenCheck = false;
+            GlobalData.Instance.ProcessBar = 0;
 
             return;
         }
@@ -142,7 +150,7 @@ class PressureSensorTestDetection : IProcessFlow
         foreach (StandardData temperature in temperatureList)
         {
             // 4 份
-            var temWeight=weight / 4;
+            var temWeight = weight / 4;
             pressureDevice.SetCurrentPressureLook();
 
             if (await temperatureDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
@@ -154,9 +162,18 @@ class PressureSensorTestDetection : IProcessFlow
             if (_cancellation.IsCancellationRequested)
             {
                 GlobalData.Instance.ProcessBar = 0;
+                GlobalData.Instance.IsOpenCheck = false;
+
                 return;
             }
+            // 等待工装达标（2小时）
+            if (_cancellation.IsCancellationRequested)
+            {
+                GlobalData.Instance.ProcessBar = 0;
+                GlobalData.Instance.IsOpenCheck = false;
 
+                return;
+            }
             if (await pressureSensorWorkwareDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
             {
             }
@@ -205,7 +222,8 @@ class PressureSensorTestDetection : IProcessFlow
                         var dataTemperature = data.Temperature ?? 0;
                         dSWorkwareItem.DSWorkwareAreas.Add(new DSWorkwareArea
                         {
-                            Pressure = dataPressure, Temperature = dataTemperature
+                            Pressure = dataPressure,
+                            Temperature = dataTemperature
                         });
 
                         // 检测数据是否合格

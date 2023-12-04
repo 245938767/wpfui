@@ -20,10 +20,12 @@ public class TemperatureDevice : IDevice
     {
         var list = BitConverter.ToString(CRCModelHelper.CheckCrc(receiveData) ?? Array.Empty<byte>()).Split('-')
             .ToList();
-        var temperature = Convert.ToInt32(list[0] + list[1], 16) / 10f;
-        DeviceCard.CurrentTemperature = temperature;
+        if (list.Count == 2)
+        {
 
-        // TODO 组装数据更新到Grid中
+            var temperature = Convert.ToInt32(list[0] + list[1], 16) / 10f;
+            DeviceCard.CurrentTemperature = temperature;
+        }
     }
 
     public override async Task<bool> Open()
@@ -37,6 +39,7 @@ public class TemperatureDevice : IDevice
         }
 
         _cancelTokenMsg = new CancellationTokenSource();
+        SerialPort.SendHexCRC("01 05 1F 40 FF 00", SerialPortLock);
 
         // 开启获得数据线程
         _ = await Task.Factory.StartNew(

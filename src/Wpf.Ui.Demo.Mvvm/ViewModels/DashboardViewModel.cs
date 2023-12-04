@@ -252,8 +252,8 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.PressureSensor, new PressureSensorWorkwareDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.PressureSensor), HomePageItemData));
 
         // TODO 初始化 流程逻辑类
-        GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.DSTest, new DSTestDetection(ProcessFlow,HomePageItemData));
-        GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.PressureSensorTest, new PressureSensorTestDetection(ProcessFlow, HomePageItemData));
+        GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.DSTest, new DSTestDetection(ProcessFlowEnum.DSTest,HomePageItemData));
+        GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.PressureSensorTest, new PressureSensorTestDetection(ProcessFlowEnum.PressureSensorTest, HomePageItemData));
     }
 
 

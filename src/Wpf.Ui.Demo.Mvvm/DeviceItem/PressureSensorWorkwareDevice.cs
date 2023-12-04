@@ -148,6 +148,7 @@ public class PressureSensorWorkwareDevice : IDevice
         ObservableCollection<object> homePageItemData = _viewList;
         var count = 0;
         var datafloat = new List<float>();
+        var dataTemperaturefloat=new List<float>();
 
         // 根据是否有数据进行更新和创建渲染
         if (homePageItemData.Count > 0)
@@ -157,7 +158,13 @@ public class PressureSensorWorkwareDevice : IDevice
                 var v = (DSWorkwareGridModel)homePageItemData[i];
                 v.Pressure = Single.Parse(data[count++].ToString("#.000"));
                 v.Temperature = Single.Parse(data[count++].ToString("#.00"));
-                datafloat.Add((float)v.Pressure!);
+                if (v.Pressure > 0) {
+                    datafloat.Add((float)v.Pressure!);
+                }
+                if (v.Temperature > 0)
+                {
+                    dataTemperaturefloat.Add((float)v.Temperature!);
+                }
             }
         }
         else
@@ -172,12 +179,18 @@ public class PressureSensorWorkwareDevice : IDevice
                 {
                     homePageItemData.Add(dSWorkwareGridModel);
                 }));
-
-                datafloat.Add((float)dSWorkwareGridModel.Pressure!);
+                if (dSWorkwareGridModel.Pressure > 0) {
+                    datafloat.Add((float)dSWorkwareGridModel.Pressure!);
+                }
+                if (dSWorkwareGridModel.Temperature > 0)
+                {
+                    dataTemperaturefloat.Add((float)dSWorkwareGridModel.Temperature!);
+                }
             }
         }
 
         DeviceCard.CurrentPressure = datafloat.Average();
+        DeviceCard.CurrentTemperature = dataTemperaturefloat.Average();
 
     }
 }

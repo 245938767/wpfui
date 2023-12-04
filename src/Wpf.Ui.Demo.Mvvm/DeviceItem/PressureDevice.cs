@@ -132,7 +132,7 @@ public class PressureDevice : IDevice
     }
     public override bool CheckAround(float value, float checkAround)
     {
-        var check = DeviceCard.CurrentPressure - value;
+        var check = (float)Math.Abs((decimal)(DeviceCard.CurrentPressure - value));
         return check > -checkAround && check < checkAround;
     }
 

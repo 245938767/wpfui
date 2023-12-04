@@ -51,6 +51,7 @@ public partial class App
                 services.AddSingleton<IContentDialogService, ContentDialogService>();
                 services.AddSingleton<DeviceService>();
                 services.AddSingleton<StandardService>();
+                services.AddSingleton<DSWorkwareService>();
 
                 // Theme manipulation
                 services.AddSingleton<IThemeService, ThemeService>();

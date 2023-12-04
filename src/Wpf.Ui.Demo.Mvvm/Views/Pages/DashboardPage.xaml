@@ -52,7 +52,7 @@
                                                          ImageUrl="{Binding ImageUrl,Mode=OneWay}"
                                                          PortText="{Binding SerialPortModel.PortName,Mode=OneWay}"
                                                          PressureText="{Binding CurrentPressure,Mode=OneWay,StringFormat={}{0:F4}}"
-                                                         TemperatureText="{Binding CurrentTemperature,Mode=OneWay,StringFormat={}{0:F4}}"
+                                                         TemperatureText="{Binding CurrentTemperature,Mode=OneWay,StringFormat={}{0:F2}}"
                                                          DeviceNameText="{Binding DeviceName,Mode=OneWay}"
                                                          Status="{Binding SerialPortModel.DeviceStatus,Mode=OneWay}"
                                                          TUtil="{Binding UnitT,Mode=OneWay}"
@@ -126,15 +126,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ui:TextBox x:Name="logRichTextBox"
-                            TextWrapping="Wrap"
-                            VerticalScrollBarVisibility="Auto"
-                            MinWidth="300"
-                            Margin="0,20,20,20"
-                            IsReadOnly="True">
-                </ui:TextBox>
-                <Grid Grid.Column="1"
-                      Margin="20,20,0,20">
+            
+                <Grid Grid.Column="0"
+                     
+                        Margin="0,20,20,20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -144,13 +139,22 @@
                     </Grid.ColumnDefinitions>
                     <ProgressBar Margin="2"
                                  Value="{Binding Source={x:Static models:GlobalData.Instance}, Path=ProcessBar,Mode=TwoWay}" />
-                    <ui:DataGrid x:Name="MyDataGrid"
-                                 Grid.Row="1"
-                                 ItemsSource="{Binding ViewModel.HomePageItemData,Mode=TwoWay}">
+                    <ui:TextBox x:Name="logRichTextBox"
+                TextWrapping="Wrap"
+                                Grid.Row="1"
+                VerticalScrollBarVisibility="Auto"
+                MinWidth="300"
+              
+                IsReadOnly="True">
+                    </ui:TextBox>
 
-                    </ui:DataGrid>
                 </Grid>
+                <ui:DataGrid x:Name="MyDataGrid"
+                              Margin="20,20,0,20"
+                Grid.Column="1"
+               ItemsSource="{Binding ViewModel.HomePageItemData,Mode=TwoWay}">
 
+                </ui:DataGrid>
             </Grid>
         </Grid>
     </Grid>

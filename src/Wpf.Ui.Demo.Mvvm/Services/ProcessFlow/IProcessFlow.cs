@@ -64,4 +64,18 @@ public abstract class IProcessFlow : IDisposable
                 $"请检测”{deviceName}“设备是否已经连接",
         }.ShowDialogAsync();
     }
+    /// <summary>
+    /// 显示设备在初始化过程中事变
+    /// </summary>
+    /// <param name="deviceName"> 设备名称</param>
+    /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns>
+    protected async Task ShowDeviceProcessErrorMessages(string deviceName)
+    {
+        await new Wpf.Ui.Controls.MessageBox
+        {
+            Title = "设备测试流程失败",
+            Content =
+                $"失败原因”{deviceName}“",
+        }.ShowDialogAsync();
+    }
 }
