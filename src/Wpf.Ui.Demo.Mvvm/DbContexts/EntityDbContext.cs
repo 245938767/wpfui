@@ -68,6 +68,10 @@ public partial class EntityDbContext : DbContext
     public DbSet<DSWorkwareArea> DsworkwareAreas { get; set; }
 
 
+    /// <summary>
+    /// 初始化测试数据
+    /// </summary>
+    /// <returns></returns>
     private static List<Standard> StandardInitial() => new List<Standard> {
         new Standard
         {
@@ -92,6 +96,10 @@ public partial class EntityDbContext : DbContext
         new StandardData {Id=11, StandardId=1,StandardType=StandardEnum.Temperature,Value=-10,ThresholdValue=0.5f },
         new StandardData { Id=12,StandardId=1,StandardType=StandardEnum.Temperature,Value=-20,ThresholdValue=0.5f },};
     }
+    /// <summary>
+    /// 设备卡片实例数据初始化
+    /// </summary>
+    /// <returns></returns>
     private static List<DeviceCard> init()
     {
         var deviceCards = new List<DeviceCard>();
@@ -145,10 +153,22 @@ public partial class EntityDbContext : DbContext
             ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Working.png",
             Version = 1.0f,
         };
+        var pressureSensor = new DeviceCard
+        {
+            Id = 5,
+            Key = DeviceTypeEnum.PressureSensor,
+            DeviceName = "压力传感器",
+            ForeignKey = 5,
+            UnitP = "Kpa",
+            UnitT = "℃",
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Working.png",
+            Version = 1.0f,
+        };
         deviceCards.Add(pop);
         deviceCards.Add(pressure);
         deviceCards.Add(temperature);
         deviceCards.Add(work);
+        deviceCards.Add(pressureSensor);
         return deviceCards;
     }
     private static List<SerialPortModel> initSerialPort()
@@ -199,10 +219,22 @@ public partial class EntityDbContext : DbContext
             NetworkAddress = "11"
 
         };
+        var pressuresen = new SerialPortModel()
+        {
+            Id = 5,
+            PortName = null,
+            StopBit = StopBits.One,
+            BaudRate = 115200,
+            DataBit = 8,
+            DeviceStatus = false,
+            NetworkAddress = "11"
+
+        };
         deviceCards.Add(pop);
         deviceCards.Add(pressure);
         deviceCards.Add(temperature);
         deviceCards.Add(work);
+        deviceCards.Add(pressuresen);
         return deviceCards;
     }
 

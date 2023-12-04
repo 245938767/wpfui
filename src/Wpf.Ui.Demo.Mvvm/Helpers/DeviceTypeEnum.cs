@@ -30,5 +30,9 @@ public enum DeviceTypeEnum
     /**
      * DS工装
      */
-    DSWork
+    DSWork,
+    /**
+     * 压力传感器检测工装
+     */
+    PressureSensor
 }

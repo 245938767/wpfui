@@ -18,8 +18,8 @@ public enum ProcessFlowEnum
 {
     [Description("DS工装测试流程")]
     DSTest,
-    [Description("DS工装测试流程2")]
-    DSTest2,
+    [Description("压力传感器测试流程")]
+    PressureSensorTest,
     [Description("DS工装测试流程3")]
     DSTest3,
 }
