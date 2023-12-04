@@ -206,18 +206,17 @@ class PressureSensorTestDetection : IProcessFlow
                     for (var i = 0; i < homePageItem.Count; i++)
                     {
                         var data = (DSWorkwareGridModel)homePageItem[i];
-                        DSWorkwareItem dSWorkwareItem = dSWorkwareItems[i];
                         if (n <= 0)
                         {
                             // 初始化数据
                             dSWorkwareItems[i] = new DSWorkwareItem
                             {
-                                Equipment = data.Equipment,
+                                Equipment = data.SerialNumber.ToString(),
                                 StandardPressure = pressure.Value,
                                 StandardTemperature = temperature.Value,
                             };
                         }
-
+                        DSWorkwareItem dSWorkwareItem = dSWorkwareItems[i];
                         var dataPressure = data.Pressure ?? 0;
                         var dataTemperature = data.Temperature ?? 0;
                         dSWorkwareItem.DSWorkwareAreas.Add(new DSWorkwareArea
@@ -232,9 +231,10 @@ class PressureSensorTestDetection : IProcessFlow
                         {
                             dSWorkwareItem.IsCheck = false;
                         }
+
                     }
 
-                    await Task.Delay(1500);
+                    await Task.Delay(1000);
                 }
 
                 dSWorkware.DSWorkwareItems.AddRange(dSWorkwareItems);
