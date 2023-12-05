@@ -102,12 +102,12 @@ class PressureSensorTestDetection : IProcessFlow
 
     public override async Task ExecutionProcess()
     {
-     /**   if (!await ExecutionDetection())
-        {
-            GlobalData.Instance.IsOpenCheck = false;
-            return;
-        }
-     */
+        /**   if (!await ExecutionDetection())
+           {
+               GlobalData.Instance.IsOpenCheck = false;
+               return;
+           }
+        */
         GlobalData.Instance.ProcessBar = 5;
         // 检测当前是否有缓存数据
 
@@ -228,12 +228,17 @@ class PressureSensorTestDetection : IProcessFlow
                 var dSWorkwareItems = new List<DSWorkwareItem>();
 
                 // 获得N次数据
-                for (var n = 0; n < 10; n++)
+                for (var n = 0; n < 50; n++)
                 {
                     // 获得设备数据
                     for (var i = 0; i < homePageItem.Count; i++)
                     {
                         var data = (DSWorkwareGridModel)homePageItem[i];
+                        if (data.Pressure <= 0 && data.Temperature <= 0)
+                        {
+                            continue;
+                        }
+
                         if (n <= 0)
                         {
                             // 初始化数据
@@ -244,6 +249,7 @@ class PressureSensorTestDetection : IProcessFlow
                                 StandardTemperature = temperature.Value,
                             });
                         }
+
                         DSWorkwareItem dSWorkwareItem = dSWorkwareItems[i];
                         var dataPressure = data.Pressure ?? 0;
                         var dataTemperature = data.Temperature ?? 0;

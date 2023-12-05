@@ -284,7 +284,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                 }
 
                 // save xmal
-                var fileName = $"C:\\xml\\{DateTime.Now.ToLongTimeString}\\{item.Key}.xlsx";
+                var fileName = $"C:\\xml\\{DateTime.Now.Minute}{DateTime.Now.Second}\\{item.Key}.xlsx";
                 xlWorkBook.SaveAs(fileName);
             }
 

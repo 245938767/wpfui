@@ -10,6 +10,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>applicationIcon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64</Platforms>
+    <Authors>刘咏其</Authors>
+    <Company>Vemmtec</Company>
+    <PackageProjectUrl />
   </PropertyGroup>
 
   <ItemGroup>
