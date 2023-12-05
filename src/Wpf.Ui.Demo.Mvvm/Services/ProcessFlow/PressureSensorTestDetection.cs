@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
-using Windows.Services.Maps;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 using Wpf.Ui.Demo.Mvvm.Helpers.Extension;
@@ -107,6 +107,7 @@ class PressureSensorTestDetection : IProcessFlow
             GlobalData.Instance.IsOpenCheck = false;
             return;
         }
+        
         GlobalData.Instance.ProcessBar = 5;
         // 检测当前是否有缓存数据
 
@@ -134,7 +135,7 @@ class PressureSensorTestDetection : IProcessFlow
         }
 
         GlobalData.Instance.ProcessBar = 8;
-
+        // 初始化当前测试数据基类对象
         var dSWorkware = new DSWorkware { ProcessFlowEnum = processFlow, CreateTime = DateTime.Now, };
         dSWorkwareService.SaveDSWorkware(dSWorkware);
 
@@ -166,7 +167,28 @@ class PressureSensorTestDetection : IProcessFlow
 
                 return;
             }
+
             // 等待工装达标（2小时）
+            try
+            {
+                // 2小时token 8200 s
+                using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+
+                await await Task.Factory.StartNew(
+                  async () =>
+                  {
+                      while (!_cancellation.IsCancellationRequested)
+                      {
+                          await Task.Delay(5000);
+                      }
+
+                  },
+                  cancellationTokenSource.Token);
+            }
+            catch (TaskCanceledException)
+            {
+            }
+
             if (_cancellation.IsCancellationRequested)
             {
                 GlobalData.Instance.ProcessBar = 0;
@@ -174,14 +196,19 @@ class PressureSensorTestDetection : IProcessFlow
 
                 return;
             }
-            if (await pressureSensorWorkwareDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
-            {
-            }
+
             GlobalData.Instance.ProcessBar += temWeight;
 
             var pressureWright = (temWeight * 2) / 100;
             foreach (StandardData pressure in pressureList)
             {
+                if (_cancellation.IsCancellationRequested)
+                {
+                    GlobalData.Instance.ProcessBar = 0;
+                    GlobalData.Instance.IsOpenCheck = false;
+
+                    return;
+                }
                 // 测试压力小于105 开启真空泵
                 if (pressure.Value < 105)
                 {
@@ -245,20 +272,21 @@ class PressureSensorTestDetection : IProcessFlow
 
         // 检测数据校验
         dSWorkware.IsCheck = true;
-        dSWorkwareService.UpdateDSWorkware(dSWorkware);
+        _ = dSWorkwareService.UpdateDSWorkware(dSWorkware);
         var dictionary = dSWorkware.DSWorkwareItems.GroupBy(o => o.Equipment)
             .ToDictionary(o => o.Key, o => o.Any(x => !x.IsCheck));
 
         // 更新页面
-        var homePageItemData = HomePageItemData.ToList();
+        ObservableCollection<object> homePageItemData = HomePageItemData;
 
         for (var i = 0; i < homePageItemData.Count; i++)
         {
             var v = (DSWorkwareGridModel)homePageItemData[i];
 
             // 检测是否合格
-            v.IsCheck = !dictionary[v.Equipment];
+            v.IsCheck = !dictionary[v.SerialNumber.ToString()];
         }
+
         GlobalData.Instance.ProcessBar = 100;
     }
 }

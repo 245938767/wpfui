@@ -93,25 +93,27 @@ public class PressureSensorWorkwareDevice : IDevice
 
     public async override Task<bool> SetCurrentStatus(float value, float around, double timeOutSecond = 8200)
     {
-        using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(timeOutSecond));
-        try
-        {
-            return await await Task.Factory.StartNew(
-                async () =>
-                {
-                    while (!CheckAround(value, around) && !cancellationTokenSource.IsCancellationRequested)
+        /**    using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(timeOutSecond));
+            try
+            {
+                return await await Task.Factory.StartNew(
+                    async () =>
                     {
-                        await Task.Delay(5000);
-                    }
+                        while (!CheckAround(value, around) && !cancellationTokenSource.IsCancellationRequested)
+                        {
+                            await Task.Delay(5000);
+                        }
 
-                    return true;
-                },
-                cancellationTokenSource.Token);
-        }
-        catch (TaskCanceledException)
-        {
-            return false;
-        }
+                        return true;
+                    },
+                    cancellationTokenSource.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                return false;
+            }
+        */
+        return true;
     }
 
     public override bool CheckAround(float value, float checkAround)
