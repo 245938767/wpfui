@@ -139,7 +139,7 @@ public class PressureDevice : IDevice
     /// <summary>
     /// 重新设置设备的参数为初始状态
     /// </summary>
-    private async Task CloseStatus()
+    public async Task CloseStatus()
     {
         SerialPort.SendStringMsg("OUTP:STAT ON\n", SerialPortLock);
         SerialPort.SendStringMsg("CAL:PRES:ZERO:VALV 0\n", SerialPortLock);

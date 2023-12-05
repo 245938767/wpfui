@@ -47,8 +47,8 @@ public class PumpDevice : IDevice
     /// 关闭空气泵
     /// </summary>
     public void ClosePump() {
-        SerialPort.RtsEnable = true;
-        SerialPort.DtrEnable = true;
+        SerialPort.RtsEnable = false;
+        SerialPort.DtrEnable = false;
     }
 
     public async override Task<bool> CloseConnect()

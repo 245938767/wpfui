@@ -24,7 +24,12 @@ public class DSWorkwareService
     }
 
     public DSWorkware? GetNewsData() {
-       return _dbContext.Dsworkwares.Include(x => x.DSWorkwareItems).OrderBy(x => x.CreateTime).FirstOrDefault();
+
+       var dw= _dbContext.Dsworkwares.OrderByDescending(x => x.CreateTime).FirstOrDefault();
+       
+        dw.DSWorkwareItems = _dbContext.DSWorkwareItems.Include(x => x.DSWorkwareAreas).Where(x => x.WorkwareId == dw.id).ToList();
+
+        return dw;
     }
 
     public int SaveDSWorkware(DSWorkware dSWorkware)

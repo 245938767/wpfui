@@ -243,7 +243,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
           new SimpleContentDialogCreateOptions()
           {
               Title = "开始生成提醒",
-              Content = $"是开始生成数据: 测试流程:{dSWorkware.ProcessFlowEnum.ToDescription}, 创建时间为:{dSWorkware.CreateTime} ,是否检测完成:{dSWorkware.IsCheck}",
+              Content = $"是开始生成数据: 测试流程:{dSWorkware.ProcessFlowEnum.ToDescription()}, 创建时间为:{dSWorkware.CreateTime} ,是否检测完成:{dSWorkware.IsCheck}",
               PrimaryButtonText = "确定",
               CloseButtonText = "取消",
           }
@@ -284,19 +284,11 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                 }
 
                 // save xmal
-                var fileName = $"C:\\xml\\{item.Key}";
+                var fileName = $"C:\\xml\\{DateTime.Now.ToLongTimeString}\\{item.Key}.xlsx";
                 xlWorkBook.SaveAs(fileName);
             }
 
-            _ = await _contentDialogService.ShowSimpleDialogAsync(
-              new SimpleContentDialogCreateOptions()
-              {
-                  Title = "生成完成",
-                  Content = $"生成地址 : C:\\xml",
-                  PrimaryButtonText = "确定",
-                  CloseButtonText = "取消",
-              }
-          );
+     
 
         }
     }

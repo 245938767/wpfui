@@ -102,12 +102,12 @@ class PressureSensorTestDetection : IProcessFlow
 
     public override async Task ExecutionProcess()
     {
-        if (!await ExecutionDetection())
+     /**   if (!await ExecutionDetection())
         {
             GlobalData.Instance.IsOpenCheck = false;
             return;
         }
-        
+     */
         GlobalData.Instance.ProcessBar = 5;
         // 检测当前是否有缓存数据
 
@@ -172,12 +172,12 @@ class PressureSensorTestDetection : IProcessFlow
             try
             {
                 // 2小时token 8200 s
-                using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+                using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(2));
 
                 await await Task.Factory.StartNew(
                   async () =>
                   {
-                      while (!_cancellation.IsCancellationRequested)
+                      while (!_cancellation.IsCancellationRequested && !cancellationTokenSource.IsCancellationRequested)
                       {
                           await Task.Delay(5000);
                       }
@@ -237,12 +237,12 @@ class PressureSensorTestDetection : IProcessFlow
                         if (n <= 0)
                         {
                             // 初始化数据
-                            dSWorkwareItems[i] = new DSWorkwareItem
+                            dSWorkwareItems.Insert(i, new DSWorkwareItem
                             {
                                 Equipment = data.SerialNumber.ToString(),
                                 StandardPressure = pressure.Value,
                                 StandardTemperature = temperature.Value,
-                            };
+                            });
                         }
                         DSWorkwareItem dSWorkwareItem = dSWorkwareItems[i];
                         var dataPressure = data.Pressure ?? 0;
@@ -266,7 +266,7 @@ class PressureSensorTestDetection : IProcessFlow
                 }
 
                 dSWorkware.DSWorkwareItems.AddRange(dSWorkwareItems);
-                _= dSWorkwareService.UpdateDSWorkware(dSWorkware);
+                _ = dSWorkwareService.UpdateDSWorkware(dSWorkware);
                 GlobalData.Instance.ProcessBar += pressureWright;
             }
         }
@@ -289,5 +289,10 @@ class PressureSensorTestDetection : IProcessFlow
         }
 
         GlobalData.Instance.ProcessBar = 100;
+        // 压力源进入观测模式
+        await pressureDevice.CloseStatus();
+        // 温箱关闭
+        temperatureDevice.CloseTemperature();
+        GlobalData.Instance.IsOpenCheck = false;
     }
 }

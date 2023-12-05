@@ -39,10 +39,9 @@ public class TemperatureDevice : IDevice
         }
 
         _cancelTokenMsg = new CancellationTokenSource();
-        SerialPort.SendHexCRC("01 05 1F 40 FF 00", SerialPortLock);
-
-        // 开启获得数据线程
-        _ = await Task.Factory.StartNew(
+        OpenTemperature();
+                // 开启获得数据线程
+                _ = await Task.Factory.StartNew(
             async () =>
             {
                 while (!_cancelTokenMsg.IsCancellationRequested)
@@ -82,7 +81,7 @@ public class TemperatureDevice : IDevice
     public override async Task<bool> CloseConnect()
     {
         _cancelTokenMsg.Cancel();
-        await CloseTemperature();
+         CloseTemperature();
         try
         {
             SerialPort.ClosePort(SerialPortLock);
@@ -104,10 +103,12 @@ public class TemperatureDevice : IDevice
     /// <summary>
     /// 关闭当前温箱运行
     /// </summary>
-    private async Task CloseTemperature()
+    public void CloseTemperature()
     {
         SerialPort.SendHexCRC("01 05 1F 41 FF 00", SerialPortLock);
-        await Task.Delay(500);
+    }
+    public  void OpenTemperature() {
+        SerialPort.SendHexCRC("01 05 1F 40 FF 00", SerialPortLock);
     }
 
     /// <summary>
