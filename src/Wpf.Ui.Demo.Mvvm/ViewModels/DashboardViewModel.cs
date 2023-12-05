@@ -3,7 +3,9 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
+using ClosedXML.Excel;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Windows.Threading;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.DeviceItem;
@@ -22,6 +24,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
 {
     private readonly IContentDialogService _contentDialogService;
     private readonly DeviceService _deviceService;
+    private readonly DSWorkwareService dSWorkwareService;
     private bool _isInitialized = false;
 
     [ObservableProperty] private List<DeviceCard> _deviceCards = new();
@@ -33,10 +36,12 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     /// </summary>
     [ObservableProperty] private ObservableCollection<object> _homePageItemData = new ObservableCollection<object>();
 
-    public DashboardViewModel(IContentDialogService contentDialogService,DeviceService deviceService)
+    public DashboardViewModel(IContentDialogService contentDialogService, DeviceService deviceService, DSWorkwareService dSWorkwareService)
     {
         _contentDialogService = contentDialogService;
         _deviceService = deviceService;
+        this.dSWorkwareService = dSWorkwareService;
+
     }
 
     [RelayCommand]
@@ -53,7 +58,10 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
             ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
                 new SimpleContentDialogCreateOptions()
                 {
-                    Title = "关闭设备提醒", Content = "是否关闭设备连接", PrimaryButtonText = "确定", CloseButtonText = "取消",
+                    Title = "关闭设备提醒",
+                    Content = "是否关闭设备连接",
+                    PrimaryButtonText = "确定",
+                    CloseButtonText = "取消",
                 }
             );
             switch (result)
@@ -220,6 +228,79 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         }
     }
 
+    [RelayCommand]
+    private async Task ExportExcel()
+    {
+        // check history data
+        DSWorkware? dSWorkware = dSWorkwareService.GetNewsData();
+        if (dSWorkware == null)
+        {
+            return;
+        }
+
+        // 提示用户History信息和时间
+        ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
+          new SimpleContentDialogCreateOptions()
+          {
+              Title = "开始生成提醒",
+              Content = $"是开始生成数据: 测试流程:{dSWorkware.ProcessFlowEnum.ToDescription}, 创建时间为:{dSWorkware.CreateTime} ,是否检测完成:{dSWorkware.IsCheck}",
+              PrimaryButtonText = "确定",
+              CloseButtonText = "取消",
+          }
+      );
+        if (result == ContentDialogResult.Primary)
+        {
+            // 继续生成Excel文件
+            //循环设备信息
+            var dsWorkwareItems = dSWorkware.DSWorkwareItems.GroupBy(o => o.Equipment)
+                                                            .ToDictionary(o => o.Key, o => o.ToList());
+            foreach (KeyValuePair<string, List<DSWorkwareItem>> item in dsWorkwareItems)
+            {
+
+                // 根据设备的循环生成对应的设备Excel报告
+                using var xlWorkBook = new XLWorkbook();
+
+                // 根据温度生成Sheet
+                var temperatureGroup = item.Value.GroupBy(o => o.StandardTemperature).ToDictionary(o => o.Key, o => o.ToList());
+                foreach (KeyValuePair<float, List<DSWorkwareItem>> temperatureItem in temperatureGroup)
+                {
+                    var xml = xlWorkBook.AddWorksheet(temperatureItem.Key.ToString());
+
+                    // 循环压力数据
+                    // 行标记
+                    var pressureCount = 1;
+                    foreach (DSWorkwareItem pressureItem in temperatureItem.Value)
+                    {
+                        // 列标记
+                        var count = 1;
+                        xml.Cell(count++, pressureCount).Value = pressureItem.StandardPressure;
+                        foreach (DSWorkwareArea relaData in pressureItem.DSWorkwareAreas)
+                        {
+                            xml.Cell(count++, pressureCount).Value = relaData.Pressure;
+                        }
+
+                        pressureCount++;
+                    }
+                }
+
+                // save xmal
+                var fileName = $"C:\\xml\\{item.Key}";
+                xlWorkBook.SaveAs(fileName);
+            }
+
+            _ = await _contentDialogService.ShowSimpleDialogAsync(
+              new SimpleContentDialogCreateOptions()
+              {
+                  Title = "生成完成",
+                  Content = $"生成地址 : C:\\xml",
+                  PrimaryButtonText = "确定",
+                  CloseButtonText = "取消",
+              }
+          );
+
+        }
+    }
+
     public void OnNavigatedTo()
     {
         Console.WriteLine(_isInitialized);
@@ -248,11 +329,11 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pressure, new PressureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pressure)));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Pump, new PumpDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Pump)));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.Temperature, new TemperatureDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.Temperature)));
-        instanceDeviceSerialPorts.Add(DeviceTypeEnum.DSWork, new DSWorkwareDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.DSWork),HomePageItemData));
+        instanceDeviceSerialPorts.Add(DeviceTypeEnum.DSWork, new DSWorkwareDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.DSWork), HomePageItemData));
         instanceDeviceSerialPorts.Add(DeviceTypeEnum.PressureSensor, new PressureSensorWorkwareDevice(deviceCards.First(x => x.Key == DeviceTypeEnum.PressureSensor), HomePageItemData));
 
         // TODO 初始化 流程逻辑类
-        GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.DSTest, new DSTestDetection(ProcessFlowEnum.DSTest,HomePageItemData));
+        GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.DSTest, new DSTestDetection(ProcessFlowEnum.DSTest, HomePageItemData));
         GlobalData.Instance.ProcessFlow.Add(ProcessFlowEnum.PressureSensorTest, new PressureSensorTestDetection(ProcessFlowEnum.PressureSensorTest, HomePageItemData));
     }
 

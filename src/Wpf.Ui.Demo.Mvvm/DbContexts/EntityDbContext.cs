@@ -82,7 +82,7 @@ public partial class EntityDbContext : DbContext
         };
     private static List<StandardData> StandardDataInit()
     {
-        return new List<StandardData> { 
+        return new List<StandardData> {
         new StandardData {Id=1, StandardId=1,StandardType=StandardEnum.Pressure,Value=80,ThresholdValue=0.01f },
         new StandardData {Id=2, StandardId=1,StandardType=StandardEnum.Pressure,Value=90,ThresholdValue=0.01f },
         new StandardData {Id=3, StandardId=1,StandardType=StandardEnum.Pressure,Value=100,ThresholdValue=0.01f },
@@ -171,6 +171,10 @@ public partial class EntityDbContext : DbContext
         deviceCards.Add(pressureSensor);
         return deviceCards;
     }
+    /// <summary>
+    /// 设备对应的端口信息
+    /// </summary>
+    /// <returns></returns>
     private static List<SerialPortModel> initSerialPort()
     {
         var deviceCards = new List<SerialPortModel>();

@@ -28,7 +28,7 @@ public class DSWorkwareItem
     /// <summary>
     /// 设备ID
     /// </summary>
-    public string? Equipment { get; set; }
+    public string Equipment { get; set; }
 
     [Description("重复数据集")] public List<DSWorkwareArea> DSWorkwareAreas { get; set; } = new List<DSWorkwareArea>();
 

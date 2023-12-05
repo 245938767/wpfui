@@ -209,6 +209,7 @@ class PressureSensorTestDetection : IProcessFlow
 
                     return;
                 }
+
                 // 测试压力小于105 开启真空泵
                 if (pressure.Value < 105)
                 {
@@ -265,7 +266,7 @@ class PressureSensorTestDetection : IProcessFlow
                 }
 
                 dSWorkware.DSWorkwareItems.AddRange(dSWorkwareItems);
-                dSWorkwareService.UpdateDSWorkware(dSWorkware);
+                _= dSWorkwareService.UpdateDSWorkware(dSWorkware);
                 GlobalData.Instance.ProcessBar += pressureWright;
             }
         }

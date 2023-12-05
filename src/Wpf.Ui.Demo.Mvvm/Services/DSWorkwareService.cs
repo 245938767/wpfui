@@ -3,6 +3,7 @@
 // Copyright (C) Leszek Pomianowski and WPF UI Contributors.
 // All Rights Reserved.
 
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,10 @@ public class DSWorkwareService
     public DSWorkwareService(EntityDbContext dbContext)
     {
         _dbContext = dbContext;
+    }
+
+    public DSWorkware? GetNewsData() {
+       return _dbContext.Dsworkwares.Include(x => x.DSWorkwareItems).OrderBy(x => x.CreateTime).FirstOrDefault();
     }
 
     public int SaveDSWorkware(DSWorkware dSWorkware)
