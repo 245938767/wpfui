@@ -102,12 +102,13 @@ class PressureSensorTestDetection : IProcessFlow
 
     public override async Task ExecutionProcess()
     {
-        /**   if (!await ExecutionDetection())
+           if (!await ExecutionDetection())
            {
                GlobalData.Instance.IsOpenCheck = false;
                return;
            }
-        */
+        // 开启温箱
+        temperatureDevice.OpenTemperature();
         GlobalData.Instance.ProcessBar = 5;
         // 检测当前是否有缓存数据
 
@@ -171,8 +172,7 @@ class PressureSensorTestDetection : IProcessFlow
             // 等待工装达标（2小时）
             try
             {
-                // 2小时token 8200 s
-                using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+                using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(3600));
 
                 await await Task.Factory.StartNew(
                   async () =>
