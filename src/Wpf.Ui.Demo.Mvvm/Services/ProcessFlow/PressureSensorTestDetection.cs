@@ -234,11 +234,7 @@ class PressureSensorTestDetection : IProcessFlow
                     for (var i = 0; i < homePageItem.Count; i++)
                     {
                         var data = (DSWorkwareGridModel)homePageItem[i];
-                        if (data.Pressure <= 0 && data.Temperature <= 0)
-                        {
-                            continue;
-                        }
-
+                 
                         if (n <= 0)
                         {
                             // 初始化数据

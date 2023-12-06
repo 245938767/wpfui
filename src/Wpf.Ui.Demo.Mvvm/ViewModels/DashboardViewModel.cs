@@ -254,6 +254,8 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
             //循环设备信息
             var dsWorkwareItems = dSWorkware.DSWorkwareItems.GroupBy(o => o.Equipment)
                                                             .ToDictionary(o => o.Key, o => o.ToList());
+            DateTime now = DateTime.Now;
+            var times = now.Year.ToString() + now.Month.ToString() + now.Day.ToString() + now.Hour.ToString() + now.Minute.ToString() + now.Second.ToString();
             foreach (KeyValuePair<string, List<DSWorkwareItem>> item in dsWorkwareItems)
             {
 
@@ -284,12 +286,18 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                 }
 
                 // save xmal
-                var fileName = $"C:\\xml\\{DateTime.Now.Year}{DateTime.Now.Hour}{DateTime.Now.Minute}{DateTime.Now.Second}\\{item.Key}.xlsx";
+                var fileName = $"C:\\xml\\{times}\\{item.Key}.xlsx";
                 xlWorkBook.SaveAs(fileName);
             }
-
-     
-
+            _ = _contentDialogService.ShowSimpleDialogAsync(
+    new SimpleContentDialogCreateOptions()
+    {
+        Title = "已生成提醒",
+        Content = $"生成路径：C:\\xml\\{times}",
+        PrimaryButtonText = "确定",
+        CloseButtonText = "取消",
+    }
+);
         }
     }
 

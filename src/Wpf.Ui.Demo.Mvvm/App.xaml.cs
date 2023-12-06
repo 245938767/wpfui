@@ -13,7 +13,6 @@ using Wpf.Ui.Controls;
 using Wpf.Ui.Demo.Mvvm.DbContexts;
 using Wpf.Ui.Demo.Mvvm.Models;
 using Wpf.Ui.Demo.Mvvm.Services;
-using Type = ABI.System.Type;
 
 namespace Wpf.Ui.Demo.Mvvm;
 
