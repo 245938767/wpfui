@@ -1,6 +1,3 @@
-using System.IO.Ports;
-using Wpf.Ui.Demo.Mvvm.Models;
-
 namespace Wpf.Ui.Demo.Mvvm.Helpers.Extension;
 
 public static class SerialPortExtension
@@ -50,8 +47,6 @@ public static class SerialPortExtension
         {
             var checkCrc = hexString + CRCModelHelper.ToModbusCRC16(hexString);
             var sendBuffer = CRCModelHelper.StringToHexByte(checkCrc);
-            serialPort.DiscardInBuffer();
-            serialPort.DiscardOutBuffer();
             serialPort.Write(sendBuffer, 0, sendBuffer.Length);
             return;
         }
@@ -60,8 +55,6 @@ public static class SerialPortExtension
         {
             var checkCrc = hexString + CRCModelHelper.ToModbusCRC16(hexString);
             var sendBuffer = CRCModelHelper.StringToHexByte(checkCrc);
-            serialPort.DiscardInBuffer();
-            serialPort.DiscardOutBuffer();
             serialPort.Write(sendBuffer, 0, sendBuffer.Length);
         }
     }
@@ -75,16 +68,12 @@ public static class SerialPortExtension
 
         if (lockObject == null)
         {
-            serialPort.DiscardInBuffer();
-            serialPort.DiscardOutBuffer();
             serialPort.Write(msg);
             return;
         }
 
         lock (lockObject)
         {
-            serialPort.DiscardInBuffer();
-            serialPort.DiscardOutBuffer();
             serialPort.Write(msg);
         }
     }

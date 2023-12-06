@@ -54,7 +54,6 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
 
         if (deviceCard.SerialPortModel.DeviceStatus)
         {
-            // TODO 检查主程序是否在运行（在运行不允许取消连接）
             ContentDialogResult result = await _contentDialogService.ShowSimpleDialogAsync(
                 new SimpleContentDialogCreateOptions()
                 {
