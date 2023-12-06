@@ -247,6 +247,7 @@ class PressureSensorTestDetection : IProcessFlow
                                 Equipment = data.SerialNumber.ToString(),
                                 StandardPressure = pressure.Value,
                                 StandardTemperature = temperature.Value,
+                                IsCheck=true,
                             });
                         }
 
