@@ -296,6 +296,7 @@ class PressureSensorTestDetection : IProcessFlow
         await pressureDevice.CloseStatus();
         // 温箱关闭
         temperatureDevice.CloseTemperature();
+        pressureDevice.CloseStatus();
         GlobalData.Instance.IsOpenCheck = false;
     }
 }

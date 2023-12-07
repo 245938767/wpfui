@@ -1,3 +1,6 @@
+using System.IO.Ports;
+using Wpf.Ui.Demo.Mvvm.Models;
+
 namespace Wpf.Ui.Demo.Mvvm.Helpers.Extension;
 
 public static class SerialPortExtension
@@ -28,8 +31,8 @@ public static class SerialPortExtension
             var port = (SerialPort)e;
             var count = port.BytesToRead;
             var buff = new byte[count];
-            port.Read(buff, 0, count);
-            if (count != 0)
+           var readCount= port.Read(buff, 0, count);
+            if (readCount > 0)
             {
                 receiveData.Invoke(buff);
             }

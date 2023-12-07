@@ -20,11 +20,19 @@ public class TemperatureDevice : IDevice
     {
         var list = BitConverter.ToString(CRCModelHelper.CheckCrc(receiveData) ?? Array.Empty<byte>()).Split('-')
             .ToList();
-        if (list.Count == 2)
+        if (list.Count >= 2)
         {
+            var temperature = Convert.ToInt32(list[0] + list[1], 16);
+            if (list[0] == "FF")
+            {
+                DeviceCard.CurrentTemperature = (temperature - 65536) / 10f;
 
-            var temperature = Convert.ToInt32(list[0] + list[1], 16) / 10f;
-            DeviceCard.CurrentTemperature = temperature;
+            }
+            else
+            {
+                DeviceCard.CurrentTemperature = temperature / 10f;
+
+            }
         }
     }
 
@@ -40,22 +48,24 @@ public class TemperatureDevice : IDevice
 
         _cancelTokenMsg = new CancellationTokenSource();
         OpenTemperature();
-                // 开启获得数据线程
-                _ = await Task.Factory.StartNew(
-            async () =>
-            {
-                while (!_cancelTokenMsg.IsCancellationRequested)
-                {
-                    SerialPort.SendHexCRC("01 03 1F 37 00 01", SerialPortLock);
-                    await Task.Delay(1000);
-                }
-            },
-            _cancelTokenMsg.Token);
+        // 开启获得数据线程
+        _ = await Task.Factory.StartNew(
+    async () =>
+    {
+        while (!_cancelTokenMsg.IsCancellationRequested)
+        {
+            SerialPort.SendHexCRC("01 03 1F 37 00 01", SerialPortLock);
+            await Task.Delay(1000);
+        }
+    },
+    _cancelTokenMsg.Token);
         return true;
     }
 
     public override async Task<bool> SetCurrentStatus(float value, float around, double timeOutSecond = 8200)
     {
+        await CurrentTemperature(value);
+        await Task.Delay(1000);
         await CurrentTemperature(value);
         using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(timeOutSecond));
         try
@@ -81,7 +91,7 @@ public class TemperatureDevice : IDevice
     public override async Task<bool> CloseConnect()
     {
         _cancelTokenMsg.Cancel();
-         CloseTemperature();
+        CloseTemperature();
         try
         {
             SerialPort.ClosePort(SerialPortLock);
@@ -107,7 +117,12 @@ public class TemperatureDevice : IDevice
     {
         SerialPort.SendHexCRC("01 05 1F 41 FF 00", SerialPortLock);
     }
-    public  void OpenTemperature() {
+
+    /// <summary>
+    /// 开启
+    /// </summary>
+    public void OpenTemperature()
+    {
         SerialPort.SendHexCRC("01 05 1F 40 FF 00", SerialPortLock);
     }
 
