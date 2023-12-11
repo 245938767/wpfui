@@ -72,7 +72,7 @@
             Margin="0,24,0,8"
             FontTypography="BodyStrong"
             Text="About" />
-        <ui:CardExpander ContentPadding="0" Icon="{ui:ImageIcon 'pack://application:,,,/Assets/wpfui.png', Width=38, Height=35}">
+        <ui:CardExpander ContentPadding="0" Icon="{ui:ImageIcon 'pack://application:,,,/Assets/applicationIcon.png', Width=200, Height=60}">
             <ui:CardExpander.Header>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -87,12 +87,12 @@
                         Grid.Row="0"
                         Grid.Column="0"
                         FontTypography="Body"
-                        Text="WPF UI" />
+                                  Text="MultiDeviceTestTooling" />
                     <ui:TextBlock
                         Grid.Row="1"
                         Grid.Column="0"
                         Foreground="{ui:ThemeResource TextFillColorTertiaryBrush}"
-                        Text="© 2023 lepo.co | Leszek Pomianowski &amp; WPF UI Contributors" />
+                        Text="© 2023 Vemmtec " />
                     <TextBlock
                         Grid.Row="0"
                         Grid.RowSpan="2"
@@ -110,47 +110,8 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="To clone this repository" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
-                        Text="git clone https://github.com/lepoco/wpfui.git" />
+         
                 </Grid>
-                <ui:Anchor
-                    Margin="0"
-                    Padding="16"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"
-                    Background="Transparent"
-                    BorderThickness="0,1,0,0"
-                    CornerRadius="0"
-                    NavigateUri="https://github.com/lepoco/wpfui/issues/new/choose">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="File a bug or request a new sample" />
-                        <ui:SymbolIcon Grid.Column="1" Symbol="Link24" />
-                    </Grid>
-                </ui:Anchor>
-                <ui:Anchor
-                    Margin="0"
-                    Padding="16"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"
-                    Background="Transparent"
-                    BorderThickness="0,1,0,1"
-                    CornerRadius="0"
-                    NavigateUri="https://wpfui.lepo.co/">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Check out the docs" />
-                        <ui:SymbolIcon Grid.Column="1" Symbol="Link24" />
-                    </Grid>
-                </ui:Anchor>
                 <TextBlock Margin="16" Text="{Binding ViewModel.AppVersion, Mode=OneWay}" />
             </StackPanel>
         </ui:CardExpander>
