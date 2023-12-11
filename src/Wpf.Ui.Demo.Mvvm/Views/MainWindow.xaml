@@ -43,15 +43,18 @@
         </ui:NavigationView>
         <ContentPresenter x:Name="RootContentDialog" Grid.Row="1" />
 
-        <ui:TitleBar
-            Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
-            Grid.Row="0"
-            Icon="pack://application:,,,/Assets/applicationIcon-256.png" />
+        <ui:TitleBar Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+                     Grid.Row="0"
+                     CloseWindowByDoubleClickOnIcon="True">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="pack://application:,,,/Assets/applicationIcon.png" />
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
 
         <tray:NotifyIcon
             Grid.Row="0"
             FocusOnLeftClick="True"
-            Icon="pack://application:,,,/Assets/applicationIcon-256.png"
+            Icon="pack://application:,,,/Assets/applicationIcon.png"
             MenuOnRightClick="True"
             TooltipText="温压传感器检测工具">
             <tray:NotifyIcon.Menu>

@@ -32,7 +32,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void InitializeViewModel()
     {
-        ApplicationTitle = "Demo";
+        ApplicationTitle = "MultiDeviceTestTooling";
 
         NavigationItems = new ObservableCollection<object>
         {
@@ -42,12 +42,13 @@ public partial class MainWindowViewModel : ObservableObject
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
                 TargetPageType = typeof(Views.Pages.DashboardPage)
             },
-            new NavigationViewItem()
+         /**   new NavigationViewItem()
             {
                 Content = "Data",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.DataHistogram24 },
                 TargetPageType = typeof(Views.Pages.DataPage)
             },
+         */
             new NavigationViewItem(){ 
             Content="Configuration",
             Icon=new SymbolIcon{Symbol=SymbolRegular.Accessibility20},
