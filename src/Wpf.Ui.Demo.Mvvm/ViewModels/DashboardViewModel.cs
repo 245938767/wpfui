@@ -277,7 +277,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
                         xml.Cell(count++, pressureCount).Value = pressureItem.StandardPressure;
                         foreach (DSWorkwareArea relaData in pressureItem.DSWorkwareAreas)
                         {
-                            xml.Cell(count++, pressureCount).Value = relaData.Pressure;
+                            xml.Cell(count++, pressureCount).Value = ((relaData.Pressure - pressureItem.StandardPressure) / pressureItem.StandardPressure).ToString("#0.0000");
                         }
 
                         pressureCount++;
