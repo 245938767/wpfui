@@ -161,7 +161,7 @@ public partial class EntityDbContext : DbContext
             ForeignKey = 5,
             UnitP = "Kpa",
             UnitT = "℃",
-            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/Working.png",
+            ImageUrl = "pack://application:,,,/Assets/WinUiGallery/PressureWorking.jpg",
             Version = 1.0f,
         };
         deviceCards.Add(pop);

@@ -64,6 +64,7 @@
     <Resource Include="Assets\WinUiGallery\Button.png" />
     <Resource Include="Assets\WinUiGallery\Flyout.png" />
     <Resource Include="Assets\WinUiGallery\MenuBar.png" />
+    <Resource Include="Assets\WinUiGallery\PressureWorking.jpg" />
     <Resource Include="Assets\WinUiGallery\Working.png" />
     <Resource Include="Assets\WinUiGallery\Pressure.png" />
     <Resource Include="Assets\WinUiGallery\Pump.png" />
