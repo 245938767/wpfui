@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Wpf.Ui.Demo.Mvvm.Helpers;
 
 namespace Wpf.Ui.Demo.Mvvm.Models;
@@ -27,4 +27,13 @@ public class LogMessage
     /// 发送方向
     /// </summary>
     public MessageSendDirection SendDirection { get; set; }
+
+    /// <summary>
+    /// 输出定义格式
+    /// </summary>
+    /// <returns>Message</returns>
+    public string GetOutMessage()
+    {
+        return $"{CreateTime} : {Message} \n";
+    }
 }

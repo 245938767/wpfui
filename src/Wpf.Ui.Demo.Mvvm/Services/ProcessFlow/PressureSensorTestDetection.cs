@@ -102,11 +102,13 @@ class PressureSensorTestDetection : IProcessFlow
 
     public override async Task ExecutionProcess()
     {
-           if (!await ExecutionDetection())
-           {
-               GlobalData.Instance.IsOpenCheck = false;
-               return;
-           }
+        LoggerHelper.Instance.Log("开始压力传感器检测");
+        if (!await ExecutionDetection())
+        {
+            GlobalData.Instance.IsOpenCheck = false;
+            return;
+        }
+        LoggerHelper.Instance.Log("漏气测试通过");
         // 开启温箱
         temperatureDevice.OpenTemperature();
         GlobalData.Instance.ProcessBar = 5;
@@ -125,6 +127,7 @@ class PressureSensorTestDetection : IProcessFlow
         Standard? standard = standardService.GetStandard(processFlow);
         if (standard == null)
         {
+            LoggerHelper.Instance.Log($"获得测试数据失败  {GlobalData.Instance.ProcessBar}");
             _cancellation.Cancel();
 
             // 测试数据为空
@@ -134,6 +137,7 @@ class PressureSensorTestDetection : IProcessFlow
 
             return;
         }
+        LoggerHelper.Instance.Log($"获得测试数据成功！  {GlobalData.Instance.ProcessBar}");
 
         GlobalData.Instance.ProcessBar = 8;
         // 初始化当前测试数据基类对象
@@ -154,6 +158,7 @@ class PressureSensorTestDetection : IProcessFlow
             // 4 份
             var temWeight = weight / 4;
             pressureDevice.SetCurrentPressureLook();
+            LoggerHelper.Instance.Log($"开始对 {temperature.Value}℃ 检测！  {GlobalData.Instance.ProcessBar}");
 
             if (await temperatureDevice.SetCurrentStatus(temperature.Value, temperature.ThresholdValue))
             {
@@ -169,10 +174,13 @@ class PressureSensorTestDetection : IProcessFlow
                 return;
             }
 
-            // 等待工装达标（2小时）
+            var second = 3600;
+            LoggerHelper.Instance.Log($"静置温箱{3600/360}小时  {GlobalData.Instance.ProcessBar}");
+
+            // 等待工装达标（1小时）
             try
             {
-                using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(3600));
+                using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(second));
 
                 await await Task.Factory.StartNew(
                   async () =>
@@ -198,6 +206,7 @@ class PressureSensorTestDetection : IProcessFlow
             }
 
             GlobalData.Instance.ProcessBar += temWeight;
+            LoggerHelper.Instance.Log($"静置温箱结束开始压力测试  {GlobalData.Instance.ProcessBar}");
 
             var pressureWright = (temWeight * 2) / 100;
             foreach (StandardData pressure in pressureList)
@@ -209,6 +218,8 @@ class PressureSensorTestDetection : IProcessFlow
 
                     return;
                 }
+
+                LoggerHelper.Instance.Log($"正在检测 {pressure.Value}Kpa   {GlobalData.Instance.ProcessBar}");
 
                 // 测试压力小于105 开启真空泵
                 if (pressure.Value < 105)
@@ -226,6 +237,7 @@ class PressureSensorTestDetection : IProcessFlow
 
                 var homePageItem = HomePageItemData.ToList();
                 var dSWorkwareItems = new List<DSWorkwareItem>();
+                LoggerHelper.Instance.Log($"收集检测数据  {GlobalData.Instance.ProcessBar}");
 
                 // 获得N次数据
                 for (var n = 0; n < 50; n++)
@@ -234,7 +246,7 @@ class PressureSensorTestDetection : IProcessFlow
                     for (var i = 0; i < homePageItem.Count; i++)
                     {
                         var data = (DSWorkwareGridModel)homePageItem[i];
-                 
+
                         if (n <= 0)
                         {
                             // 初始化数据
@@ -243,7 +255,7 @@ class PressureSensorTestDetection : IProcessFlow
                                 Equipment = data.SerialNumber.ToString(),
                                 StandardPressure = pressure.Value,
                                 StandardTemperature = temperature.Value,
-                                IsCheck=true,
+                                IsCheck = true,
                             });
                         }
 

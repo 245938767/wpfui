@@ -89,7 +89,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     }
 
     /// <summary>
-    /// 运行连接数据
+    /// 运行设备连接数据
     /// </summary>
     private async Task<bool> RunConnection(DeviceCard deviceCard)
     {
@@ -128,7 +128,7 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
     }
 
     /// <summary>
-    /// 关闭连接
+    /// 关闭设备连接
     /// </summary>
     /// <param name="deviceCard">关闭设备连接</param>
     private async Task CloseConnection(DeviceCard deviceCard)
@@ -195,8 +195,10 @@ public partial class DashboardViewModel : ObservableObject, INavigationAware
         );
         if (result == ContentDialogResult.Primary)
         {
+            LoggerHelper.Instance.Log($"开始进行检测 {ProcessFlow.ToDescription()}");
             // TODO 根据流程实例化对应的决策
             await processFlow.ExecutionProcess();
+
         }
         else
         {

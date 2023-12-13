@@ -143,7 +143,7 @@ public class PressureSensorWorkwareDevice : IDevice
 
         // 数据排序（获取到的数据排序为17-24,1-8,9-16）设置为（1-24）
         //var data = list.Skip(32).Take(16).Concat(list.Take(16)).Concat(list.Skip(16).Take(16)).ToList();
-        var data = list;
+        var data = list.Take(48).ToList();
 
 
         // 生成对象数据

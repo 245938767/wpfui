@@ -35,6 +35,7 @@ public partial class GlobalData : ObservableObject
     /// 全局日志信息
     /// </summary>
     [ObservableProperty] private ObservableCollection<LogMessage> _logMessages = new();
+    [ObservableProperty] private string _logStringMessages = String.Empty;
 
     /// <summary>
     /// 设备的日志信息
