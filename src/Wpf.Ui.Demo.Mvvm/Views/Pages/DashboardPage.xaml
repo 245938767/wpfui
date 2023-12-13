@@ -129,7 +129,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-            
+
                 <Grid Grid.Column="0"
                      
                         Margin="0,20,20,20">
@@ -141,10 +141,11 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <ProgressBar Margin="2"
-                                 Value="{Binding Source={x:Static models:GlobalData.Instance}, Path=ProcessBar,Mode=TwoWay}" />
+                                 Value="{Binding Source={x:Static models:GlobalData.Instance}, Path=ProcessBar,Mode=OneWay}" />
                     <ui:TextBox x:Name="logRichTextBox"
                 TextWrapping="Wrap"
                                 Grid.Row="1"
+                                Text="{Binding Source={x:Static models:GlobalData.Instance},Path=LogStringMessages,Mode=OneWay}"
                 VerticalScrollBarVisibility="Auto"
                 MinWidth="300"
               

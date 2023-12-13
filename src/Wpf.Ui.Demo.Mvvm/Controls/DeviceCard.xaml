@@ -19,16 +19,34 @@
                 <RowDefinition  Height="0.70*" />
                 <RowDefinition  Height="0.30*" />
             </Grid.RowDefinitions>
-            <Image Grid.Row="0"
+            <StackPanel Grid.Row="0"
+                Grid.Column="0"
+                Orientation="Horizontal"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Margin="3,0,0,0">
+                <Ellipse Width="10"
+                 x:Name="StatusTag"
+                 Height="10"
+                 Margin="0,0,2,0"
+                 Fill="Red" />
+                <ui:TextBlock x:Name="DeviceName" />
+            </StackPanel>
+            <ui:TextBlock Grid.Row="0"
+                  x:Name="StatusText"
+                  Grid.Column="1"
+                  HorizontalAlignment="Right"
+                  Margin="0,0,5,0" />
+            <Image Grid.Row="1"
                    Grid.Column="0"
                    x:Name="Image"
                    Width="60"
                    Margin="24,0,0,0"/>
-            <StackPanel Margin="23,23,23,15"
-                        Grid.Row="0"
+            <StackPanel Margin="23,23,23,5"
+                        Grid.Row="1"
                         Grid.Column="1"
                         MinHeight="55"
-                        MinWidth="100">
+                        MinWidth="140">
                 <StackPanel Orientation="Horizontal"
                             VerticalAlignment="Center">
                     <ui:TextBlock Margin="-1"
@@ -88,24 +106,7 @@
                     </StackPanel.Style>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="1"
-                        Grid.Column="0"
-                        Orientation="Horizontal"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Left"
-                        Margin="3,0,0,0">
-                <Ellipse Width="10"
-                         x:Name="StatusTag"
-                         Height="10"
-                         Margin="0,0,2,0"
-                         Fill="Red" />
-                <ui:TextBlock x:Name="DeviceName" />
-            </StackPanel>
-            <ui:TextBlock Grid.Row="1"
-                          x:Name="StatusText"
-                          Grid.Column="1"
-                          HorizontalAlignment="Right"
-                          Margin="0,0,5,0" />
+        
         </Grid>
     </Viewbox>
 </UserControl>
