@@ -65,6 +65,8 @@ public partial class App
                 services.AddSingleton<INavigationWindow, Views.MainWindow>();
                 services.AddSingleton<ViewModels.MainWindowViewModel>();
                 services.AddSingleton<WindowsProviderService>();
+                services.AddSingleton<ISnackbarService, SnackbarService>();
+
 
                 // Views and ViewModels
                 services.AddSingleton<Views.Pages.DashboardPage>();

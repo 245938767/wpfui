@@ -112,14 +112,6 @@
                                    Margin="20,0,20,0"
                                    Command="{Binding ViewModel.ColseCheckCommand,Mode=OneWay}"
                                    IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay}" />
-                        <ui:Button Grid.Column="2"
-                                   MinWidth="100"
-                                   MinHeight="25"
-                                   Content="导出Excel"
-                                   Margin="20,0,0,0"
-                                   Command="{Binding ViewModel.ExportExcelCommand,Mode=OneWay}"
-                                   IsEnabled="{Binding Source={x:Static models:GlobalData.Instance}, Path=IsOpenCheck,Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}" />
-
                     </Grid>
                 </Grid>
 

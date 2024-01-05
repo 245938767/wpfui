@@ -18,26 +18,49 @@
     ScrollViewer.CanContentScroll="False"
     mc:Ignorable="d">
 
-    <Grid Margin="42">
-        <ui:VirtualizingItemsControl
-            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-            ItemsSource="{Binding ViewModel.Colors, Mode=OneWay}"
-            VirtualizingPanel.CacheLengthUnit="Item">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:DataColor}">
-                    <ui:Button
-                        Width="80"
-                        Height="80"
-                        Margin="2"
-                        Padding="0"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Appearance="Secondary"
-                        Background="{Binding Color, Mode=OneWay}"
-                        FontSize="25"
-                        Icon="Fluent24" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ui:VirtualizingItemsControl>
+    <Grid Margin="20">
+   
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <ui:DataGrid ItemsSource="{Binding ViewModel.HistoryDatas}"
+                     SelectedIndex="{Binding ViewModel.SelectIndex}"
+                     AutoGenerateColumns="False"
+                     HeadersVisibility="All"
+                     CanUserAddRows="False"
+                     IsReadOnly="True"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Hidden" 
+                     AlternationCount="3" RowHeaderWidth="20"
+                     GridLinesVisibility="All" 
+                     SelectionUnit="Cell"
+                     SelectionMode="Extended"  >
+            <ui:DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
+                <DataGridTextColumn Header="总数据" Binding="{Binding DataCount}"/>
+                <DataGridTextColumn Header="温度点" Binding="{Binding TemperatureList}"/>
+                <DataGridTextColumn Header="压力点" Binding="{Binding PressureList}"/>
+                <DataGridTextColumn Header="是否检测完成" Binding="{Binding IsCheck}"/>
+                <DataGridTextColumn Header="创建时间" Binding="{Binding CreateTime}"/>
+                <DataGridTemplateColumn  >
+                    <DataGridTemplateColumn.Header>操作</DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="models:HistoryData">
+                            <StackPanel Width="auto" Height="auto" Orientation="Horizontal" Margin="5">
+                       
+                                <Button Content="删 除" CommandParameter="{Binding Id}" Command="{Binding ViewModel.DeleteDataCommand ,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:DataPage}, Mode=OneWay}" />
+                                <Button Content="原始数据导出" CommandParameter="{Binding Id}" Command="{Binding ViewModel.ExportRealDataCommand ,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:DataPage}, Mode=OneWay}" />
+                                <Button Content="计算数据导出" CommandParameter="{Binding Id}" Command="{Binding ViewModel.ExportNotRealDataCommand ,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:DataPage}, Mode=OneWay}"/>
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </ui:DataGrid.Columns>
+            
+        </ui:DataGrid>
+  
     </Grid>
 </Page>

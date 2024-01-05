@@ -23,13 +23,22 @@ public class DSWorkwareService
         _dbContext = dbContext;
     }
 
-    public DSWorkware? GetNewsData() {
+    public DSWorkware? GetNewsData(long? id) {
 
-       var dw= _dbContext.Dsworkwares.OrderByDescending(x => x.CreateTime).FirstOrDefault();
-       
+        DSWorkware dw = null;
+        if (id!=null) {
+            dw = _dbContext.Dsworkwares.Where(o => o.id == id).OrderByDescending(x => x.CreateTime).FirstOrDefault();
+        }
+        dw = _dbContext.Dsworkwares.OrderByDescending(x => x.CreateTime).FirstOrDefault();
         dw.DSWorkwareItems = _dbContext.DSWorkwareItems.Include(x => x.DSWorkwareAreas).Where(x => x.WorkwareId == dw.id).ToList();
 
         return dw;
+    }
+    public List<DSWorkware>? GetDsWorkwareList()
+    {
+        var dw = _dbContext.Dsworkwares.Include(o=>o.DSWorkwareItems).OrderByDescending(x => x.CreateTime).ToList();
+        return dw;
+
     }
 
     public int SaveDSWorkware(DSWorkware dSWorkware)
@@ -54,5 +63,13 @@ public class DSWorkwareService
     {
         _ = _dbContext.DsworkwareAreas.Add(dSWorkwareArea);
         return _dbContext.SaveChanges();
+    }
+    public bool DeleteWorkware(long id) {
+        List<DSWorkware> dSWorkwares = _dbContext.Dsworkwares.Where(o => o.id == id).ToList();
+        var dSWorkwareItems = _dbContext.DSWorkwareItems.Include(o => o.DSWorkwareAreas).Where(o => o.WorkwareId == id).ToList();
+        _dbContext.DSWorkwareItems.RemoveRange(dSWorkwareItems);
+        if(dSWorkwares.Count<=0) return false;
+        _dbContext.Dsworkwares.Remove(dSWorkwares[0]);
+        return _dbContext.SaveChanges()>0;
     }
 }
